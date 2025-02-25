@@ -55,9 +55,9 @@
 
 #include "rcbot/logging.h"
 
-#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
+//#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
 #include "valve_minmax_off.h"
-#endif
+//#endif
 
 eTFMapType CTeamFortress2Mod :: m_MapType = TF_MAP_CTF;
 tf_tele_t CTeamFortress2Mod :: m_Teleporters[RCBOT_MAXPLAYERS];

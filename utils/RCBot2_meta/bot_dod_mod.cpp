@@ -49,9 +49,9 @@
 #include <cstring>
 
  //Ignores the min/max macros in the windows headers
-#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
+//#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
 #include "valve_minmax_off.h"
-#endif
+//#endif
 
 edict_t *CDODMod::m_pResourceEntity = nullptr;
 CDODFlags CDODMod::m_Flags;

@@ -63,9 +63,9 @@
 #include <vector>    //bir3yk
 
  //caxanga334: SDK 2013 contains macros for std::min and std::max which causes errors when compiling
-#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
+//#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
 #include "valve_minmax_off.h"
-#endif
+//#endif
 
 int CWaypoints::m_iNumWaypoints = 0;
 CWaypoint CWaypoints::m_theWaypoints[MAX_WAYPOINTS];

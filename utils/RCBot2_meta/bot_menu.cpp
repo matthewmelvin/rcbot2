@@ -356,6 +356,7 @@ void CBotMenu::render(CClient* pClient)
 
 	const char* pszCaption = getCaption(pClient, color);
 
+	//TODO: to allow waypoint menu work for the newer SDK2013 for CSS, DODS, HL2DM and TF2 [APG]RoboCop[CL]
 #if SOURCE_ENGINE == SE_TF2 || SOURCE_ENGINE == SE_HL2DM 
 	debugoverlay->AddScreenTextOverlay(0.135f, 0.4f, 0, fUpdateTime, color.r, color.g, color.b, color.a, pszCaption);
 	debugoverlay->AddScreenTextOverlay(0.135f, 0.4f, 1, fUpdateTime, color.r, color.g, color.b, color.a, "----------------");

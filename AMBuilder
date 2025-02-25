@@ -29,7 +29,7 @@ sourceFiles = [
   "utils/RCBot2_meta/bot_menu.cpp",
   "utils/RCBot2_meta/bot_mods.cpp",
   "utils/RCBot2_meta/bot_mtrand.cpp",
-  "utils/RCBot2_meta/bot_navmesh.cpp",
+  #"utils/RCBot2_meta/bot_navmesh.cpp",
   "utils/RCBot2_meta/bot_perceptron.cpp",
   "utils/RCBot2_meta/bot_profile.cpp",
   "utils/RCBot2_meta/bot_profiling.cpp",

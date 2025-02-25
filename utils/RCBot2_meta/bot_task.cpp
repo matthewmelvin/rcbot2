@@ -55,9 +55,9 @@
 #include "bot_synergy.h"
 
 //caxanga334: SDK 2013 contains macros for std::min and std::max which causes errors when compiling
-#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
+//#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
 #include "valve_minmax_off.h"
-#endif
+//#endif
 
 // desx and desy must be normalized
 // desx = distance (should be 2d)

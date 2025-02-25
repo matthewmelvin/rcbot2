@@ -87,6 +87,11 @@
 #include <random>
 #include <vector>
 
+//caxanga334: SDK 2013 contains macros for std::min and std::max which causes errors when compiling
+//#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
+#include "valve_minmax_off.h"
+//#endif
+
 constexpr float DEG_TO_RAD(const float x) { return x * 0.0174533f; }
 constexpr float RAD_TO_DEG(const float x) { return x * 57.29578f; }
 
