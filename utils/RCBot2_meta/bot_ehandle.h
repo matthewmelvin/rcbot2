@@ -96,7 +96,7 @@ public:
 
 	bool operator == (const intptr_t a)
 	{
-		return (reinterpret_cast<int>(get()) == a);
+		return (reinterpret_cast<uintptr_t>(get()) == static_cast<uintptr_t>(a));
 	}
 
 	bool operator == ( edict_t *pent )

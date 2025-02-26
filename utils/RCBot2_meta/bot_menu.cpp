@@ -357,13 +357,13 @@ void CBotMenu::render(CClient* pClient)
 	const char* pszCaption = getCaption(pClient, color);
 
 	//TODO: to allow waypoint menu work for the newer SDK2013 for CSS, DODS, HL2DM and TF2 [APG]RoboCop[CL]
-#if SOURCE_ENGINE == SE_TF2 || SOURCE_ENGINE == SE_HL2DM 
-	debugoverlay->AddScreenTextOverlay(0.135f, 0.4f, 0, fUpdateTime, color.r, color.g, color.b, color.a, pszCaption);
-	debugoverlay->AddScreenTextOverlay(0.135f, 0.4f, 1, fUpdateTime, color.r, color.g, color.b, color.a, "----------------");
-#else
+//#if SOURCE_ENGINE == SE_TF2 || SOURCE_ENGINE == SE_HL2DM 
+//	debugoverlay->AddScreenTextOverlay(0.135f, 0.4f, 0, fUpdateTime, color.r, color.g, color.b, color.a, pszCaption);
+//	debugoverlay->AddScreenTextOverlay(0.135f, 0.4f, 1, fUpdateTime, color.r, color.g, color.b, color.a, "----------------");
+//#else
 	debugoverlay->AddTextOverlayRGB(vOrigin, 0, fUpdateTime, color.r, color.g, color.b, color.a, pszCaption);
 	debugoverlay->AddTextOverlayRGB(vOrigin, 1, fUpdateTime, color.r, color.g, color.b, color.a, "----------------");
-#endif
+//#endif
 	/*
 		Vector screen;
 		Vector point = Vector(0,0,0);
@@ -371,7 +371,7 @@ void CBotMenu::render(CClient* pClient)
 		debugoverlay->ScreenPosition(0.5f, 0.5f, screen);
 		debugoverlay->ScreenPosition(point,screen);*/
 
-	for (unsigned i = 0; i < m_MenuItems.size(); i++)
+	for (size_t i = 0; i < m_MenuItems.size(); i++)
 	{
 		CBotMenuItem* item = m_MenuItems[i];
 

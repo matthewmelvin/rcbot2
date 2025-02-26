@@ -56,7 +56,7 @@ const float CGA::g_fMaxPerturbation = 0.3f;
 
 IIndividual* CPopulation::get(const int iIndex) const
 {
-	return m_theIndividuals[iIndex];
+	return m_theIndividuals[static_cast<std::size_t>(iIndex)];
 }
 
 void CPopulation::add(IIndividual* individual)
@@ -78,9 +78,9 @@ ga_nn_value CPopulation::totalFitness() const
 {
 	float fTotalFitness = 0.0f;
 
-	for (unsigned i = 0; i < size(); i++)
+	for (IIndividual* const& individual : m_theIndividuals)
 	{
-		fTotalFitness += m_theIndividuals[i]->getFitness();
+		fTotalFitness += individual->getFitness();
 	}
 
 	return fTotalFitness;

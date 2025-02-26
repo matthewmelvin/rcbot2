@@ -3085,26 +3085,32 @@ void CBot :: getTasks (unsigned iIgnore)
 
 ///////////////////////
 
-bool CBots :: controlBot ( edict_t *pEdict )
+bool CBots::controlBot(edict_t* pEdict)
 {
-	CBotProfile *pBotProfile = CBotProfiles::getRandomFreeProfile();
+	CBotProfile* pBotProfile = CBotProfiles::getRandomFreeProfile();
 
-	if ( m_Bots[slotOfEdict(pEdict)]->getEdict() == pEdict )
+	const int slot = slotOfEdict(pEdict);
+	if (slot < 0) {
+		logger->Log(LogLevel::ERROR, "Invalid slot value");
+	}
+
+	const size_t slotIndex = static_cast<size_t>(slot);
+
+	if (m_Bots[slotIndex]->getEdict() == pEdict)
 	{
 		return false;
 	}
-
-	if ( pBotProfile == nullptr)
+	if (pBotProfile == nullptr)
 	{
 		logger->Log(LogLevel::INFO, "No bot profiles are free, creating a default bot...");
 
 		pBotProfile = CBotProfiles::getDefaultProfile();
 
-		if ( pBotProfile == nullptr)
+		if (pBotProfile == nullptr)
 			return false;
 	}
 
-	m_Bots[slotOfEdict(pEdict)]->createBotFromEdict(pEdict,pBotProfile);
+	m_Bots[slotIndex]->createBotFromEdict(pEdict, pBotProfile);
 
 	return true;
 }
@@ -3112,25 +3118,34 @@ bool CBots :: controlBot ( edict_t *pEdict )
 #define SET_PROFILE_DATA_INT(varname,membername) if ( (varname) && *(varname) ) { pBotProfile->membername = std::atoi(varname); }
 #define SET_PROFILE_STRING(varname,localname,membername) if ( (varname) && *(varname) ) { (localname) = (char*)(varname); } else { (localname) = pBotProfile->membername; }
 
-bool CBots :: controlBot ( const char *szOldName, const char *szName, const char *szTeam, const char *szClass )
+bool CBots::controlBot(const char* szOldName, const char* szName, const char* szTeam, const char* szClass)
 {
-	edict_t *pEdict;
+	edict_t* pEdict;
 
-	const char *szOVName = "";
+	const char* szOVName = "";
 
-	if ( (pEdict = CBotGlobals::findPlayerByTruncName(szOldName)) == nullptr)
+	if ((pEdict = CBotGlobals::findPlayerByTruncName(szOldName)) == nullptr)
 	{
 		logger->Log(LogLevel::ERROR, "Can't find player");
 		return false;
 	}
 
-	if ( m_Bots[slotOfEdict(pEdict)]->getEdict() == pEdict )
+	// Ensure the index is cast to size_t [APG]RoboCop[CL]
+	int slot = slotOfEdict(pEdict);
+
+	if (slot < 0) {
+		logger->Log(LogLevel::ERROR, "Invalid slot value");
+	}
+
+	size_t botIndex = static_cast<size_t>(slot);
+
+	if (m_Bots[botIndex]->getEdict() == pEdict)
 	{
 		logger->Log(LogLevel::ERROR, "already controlling player");
 		return false;
 	}
 
-	if ( m_iMaxBots != -1 && CBotGlobals::numClients() >= m_iMaxBots )
+	if (m_iMaxBots != -1 && CBotGlobals::numClients() >= m_iMaxBots)
 	{
 		logger->Log(LogLevel::ERROR, "Can't create bot, max_bots reached");
 		return false;
@@ -3140,23 +3155,23 @@ bool CBots :: controlBot ( const char *szOldName, const char *szName, const char
 
 	CBotProfile* pBotProfile = CBotProfiles::getRandomFreeProfile();
 
-	if ( pBotProfile == nullptr)
+	if (pBotProfile == nullptr)
 	{
 		logger->Log(LogLevel::INFO, "No bot profiles are free, creating a default bot...");
 
 		pBotProfile = CBotProfiles::getDefaultProfile();
 
-		if ( pBotProfile == nullptr)
+		if (pBotProfile == nullptr)
 			return false;
 	}
-	
-	SET_PROFILE_DATA_INT(szClass,m_iClass)
-	SET_PROFILE_DATA_INT(szTeam,m_iTeam)
-	SET_PROFILE_STRING(szName,szOVName,m_szName)
+
+	SET_PROFILE_DATA_INT(szClass, m_iClass)
+	SET_PROFILE_DATA_INT(szTeam, m_iTeam)
+	SET_PROFILE_STRING(szName, szOVName, m_szName)
 
 	//IBotController *p = g_pBotManager->GetBotController(pEdict);	
 
-	return m_Bots[slotOfEdict(pEdict)]->createBotFromEdict(pEdict,pBotProfile);
+	return m_Bots[botIndex]->createBotFromEdict(pEdict, pBotProfile);
 }
 
 bool CBots :: createBot (const char *szClass, const char *szTeam, const char *szName)
@@ -3190,11 +3205,11 @@ bool CBots :: createBot (const char *szClass, const char *szTeam, const char *sz
 	if ( pEdict == nullptr)
 		return false;
 
-	return m_Bots[slotOfEdict(pEdict)]->createBotFromEdict(pEdict,pBotProfile);
+	return m_Bots[static_cast<size_t>(slotOfEdict(pEdict))]->createBotFromEdict(pEdict, pBotProfile);
 }
 
 int CBots::createDefaultBot(const char* szName) {
-	edict_t* pEdict = g_pBotManager->CreateBot( szName );
+	edict_t* pEdict = g_pBotManager->CreateBot(szName);
 
 	if (!pEdict) {
 		return -1;
@@ -3204,10 +3219,21 @@ int CBots::createDefaultBot(const char* szName) {
 	CBotProfile* pBotProfile = new CBotProfile(*CBotProfiles::getDefaultProfile());
 	pBotProfile->m_szName = CStrings::getString(szName);
 
-	const int slot = slotOfEdict(pEdict);
+	// Ensure slot is safely converted to size_t [APG]RoboCop[CL]
+	int slotInt = slotOfEdict(pEdict); // Get the slot as an int
+
+	if (slotInt < 0) {
+		// Handle invalid slot case
+		delete pBotProfile;
+
+		return -1;
+	}
+
+	size_t slot = static_cast<size_t>(slotInt); // Convert to size_t explicitly
+
 	m_Bots[slot]->createBotFromEdict(pEdict, pBotProfile);
 
-	return slot;
+	return slotInt; // Return the original int slot value
 }
 
 void CBots :: botFunction ( IBotFunction *function )
@@ -3410,28 +3436,33 @@ void CBots :: botThink ()
 	}
 }
 
-CBot *CBots :: getBotPointer (const edict_t *pEdict)
+CBot* CBots::getBotPointer(const edict_t* pEdict)
 {
-	if ( !pEdict )
+	if (!pEdict)
 		return nullptr;
 
 	const int slot = slotOfEdict(pEdict);
 
-	if ( slot < 0 || slot >= RCBOT_MAXPLAYERS )
+	if (slot < 0 || slot >= RCBOT_MAXPLAYERS)
 		return nullptr;
 
-	CBot *pBot = m_Bots[slot];
+	CBot* pBot = m_Bots[static_cast<size_t>(slot)];
 
-	if ( pBot->inUse() )
+	if (pBot->inUse())
 		return pBot;
 
 	return nullptr;
 }
 
-CBot* CBots::getBot(const int slot) {
-	CBot *pBot = m_Bots[slot];
-	if ( pBot->inUse() )
+CBot* CBots::getBot(const int slot)
+{
+	if (slot < 0 || slot >= RCBOT_MAXPLAYERS)
+		return nullptr; //TODO: Experimental - Return nullptr for invalid slot values [APG]RoboCop[CL]
+	
+	CBot* pBot = m_Bots[static_cast<size_t>(slot)];
+	if (pBot->inUse())
 		return pBot;
+
 	return nullptr;
 }
 
@@ -3561,7 +3592,7 @@ void CBots :: kickRandomBotOnTeam (const int team)
 		return;
 	}
 
-	snprintf(szCommand, sizeof(szCommand), "kickid %d\n", botList[ randomInt(0, botList.size() - 1) ]);
+	snprintf(szCommand, sizeof(szCommand), "kickid %d\n", botList[randomInt(0, static_cast<int>(botList.size() - 1))]);
 
 	m_flAddKickBotTime = engine->Time() + 2.0f;
 

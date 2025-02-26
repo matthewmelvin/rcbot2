@@ -262,7 +262,12 @@ CBotCommandInline BotTaskCommand("givetask", CMD_ACCESS_DEBUG, [](CClient* pClie
 
 					if (gren)
 					{
-						CBotSchedule* sched = new CBotSchedule(new CThrowGrenadeTask(gren, pBot->getAmmo(gren->getWeaponInfo()->getAmmoIndex1()), pClient->getOrigin()));
+						CBotSchedule* sched = new CBotSchedule(
+							new CThrowGrenadeTask(gren,	pBot->getAmmo(static_cast<size_t>(gren->getWeaponInfo()->getAmmoIndex1())),
+								pClient->getOrigin()
+							)
+						);
+
 						pSched->add(sched);
 					}
 				}

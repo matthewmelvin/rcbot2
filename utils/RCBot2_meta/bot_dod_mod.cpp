@@ -338,7 +338,7 @@ bool CDODFlags::getRandomEnemyControlledFlag (const CBot *pBot, Vector *position
 	{
 		if ( m_iWaypoint[i] != -1 )
 		{
-			if ( m_pFlags[i] == nullptr || m_iOwner[i] == iTeam )
+			if (m_pFlags[static_cast<size_t>(i)] == nullptr || m_iOwner[static_cast<size_t>(i)] == iTeam)
 				continue;
 
 			if ( iTeam == TEAM_ALLIES && m_iAlliesReqCappers[i] == 0 )

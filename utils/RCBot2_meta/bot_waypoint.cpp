@@ -136,7 +136,7 @@ bool CWaypointNavigator :: beliefLoad ()
    bfp.seekg(0, std::fstream::end); // seek at end
 
 	const unsigned iSize = bfp.tellg(); // get file size
-	const unsigned iDesiredSize = CWaypoints::numWaypoints() * sizeof(unsigned short int);
+	const size_t iDesiredSize = static_cast<size_t>(CWaypoints::numWaypoints()) * sizeof(unsigned short int);
 
    // size not right, return false to re workout table
    if ( iSize != iDesiredSize )
@@ -187,7 +187,7 @@ bool CWaypointNavigator :: beliefSave (const bool bOverride)
 	   bfp.seekg(0, std::fstream::end); // seek at end
 
 	   const unsigned iSize = bfp.tellg(); // get file size
-	   const unsigned iDesiredSize = CWaypoints::numWaypoints() * sizeof(unsigned short int);
+	   const size_t iDesiredSize = static_cast<size_t>(CWaypoints::numWaypoints()) * sizeof(unsigned short int);
 		
 	   // size not right, return false to re workout table
 	   if ( iSize == iDesiredSize )
@@ -2736,12 +2736,14 @@ CWaypoint* CWaypoints::randomWaypointGoalNearestArea(const int iFlags, const int
 		if ( pBot )
 		{
 			const CWaypointNavigator* pNav = static_cast<CWaypointNavigator*>(pBot->getNavigator());
-
-			pWpt = pNav->chooseBestFromBeliefBetweenAreas(goals,bHighDanger,bIgnoreBelief);
+			pWpt = pNav->chooseBestFromBeliefBetweenAreas(goals, bHighDanger, bIgnoreBelief);
 		}
 		else
-			pWpt = CWaypoints::getWaypoint(goals[randomInt(0, static_cast<int>(goals.size()) - 1)]->getWaypoint());
-
+		{
+			// Ensure the index is of type std::size_t
+			std::size_t randomIndex = static_cast<std::size_t>(randomInt(0, static_cast<int>(goals.size()) - 1));
+			pWpt = CWaypoints::getWaypoint(goals[randomIndex]->getWaypoint());
+		}
 		//pWpt = goals.Random();
 	}
 
@@ -2820,7 +2822,9 @@ CWaypoint* CWaypoints::randomWaypointGoalBetweenArea(const int iFlags, const int
 			pWpt = pNav->chooseBestFromBeliefBetweenAreas(goals, bHighDanger, bIgnoreBelief);
 		}
 		else
-			pWpt = CWaypoints::getWaypoint(goals[randomInt(0, static_cast<int>(goals.size()))]->getWaypoint());
+		{
+			pWpt = CWaypoints::getWaypoint(goals[static_cast<std::size_t>(randomInt(0, static_cast<int>(goals.size())))]->getWaypoint());
+		}
 
 		//pWpt = goals.Random();
 	}
@@ -2878,8 +2882,11 @@ CWaypoint* CWaypoints::randomWaypointGoal(const int iFlags, const int iTeam, con
 			pWpt = pNav->chooseBestFromBelief(goals, bHighDanger, iSearchFlags);
 		}
 		else
-			pWpt = goals[randomInt(0, static_cast<int>(goals.size()) - 1)];
+		{
+			pWpt = goals[static_cast<std::size_t>(randomInt(0, static_cast<int>(goals.size()) - 1))];
+		}
 	}
+
 	return pWpt;
 }
 
@@ -2943,7 +2950,7 @@ int CWaypoint :: numPaths () const
 
 int CWaypoint :: getPath (const int i) const
 {
-	return m_thePaths[i];
+	return m_thePaths[static_cast<size_t>(i)];
 }
 
 bool CWaypoint :: isPathOpened (const Vector& vPath)
@@ -2991,7 +2998,7 @@ int CWaypoint :: numPathsToThisWaypoint () const
 
 int CWaypoint :: getPathToThisWaypoint (const int i) const
 {
-	return m_PathsTo[i];
+	return m_PathsTo[static_cast<std::size_t>(i)];
 }
 
 bool CWaypoint :: addPathTo ( int iWaypointIndex )
@@ -3088,8 +3095,9 @@ CWaypointType *CWaypointTypes :: getTypeByIndex (const unsigned iIndex)
 {
 	if ( iIndex < m_Types.size() )
 	{
-		return m_Types[iIndex];
+		return m_Types[static_cast<size_t>(iIndex)];
 	}
+
 	return nullptr;
 }
 

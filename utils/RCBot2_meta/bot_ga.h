@@ -68,7 +68,7 @@ public:
 	void setGA ( CGA *ga ) { m_ga = ga; }
 
 	// size of population
-	unsigned size () const { return m_theIndividuals.size(); }
+	size_t size() const { return m_theIndividuals.size(); }
 
 	// get from population index
 	IIndividual *get ( int iIndex ) const;
