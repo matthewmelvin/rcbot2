@@ -41,7 +41,7 @@
 #include "rcbot/logging.h"
 
 std::vector <char *> CBotConfigFile::m_Commands;
-size_t CBotConfigFile::m_iCmd = 0; // current command (time delayed)
+unsigned CBotConfigFile::m_iCmd = 0; // current command (time delayed)
 float CBotConfigFile::m_fNextCommandTime = 0.0f;
 
 // 

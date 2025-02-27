@@ -3,6 +3,10 @@ build/
 build_linux/
 utils/RCBot2_meta/Debug
 utils/RCBot2_meta/.vs
+utils/RCBot2_meta/x64
+utils/RCBot2_meta/x64/Release
+utils/RCBot2_meta/x64/Release_NonHomeFolder
+utils/RCBot2_meta/RCBot2_meta
 alliedmodders/hl2sdk-proxy-repo
 
 # SourceMod compiled plugins
