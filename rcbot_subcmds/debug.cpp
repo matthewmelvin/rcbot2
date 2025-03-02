@@ -30,6 +30,7 @@
  */
 
 #include <cmath>
+#include <cstdint>
 
 #include "bot_commands.h"
 #include "bot_fortress.h"
@@ -263,7 +264,7 @@ CBotCommandInline BotTaskCommand("givetask", CMD_ACCESS_DEBUG, [](CClient* pClie
 					if (gren)
 					{
 						CBotSchedule* sched = new CBotSchedule(
-							new CThrowGrenadeTask(gren,	pBot->getAmmo(static_cast<size_t>(gren->getWeaponInfo()->getAmmoIndex1())),
+							new CThrowGrenadeTask(gren,	pBot->getAmmo(static_cast<std::size_t>(gren->getWeaponInfo()->getAmmoIndex1())),
 								pClient->getOrigin()
 							)
 						);
@@ -740,19 +741,40 @@ CBotCommandInline DebugMemoryCheckCommand("memorycheck", CMD_ACCESS_DEBUG, [](co
 
 	if ((strcmp(args[2], "bool") == 0) || (strcmp(args[2], "byte") == 0))
 	{
-		CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s - offset %d - Value(byte) = %d", args[0], offset, *reinterpret_cast<byte*>(reinterpret_cast<uintptr_t>(pent) + offset));
+		CBotGlobals::botMessage(
+			pClient->getPlayer(),
+			0,
+			"%s - offset %d - Value(byte) = %d",
+			args[0],
+			offset,
+			*reinterpret_cast<byte*>(reinterpret_cast<std::uintptr_t>(pent) + offset)
+		);
 	}
 	else if (strcmp(args[2], "int") == 0)
 	{
-		CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s - offset %d - Value(int) = %d", args[0], offset, *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(pent) + offset));
+		CBotGlobals::botMessage(
+			pClient->getPlayer(),
+			0,
+			"%s - offset %d - Value(int) = %d",
+			args[0],
+			offset,
+			*reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(pent) + offset)
+		);
 	}
 	else if (strcmp(args[2], "float") == 0)
 	{
-		CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s - offset %d - Value(float) = %0.6f", args[0], offset, *reinterpret_cast<float*>(reinterpret_cast<uintptr_t>(pent) + offset));
+		CBotGlobals::botMessage(
+			pClient->getPlayer(),
+			0,
+			"%s - offset %d - Value(float) = %0.6f",
+			args[0],
+			offset,
+			*reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(pent) + offset)
+		);
 	}
 	else if (strcmp(args[2], "string") == 0)
 	{
-		const string_t* str = reinterpret_cast<string_t*>(reinterpret_cast<uintptr_t>(pent) + offset);
+		const string_t* str = reinterpret_cast<string_t*>(reinterpret_cast<uintptr_t>(pent) + offset * sizeof(string_t));
 
 		if (str)
 			CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s - offset %d - Value(string) = %s", args[0], offset, STRING(*str));

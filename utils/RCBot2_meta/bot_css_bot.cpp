@@ -1121,7 +1121,7 @@ void CCSSBot::touchedWpt(CWaypoint *pWaypoint, const int iNextWaypoint, const in
 	CBot::touchedWpt(pWaypoint, iNextWaypoint, iPrevWaypoint);
 }
 
-bool CCSSBot::canGotoWaypoint(const Vector vPrevWaypoint, CWaypoint *pWaypoint, CWaypoint *pPrev)
+bool CCSSBot::canGotoWaypoint(const Vector vPrevWaypoint, CWaypoint* pWaypoint, CWaypoint* pPrev)
 {
 	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_NO_HOSTAGES) || pWaypoint->hasFlag(CWaypointTypes::W_FL_LADDER))
 	{

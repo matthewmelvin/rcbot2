@@ -139,9 +139,9 @@ void CAccessClients :: load ()
 			if ( buffer[0] == '#' )
 				continue;
 
-			const size_t len = std::strlen(buffer);
+			const std::size_t len = std::strlen(buffer);
 
-			size_t i = 0;
+			std::size_t i = 0;
 
 			while (( i < len ) && ((buffer[i] == '\"') || (buffer[i] == ' ')))
 				i++;

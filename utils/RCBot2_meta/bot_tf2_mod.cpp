@@ -186,7 +186,7 @@ void CTeamFortress2Mod ::modFrame ()
 {
 	if( m_bPlayerHasSpawned )
 	{
-		if ( m_ObjectiveResource.m_ObjectiveResource == NULL )
+		if ( m_ObjectiveResource.m_ObjectiveResource == nullptr )
 		{
 			m_ObjectiveResource.m_ObjectiveResource = CClassInterface::FindEntityByNetClass(gpGlobals->maxClients+1, "CTFObjectiveResource");
 		
@@ -1200,7 +1200,7 @@ void CTeamFortress2Mod::updatePointMaster()
 			extern IServerTools *servertools;
 			
 			// HACK: we use one of the known CBaseEntity-sized entities to compute the offset to the first subclass member for CTeamControlPointMaster / CTeamControlPointRound
-			const size_t baseEntityOffset = servertools->GetEntityFactoryDictionary()->FindFactory("simple_physics_brush")->GetEntitySize();
+			const std::size_t baseEntityOffset = servertools->GetEntityFactoryDictionary()->FindFactory("simple_physics_brush")->GetEntitySize();
 
 			const uintptr_t pMasterMembers = reinterpret_cast<uintptr_t>(servergameents->EdictToBaseEntity(pMaster)) + baseEntityOffset;
 			m_PointMaster = reinterpret_cast<CTeamControlPointMaster*>(pMasterMembers);

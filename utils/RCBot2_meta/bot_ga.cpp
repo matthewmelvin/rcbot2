@@ -54,9 +54,13 @@ const float CGA::g_fMaxPerturbation = 0.3f;
 // POPULATION
 ////////////////////
 
-IIndividual* CPopulation::get(const int iIndex) const
+IIndividual* CPopulation::get(const std::size_t iIndex) const
 {
-	return m_theIndividuals[static_cast<std::size_t>(iIndex)];
+	if (iIndex >= m_theIndividuals.size())
+	{
+		logger->Log(LogLevel::WARN, "GA Error: Index out of range");
+	}
+	return m_theIndividuals[iIndex];
 }
 
 void CPopulation::add(IIndividual* individual)
@@ -213,9 +217,16 @@ IIndividual* CRouletteSelection::select(CPopulation* population)
 
 	ga_nn_value fFitnessSoFar = 0.0f;
 
-	for (unsigned i = 0; i < population->size(); i++)
+	for (std::size_t i = 0; i < population->size(); i++)
 	{
-        IIndividual* individual = population->get(static_cast<int>(i));
+		// Ensure the index is within the range of int [APG]RoboCop[CL]
+		if (i > static_cast<std::size_t>(std::numeric_limits<int>::max()))
+		{
+			logger->Log(LogLevel::ERROR, "GA Error: Index exceeds the range of int. Aborting operation.");
+			return nullptr; // Or handle the error appropriately
+		}
+
+		IIndividual* individual = population->get(i);
 
 		fFitnessSoFar += individual->getFitness();
 

@@ -9,7 +9,7 @@
 
 #include <cstring>
 
-#ifdef _WIN32
+#if defined(_WIN64) || defined(_WIN32)
 #define strcmpi _strcmpi
 #endif 
 
@@ -662,12 +662,13 @@ void CClassInterfaceValue :: getData ( void *edict, const bool bIsEdict )
 
 		pEntity = pUnknown->GetBaseEntity();
 
-		m_data = static_cast<void*>(reinterpret_cast<char*>(pEntity) + m_offset);
+		m_data = static_cast<void*>(reinterpret_cast<char*>(pEntity) + static_cast<std::size_t>(m_offset));
+
 	}
 	else
 	{
 		// raw
-		m_data = static_cast<void*>(static_cast<char*>(edict) + m_offset);
+		m_data = static_cast<void*>(static_cast<char*>(edict) + static_cast<std::size_t>(m_offset));
 	}
 
 }
@@ -814,10 +815,8 @@ edict_t *CClassInterface::FindEntityByNetClass(const int start, const char *clas
 
 
  int CClassInterface::getTF2Score (const edict_t* edict) 
-{ 
-	edict_t *res = CTeamFortress2Mod::findResourceEntity();
-
-	if ( res )
+{
+	if ( edict_t *res = CTeamFortress2Mod::findResourceEntity() )
 	{
 		const int* score_array = g_GetProps[GETPROP_TF2SCORE].getIntPointer(res);
 

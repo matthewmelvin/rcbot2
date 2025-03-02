@@ -338,7 +338,7 @@ bool CDODFlags::getRandomEnemyControlledFlag (const CBot *pBot, Vector *position
 	{
 		if ( m_iWaypoint[i] != -1 )
 		{
-			if (m_pFlags[static_cast<size_t>(i)] == nullptr || m_iOwner[static_cast<size_t>(i)] == iTeam)
+			if (m_pFlags[i] == nullptr || m_iOwner[i] == iTeam)
 				continue;
 
 			if ( iTeam == TEAM_ALLIES && m_iAlliesReqCappers[i] == 0 )
@@ -393,7 +393,7 @@ bool CDODFlags::getRandomEnemyControlledFlag (const CBot *pBot, Vector *position
 
 bool CDODFlags::getRandomBombToDefuse  ( Vector *position, const int iTeam, edict_t **pBombTarget, int *id ) const
 {
-	std::vector<int> iPossible; // int is control point entry
+	std::vector<size_t> iPossible; // int is control point entry
 
 	if ( id )
 		*id = -1;
@@ -407,7 +407,7 @@ bool CDODFlags::getRandomBombToDefuse  ( Vector *position, const int iTeam, edic
 
 	if (!iPossible.empty())
 	{
-		const int selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
+		const size_t selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
 
 		if ( m_pBombs[selection][1] != nullptr)
 		{
@@ -445,7 +445,7 @@ bool CDODFlags:: getRandomBombToDefend ( CBot *pBot, Vector *position, const int
 
 	if (!iPossible.empty())
 	{
-		const int selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
+		const size_t selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
 
 		if ( m_pBombs[selection][1] != nullptr)
 		{
@@ -752,9 +752,9 @@ int CDODMod ::getScore(edict_t *pPlayer)
 
 edict_t *CDODMod :: getBreakable (const CWaypoint *pWpt)
 {
-	const size_t size = m_BreakableWaypoints.size();
+	const std::size_t size = m_BreakableWaypoints.size();
 
-	for (size_t i = 0; i < size; i++)
+	for (std::size_t i = 0; i < size; i++)
 	{
 		if ( m_BreakableWaypoints[i].pWaypoint == pWpt )
 			return m_BreakableWaypoints[i].pEdict;
@@ -765,9 +765,9 @@ edict_t *CDODMod :: getBreakable (const CWaypoint *pWpt)
 
 edict_t *CDODMod :: getBombTarget (const CWaypoint *pWpt)
 {
-	const size_t size = m_BombWaypoints.size();
+	const std::size_t size = m_BombWaypoints.size();
 
-	for (size_t i = 0; i < size; i++)
+	for (std::size_t i = 0; i < size; i++)
 	{
 		if ( m_BombWaypoints[i].pWaypoint == pWpt )
 			return m_BombWaypoints[i].pEdict;
@@ -796,11 +796,11 @@ void CDODMod::roundStart()
 			m_iMapType |= DOD_MAPTYPE_BOMB;
 			/*
 			if ( m_iMapType == DOD_MAPTYPE_FLAG) 
-				CRCBotPlugin::HudTextMessage(CClients::get(0)->getPlayer(),"RCBot detected Flag map","RCBot2","RCbot2 detected a flag map");
+				CRCBotPlugin::HudTextMessage(CClients::get(0)->getPlayer(),"RCBot detected Flag map","RCBot2","RCBot2 detected a flag map");
 			else if ( m_iMapType == DOD_MAPTYPE_BOMB )
-				CRCBotPlugin::HudTextMessage(CClients::get(0)->getPlayer(),"RCBot detected bomb map","RCBot2","RCbot2 detected a bomb map");
+				CRCBotPlugin::HudTextMessage(CClients::get(0)->getPlayer(),"RCBot detected bomb map","RCBot2","RCBot2 detected a bomb map");
 			else if ( m_iMapType == 3 )
-				CRCBotPlugin::HudTextMessage(CClients::get(0)->getPlayer(),"RCBot detected flag map with bombs ","RCBot2","RCbot2 detected a flag capture map with bombs");
+				CRCBotPlugin::HudTextMessage(CClients::get(0)->getPlayer(),"RCBot detected flag map with bombs ","RCBot2","RCBot2 detected a flag capture map with bombs");
 			*/
 
 			const CWaypoint* pWaypointAllies = CWaypoints::randomWaypointGoal(CWaypointTypes::W_FL_BOMBS_HERE,TEAM_ALLIES);

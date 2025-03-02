@@ -210,9 +210,9 @@ public:
 
     static WptColor getColour(int iFlags);
 
-    static CWaypointType *getTypeByIndex(unsigned iIndex);
+    static CWaypointType *getTypeByIndex(std::size_t iIndex);
 
-    static unsigned getNumTypes();
+    static std::size_t getNumTypes();
 
     static CWaypointType *getTypeByFlags(int iFlags);
 

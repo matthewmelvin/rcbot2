@@ -2488,7 +2488,7 @@ void CBotFortress :: callMedic ()
 	helpers->ClientCommand (m_pEdict,"saveme");
 }
 
-bool CBotTF2 :: canGotoWaypoint (Vector vPrevWaypoint, CWaypoint *pWaypoint, CWaypoint *pPrev)
+bool CBotTF2 :: canGotoWaypoint (const Vector vPrevWaypoint, CWaypoint* pWaypoint, CWaypoint* pPrev)
 {
 	if (CBotFortress::canGotoWaypoint(vPrevWaypoint,pWaypoint,pPrev) )
 	{

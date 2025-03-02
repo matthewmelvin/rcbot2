@@ -365,7 +365,7 @@ public:
 		if (std::strlen(szWeaponName) > std::strlen(m_szWeaponName))
 			return false;
 
-		const size_t start = std::strlen(m_szWeaponName) - std::strlen(szWeaponName);
+		const std::size_t start = std::strlen(m_szWeaponName) - std::strlen(szWeaponName);
 
 		return std::strcmp(&m_szWeaponName[start], szWeaponName) == 0;
 	}

@@ -126,7 +126,7 @@ public:
 	void activate ( CClient *pClient ) override;
 
 private:
-	int m_iFlag;
+	size_t m_iFlag;
 };
 
 class CBotGotoMenuItem : public CBotMenuItem
@@ -225,7 +225,7 @@ public:
 	void activate ( CClient *pClient ) override;
 
 private:
-	int m_iFlag;
+	size_t m_iFlag;
 };
 
 class CWaypointRadiusIncrease : public CBotMenuItem

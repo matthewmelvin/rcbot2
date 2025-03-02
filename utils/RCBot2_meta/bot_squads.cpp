@@ -83,7 +83,7 @@ void CBotSquads::removeSquadMember (CBotSquad* pSquad, const edict_t* pMember)
 	}
 }
 
-edict_t *CBotSquad::getMember (const size_t iMember)
+edict_t *CBotSquad::getMember (const std::size_t iMember)
 {
 	// TODO: this is only used in CBotSquads::SquadJoin() -- inline the logic
 	if (iMember < 0 || iMember >= m_SquadMembers.size()) {
@@ -167,7 +167,7 @@ CBotSquad *CBotSquads::SquadJoin ( edict_t *pLeader, edict_t *pMember )
 		if ( joinSquad )
 		{
 			// TODO make this a friend class so we could just join the squads directly?
-			for ( size_t i = 0; i < joinSquad->numMembers(); i ++ )
+			for ( unsigned i = 0; i < joinSquad->numMembers(); i ++ )
 			{
 				theSquad->AddMember(joinSquad->getMember(i));
 			}
@@ -410,7 +410,7 @@ void CBotSquad::AddMember ( edict_t *pEdict )
 	}
 }
 
-size_t CBotSquad::numMembers () const
+std::size_t CBotSquad::numMembers() const
 {
 	return m_SquadMembers.size();
 }

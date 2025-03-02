@@ -264,7 +264,7 @@ void CBotEntProp::Init(const bool reset)
 
 	SourceMod::IGameConfig *gamedata;
 	char *error = nullptr;
-	constexpr size_t maxlength = 0;
+	constexpr std::size_t maxlength = 0;
 	grclassname = nullptr;
 
 	if (!sm_gameconfs->LoadGameConfigFile("sdktools.games", &gamedata, error, maxlength))
@@ -473,27 +473,27 @@ int CBotEntProp::GetEntProp(const int entity, const PropType proptype, const cha
 
 	if (bit_count >= 17)
 	{
-		return *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<size_t>(offset));
+		return *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset));
 	}
 
 	if (bit_count >= 9)
 	{
 		if (is_unsigned)
 		{
-			return *reinterpret_cast<uint16_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<size_t>(offset));
+			return *reinterpret_cast<uint16_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset));
 		}
-		return *reinterpret_cast<int16_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<size_t>(offset));
+		return *reinterpret_cast<int16_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset));
 	}
 
 	if (bit_count >= 2)
 	{
 		if (is_unsigned)
 		{
-			return *(reinterpret_cast<uint8_t*>(pEntity) + static_cast<size_t>(offset));
+			return *(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset));
 		}
-		return *reinterpret_cast<int8_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<size_t>(offset));
+		return *reinterpret_cast<int8_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset));
 	}
-	return reinterpret_cast<bool*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<size_t>(offset)) ? 1 : 0;
+	return reinterpret_cast<bool*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset)) ? 1 : 0;
 }
 
 /// @brief Retrieves an integer pointer in an entity's property.
@@ -552,7 +552,7 @@ int *CBotEntProp::GetEntPropPointer(const int entity, const PropType proptype, c
 
 		if (td->fieldType == FIELD_CUSTOM && (td->flags & FTYPEDESC_OUTPUT) == FTYPEDESC_OUTPUT)
 		{
-			const variant_t* pVariant = reinterpret_cast<variant_t*>(reinterpret_cast<intptr_t>(pEntity) + static_cast<size_t>(offset));
+			const variant_t* pVariant = reinterpret_cast<variant_t*>(reinterpret_cast<intptr_t>(pEntity) + static_cast<std::size_t>(offset));
 			if ((bit_count = MatchTypeDescAsInteger(pVariant->fieldType, 0)) == 0)
 			{
 				logger->Log(LogLevel::ERROR, "Variant value for %s is not an integer (%d)", prop, pVariant->fieldType);
@@ -1777,7 +1777,7 @@ bool CBotEntProp::SetEntPropVector(const int entity, const PropType proptype, co
 /// @param len 
 /// @param element Element # (starting from 0) if property is an array.
 /// @return Value at the given property offset.
-char *CBotEntProp::GetEntPropString(const int entity, const PropType proptype, const char *prop, const int maxlen, int *len, const int element)
+char *CBotEntProp::GetEntPropString(const int entity, const PropType proptype, const char *prop, const int maxlen, std::size_t *len, const int element)
 {
 	edict_t *pEdict;
 	CBaseEntity *pEntity;
@@ -1896,7 +1896,7 @@ char *CBotEntProp::GetEntPropString(const int entity, const PropType proptype, c
 		//break;
 	}
 
-	const size_t length = ke::SafeStrcpy(dest, maxlen, src);
+	const std::size_t length = ke::SafeStrcpy(dest, maxlen, src);
 	*len = length;
 
 	return dest;
@@ -2030,7 +2030,7 @@ bool CBotEntProp::SetEntPropString(int entity, PropType proptype, const char *pr
 		break;
 	}
 
-	size_t len;
+	std::size_t len;
 
 	if (bIsStringIndex)
 	{
@@ -2350,7 +2350,7 @@ bool CBotEntProp::SetEntDataVector(const int entity, const int offset, const Vec
 /// @param maxlen Maximum length of output string buffer.
 /// @param len Number of non-null bytes written.
 /// @return String pointer at the given memory location.
-char *CBotEntProp::GetEntDataString(const int entity, const int offset, const int maxlen, int *len)
+char *CBotEntProp::GetEntDataString(const int entity, const int offset, const int maxlen, std::size_t *len)
 {
 	CBaseEntity *pEntity = GetEntity(entity);
 
@@ -2374,7 +2374,7 @@ char *CBotEntProp::GetEntDataString(const int entity, const int offset, const in
 
 	const char *src = reinterpret_cast<char*>(reinterpret_cast<uint8_t*>(pEntity) + offset);
 	char *dest = nullptr;
-	const size_t length = ke::SafeStrcpy(dest, maxlen, src);
+	const std::size_t length = ke::SafeStrcpy(dest, maxlen, src);
 	*len = length;
 	return dest;
 }
@@ -2571,7 +2571,7 @@ Vector CBotEntProp::GameRules_GetPropVector(const char *prop, const int element)
 /// @param maxlen Maximum length of output string buffer.
 /// @param element Element # (starting from 0) if property is an array.
 /// @return Value at the given property offset.
-char *CBotEntProp::GameRules_GetPropString(const char *prop, int *len, const int maxlen, const int element) const
+char *CBotEntProp::GameRules_GetPropString(const char *prop, std::size_t *len, const int maxlen, const int element) const
 {
 	int offset;
 	int bit_count; //Unused? [APG]RoboCop[CL]
@@ -2601,7 +2601,7 @@ char *CBotEntProp::GameRules_GetPropString(const char *prop, int *len, const int
 
 	if (src)
 	{
-		const size_t length = ke::SafeStrcpy(dest, maxlen, src);
+		const std::size_t length = ke::SafeStrcpy(dest, maxlen, src);
 		*len = length;
 	}
 

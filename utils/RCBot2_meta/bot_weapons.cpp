@@ -376,10 +376,10 @@ std::vector<CWeapon*> CWeapons::m_theWeapons;
 int CBotWeapon::getAmmo(const CBot* pBot, const int type) const
 {
 	if (type == AMMO_PRIM)
-		return pBot->getAmmo(static_cast<size_t>(m_pWeaponInfo->getAmmoIndex1()));
+		return pBot->getAmmo(static_cast<std::size_t>(m_pWeaponInfo->getAmmoIndex1()));
 
 	if (type == AMMO_SEC)
-		return pBot->getAmmo(static_cast<size_t>(m_pWeaponInfo->getAmmoIndex2()));
+		return pBot->getAmmo(static_cast<std::size_t>(m_pWeaponInfo->getAmmoIndex2()));
 
 	return 0;
 }
@@ -815,7 +815,7 @@ constexpr std::array<const char*, 21> g_szWeaponFlags = {
 
 std::unordered_map<std::string, int> createWeaponFlagMap() {
 	std::unordered_map<std::string, int> flagMap;
-	for (size_t i = 0; i < g_szWeaponFlags.size(); ++i) {
+	for (std::size_t i = 0; i < g_szWeaponFlags.size(); ++i) {
 		flagMap[g_szWeaponFlags[i]] = 1 << i;
 	}
 	return flagMap;

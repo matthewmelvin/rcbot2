@@ -88,7 +88,7 @@ public:
 		m_pLeader = pLeader;
 	}
 
-	edict_t *getMember ( size_t iMember );
+	edict_t *getMember (std::size_t iMember);
 
 	void ToggleFireMode ()
 	{
@@ -169,7 +169,7 @@ public:
 
 	void AddMember ( edict_t *pEdict );
 
-	size_t numMembers () const;
+	std::size_t numMembers() const;
 
 	bool IsMember (const edict_t* pEdict);
 

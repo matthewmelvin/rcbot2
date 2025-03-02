@@ -68,7 +68,7 @@ enum
  */
 class BotCommandArgs : public std::deque<const char*> {
 public:
-	const char* operator[](const size_t at) const
+	const char* operator[](const std::size_t at) const
 	{
 		if (at >= this->size()) {
 			return nullptr;
