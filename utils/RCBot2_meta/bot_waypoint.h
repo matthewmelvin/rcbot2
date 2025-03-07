@@ -438,7 +438,7 @@ public:
 		// return ((int)pWpt - (int)m_theWaypoints)/sizeof(CWaypoint);
 
 		// This will probably not work -caxanga334
-		return static_cast<int>((reinterpret_cast<intptr_t>(pWpt) - reinterpret_cast<intptr_t>(m_theWaypoints)) / sizeof(CWaypoint));
+		return static_cast<int>((reinterpret_cast<std::intptr_t>(pWpt) - reinterpret_cast<std::intptr_t>(m_theWaypoints)) / sizeof(CWaypoint));
 	}
 
 	static void autoFix(bool bAutoFixNonArea);

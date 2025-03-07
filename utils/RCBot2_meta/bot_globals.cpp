@@ -512,9 +512,9 @@ bool CBotGlobals :: gameStart ()
 */
 	//filesystem->GetCurrentDirectory(szSteamFolder,512);
 
-	const size_t iLength = std::strlen(CStrings::getString(szGameFolder));
+	const std::size_t iLength = std::strlen(CStrings::getString(szGameFolder));
 
-	size_t pos = iLength - 1;
+	std::size_t pos = iLength - 1;
 
 	while ( pos > 0 && szGameFolder[pos] != '\\' && szGameFolder[pos] != '/' )
 	{
@@ -924,7 +924,7 @@ bool CBotGlobals :: makeFolders (const char* szFile)
 #endif
 
 	char szFolderName[1024];
-	size_t folderNameSize = 0;
+	std::size_t folderNameSize = 0;
 	szFolderName[0] = 0;
 
 	const std::size_t iLen = std::strlen(szFile);

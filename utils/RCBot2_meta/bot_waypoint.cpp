@@ -2169,10 +2169,10 @@ int CWaypoints::getClosestFlagged(const int iFlags, const Vector& vOrigin, const
 	const int iFrom = CWaypointLocations::NearestWaypoint(vOrigin, fDist, -1, true, false, true, nullptr, false, iTeam);
 
 	CBotMod* pCurrentMod = CBotGlobals::getCurrentMod();
-	for (size_t i = 0; i < static_cast<size_t>(iSize); i++)
+	for (int i = 0; i < static_cast<int>(iSize); i++)
 	{
 		CWaypoint* pWpt = &m_theWaypoints[i];
-		if (i == static_cast<size_t>(iFrom))
+		if (i == static_cast<int>(iFrom))
 			continue;
 		if (failedwpts[i] == 1)
 			continue;
@@ -2192,7 +2192,7 @@ int CWaypoints::getClosestFlagged(const int iFlags, const Vector& vOrigin, const
 				if (distance < fDist)
 				{
 					fDist = distance;
-					iwpt = static_cast<int>(i); // Convert back to int if necessary [APG]RoboCop[CL]
+					iwpt = i;
 				}
 			}
 		}

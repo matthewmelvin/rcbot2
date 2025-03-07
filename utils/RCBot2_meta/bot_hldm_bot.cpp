@@ -327,7 +327,7 @@ bool CHLDMBot :: executeAction (const eBotAction iAction)
 				CBotSchedule *pSched = new CBotSchedule();
 				pSched->addTask(new CThrowGrenadeTask(
 					m_pWeapons->getWeapon(CWeapons::getWeapon(HL2DM_WEAPON_FRAG)),
-					getAmmo(static_cast<int>(CWeapons::getWeapon(HL2DM_WEAPON_FRAG)->getAmmoIndex1())),
+					getAmmo(CWeapons::getWeapon(HL2DM_WEAPON_FRAG)->getAmmoIndex1()),
 					m_vLastSeeEnemyBlastWaypoint
 				));
 
@@ -456,8 +456,8 @@ void CHLDMBot :: getTasks (unsigned iIgnore)
 		{
 			ADD_UTILITY(BOT_UTIL_HL2DM_GRAVIGUN_PICKUP,
 				(!m_pEnemy || (m_pCurrentWeapon && std::strcmp("weapon_physcannon", m_pCurrentWeapon->GetClassName()) == 0)) &&
-				gravgun && gravgun->hasWeapon() && (m_NearestPhysObj.get() != NULL) && gravgun->getWeaponIndex() > 0 &&
-				(CClassInterface::gravityGunObject(INDEXENT(gravgun->getWeaponIndex())) == NULL), 0.9f)
+				gravgun && gravgun->hasWeapon() && (m_NearestPhysObj.get() != nullptr) && gravgun->getWeaponIndex() > 0 &&
+				(CClassInterface::gravityGunObject(INDEXENT(gravgun->getWeaponIndex())) == nullptr), 0.9f)
 		}
 	}
 
@@ -469,19 +469,19 @@ void CHLDMBot :: getTasks (unsigned iIgnore)
 
 	// low on health? Pick some up if there's any near by
 	ADD_UTILITY(BOT_UTIL_HL2DM_USE_HEALTH_CHARGER,
-	            (m_pHealthCharger.get() != NULL) && CClassInterface::getAnimCycle(m_pHealthCharger)<1.0f &&
+	            (m_pHealthCharger.get() != nullptr) && CClassInterface::getAnimCycle(m_pHealthCharger)<1.0f &&
 	            getHealthPercent()<1.0f, 1.0f-getHealthPercent())
-	ADD_UTILITY(BOT_UTIL_FIND_NEAREST_HEALTH,(m_pHealthKit.get()!=NULL) && getHealthPercent()<1.0f,1.0f-getHealthPercent())
+	ADD_UTILITY(BOT_UTIL_FIND_NEAREST_HEALTH,(m_pHealthKit.get()!=nullptr) && getHealthPercent()<1.0f,1.0f-getHealthPercent())
 
 	// low on armor?
-	ADD_UTILITY(BOT_UTIL_HL2DM_FIND_ARMOR,(m_pBattery.get() !=NULL) && getArmorPercent()<1.0f,(1.0f-getArmorPercent())*0.75f)
+	ADD_UTILITY(BOT_UTIL_HL2DM_FIND_ARMOR,(m_pBattery.get() !=nullptr) && getArmorPercent()<1.0f,(1.0f-getArmorPercent())*0.75f)
 	ADD_UTILITY(BOT_UTIL_HL2DM_USE_CHARGER,
-	            (m_pCharger.get() !=NULL) && CClassInterface::getAnimCycle(m_pCharger)<1.0f && getArmorPercent()<1.0f,
+	            (m_pCharger.get() !=nullptr) && CClassInterface::getAnimCycle(m_pCharger)<1.0f && getArmorPercent()<1.0f,
 	            (1.0f-getArmorPercent())*0.75f)
 
-	ADD_UTILITY(BOT_UTIL_HL2DM_USE_CRATE,(m_pAmmoCrate.get()!=NULL) && m_fUseCrateTime < engine->Time(),1.0f)
+	ADD_UTILITY(BOT_UTIL_HL2DM_USE_CRATE,(m_pAmmoCrate.get()!=nullptr) && m_fUseCrateTime < engine->Time(),1.0f)
 	// low on ammo? ammo nearby?
-	ADD_UTILITY(BOT_UTIL_FIND_NEAREST_AMMO,(m_pAmmoKit.get() !=NULL) && getAmmo(0)<5,0.01f*(100-getAmmo(0)))
+	ADD_UTILITY(BOT_UTIL_FIND_NEAREST_AMMO,(m_pAmmoKit.get() !=nullptr) && getAmmo(0)<5,0.01f*(100-getAmmo(0)))
 
 	// always able to roam around
 	ADD_UTILITY(BOT_UTIL_ROAM,true,0.01f)
@@ -858,7 +858,7 @@ bool CHLDMBot :: setVisible ( edict_t *pEntity, const bool bVisible )
 		else if ( m_pNearestButton == pEntity )
 			m_pNearestButton = nullptr;
 		//else if ( m_pNearestBreakable == pEntity )
-		//	m_pNearestBreakable = NULL;
+		//	m_pNearestBreakable = nullptr;
 	}
 
 	return bValid;

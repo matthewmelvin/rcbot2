@@ -112,16 +112,16 @@ bool CDODMod :: checkWaypointForTeam(CWaypoint *pWpt, const int iTeam)
 bool CDODMod :: shouldAttack (const int iTeam)
 // uses the perceptron to return probability of attack
 {
-	static short iFlags_0;
-	static short iFlags_1;
-	static short iNumFlags;
+	static int iFlags_0;
+	static int iFlags_1;
+	static int iNumFlags;
 
-	//TODO: Improve on the integer and floating point precision conversion [APG]RoboCop[CL]
 	iNumFlags = m_Flags.getNumFlags();
 
-	iFlags_0 = static_cast<short>(m_Flags.getNumFlagsOwned(iTeam == TEAM_ALLIES ? TEAM_AXIS : TEAM_ALLIES) /
-		iNumFlags * MAX_DOD_FLAGS);
-	iFlags_1 = static_cast<short>(m_Flags.getNumFlagsOwned(iTeam)) / (iNumFlags * MAX_DOD_FLAGS);
+	iFlags_0 = m_Flags.getNumFlagsOwned(iTeam == TEAM_ALLIES ? TEAM_AXIS : TEAM_ALLIES) /
+		(iNumFlags * MAX_DOD_FLAGS);
+
+	iFlags_1 = m_Flags.getNumFlagsOwned(iTeam) / (iNumFlags * MAX_DOD_FLAGS);
 
 	return randomFloat(0.0f,1.0f) < fAttackProbLookUp[iFlags_0][iFlags_1];//gNetAttackOrDefend->getOutput();
 }
@@ -176,7 +176,7 @@ void CDODMod::initMod()
 	tset.freeMemory();
 
 	CBotGlobals::botMessage(nullptr, 0, "... done!");
-///-------------------------------------------------
+	///-------------------------------------------------
 
     CWeapons::loadWeapons(m_szWeaponListName == nullptr ? "DOD" : m_szWeaponListName, DODWeaps.data());
 	//CWeapons::loadWeapons("DOD", DODWeaps);
@@ -393,7 +393,7 @@ bool CDODFlags::getRandomEnemyControlledFlag (const CBot *pBot, Vector *position
 
 bool CDODFlags::getRandomBombToDefuse  ( Vector *position, const int iTeam, edict_t **pBombTarget, int *id ) const
 {
-	std::vector<size_t> iPossible; // int is control point entry
+	std::vector<int> iPossible; // int is control point entry
 
 	if ( id )
 		*id = -1;
@@ -407,7 +407,7 @@ bool CDODFlags::getRandomBombToDefuse  ( Vector *position, const int iTeam, edic
 
 	if (!iPossible.empty())
 	{
-		const size_t selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
+		const int selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
 
 		if ( m_pBombs[selection][1] != nullptr)
 		{
@@ -445,7 +445,7 @@ bool CDODFlags:: getRandomBombToDefend ( CBot *pBot, Vector *position, const int
 
 	if (!iPossible.empty())
 	{
-		const size_t selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
+		const int selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
 
 		if ( m_pBombs[selection][1] != nullptr)
 		{

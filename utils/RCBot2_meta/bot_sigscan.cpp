@@ -93,7 +93,7 @@ std::size_t CSignatureFunction::decodeHexString(unsigned char* buffer, const std
 
 bool CSignatureFunction::getLibraryInfo(const void *libPtr, DynLibInfo &lib)
 {
-	uintptr_t baseAddr;
+	std::uintptr_t baseAddr;
 
 	if (libPtr == nullptr)
 	{
@@ -109,11 +109,11 @@ bool CSignatureFunction::getLibraryInfo(const void *libPtr, DynLibInfo &lib)
 		return false;
 	}
 
-	baseAddr = reinterpret_cast<uintptr_t>(info.AllocationBase);
+	baseAddr = reinterpret_cast<std::uintptr_t>(info.AllocationBase);
 
 	// All this is for our insane sanity checks :o 
 	const IMAGE_DOS_HEADER* dos = reinterpret_cast<IMAGE_DOS_HEADER*>(baseAddr);
-	IMAGE_NT_HEADERS* pe = reinterpret_cast<IMAGE_NT_HEADERS*>(baseAddr + dos->e_lfanew);
+	IMAGE_NT_HEADERS* pe = reinterpret_cast<IMAGE_NT_HEADERS*>(baseAddr + static_cast<std::uintptr_t>(dos->e_lfanew));
 	IMAGE_FILE_HEADER* file = &pe->FileHeader;
 	const IMAGE_OPTIONAL_HEADER* opt = &pe->OptionalHeader;
 
@@ -157,7 +157,7 @@ bool CSignatureFunction::getLibraryInfo(const void *libPtr, DynLibInfo &lib)
 	}
 
 	// This is for our insane sanity checks :o 
-	baseAddr = reinterpret_cast<uintptr_t>(info.dli_fbase);
+	baseAddr = reinterpret_cast<std::uintptr_t>(info.dli_fbase);
 	file = reinterpret_cast<Elf32_Ehdr *>(baseAddr);
 
 	// Check ELF magic 

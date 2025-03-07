@@ -109,12 +109,12 @@ class CGA
 {
 public:
 
-	CGA (const size_t iMaxPopSize=0)
+	CGA (const std::size_t iMaxPopSize=0)
 	{
 		init(iMaxPopSize);
 	}
 
-	void init (const size_t iMaxPopSize=0)
+	void init (const std::size_t iMaxPopSize=0)
 	{
 		m_theSelectFunction = new CRouletteSelection();
 

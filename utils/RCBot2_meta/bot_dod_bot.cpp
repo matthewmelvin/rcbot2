@@ -449,7 +449,7 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 				// Find Hide Spot
 				ADD_UTILITY_DATA_VECTOR(BOT_UTIL_SNIPE_POINT,
 					!hasEnemy() && (m_iClass == DOD_CLASS_SNIPER) && getSniperRifle() && !
-					getSniperRifle()->outOfAmmo(this), 1.0f, reinterpret_cast<uintptr_t>(pKiller),
+					getSniperRifle()->outOfAmmo(this), 1.0f, static_cast<int>(reinterpret_cast<std::uintptr_t>(pKiller)),
 					vecEnemy)
 
 			}
@@ -469,7 +469,7 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 
 				ADD_UTILITY_DATA_VECTOR(BOT_UTIL_SNIPE_POINT,
 					!hasEnemy() && (m_iClass == DOD_CLASS_SNIPER) && getSniperRifle() && !getSniperRifle()->outOfAmmo(this),
-					1.0f, reinterpret_cast<uintptr_t>(pKiller), vecEnemy)
+					1.0f, reinterpret_cast<std::uintptr_t>(pKiller), vecEnemy)
 
 				//ADD_UTILITY_DATA_VECTOR(BOT_UTIL_MOVEUP_MG,!hasEnemy() && (m_iClass == DOD_CLASS_MACHINEGUNNER) && getMG() && !getMG()->outOfAmmo(this),1.0f,1,vecEnemy);
 			}
@@ -491,7 +491,7 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 				{
 					int killerID = ENTINDEX(pKiller); // Convert edict_t* to an integer ID [APG]RoboCop[CL]
 
-					ADD_UTILITY_DATA_VECTOR(BOT_UTIL_COVER_POINT, m_pCurrentWeapon != nullptr, 0.8f, killerID, vecEnemy);
+					ADD_UTILITY_DATA_VECTOR(BOT_UTIL_COVER_POINT, m_pCurrentWeapon != nullptr, 0.8f, killerID, vecEnemy)
 				}
 			}
 
@@ -592,7 +592,7 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 				ADD_UTILITY_DATA_VECTOR(
 					BOT_UTIL_INVESTIGATE_POINT,
 					!m_pSchedules->hasSchedule(SCHED_DEPLOY_MACHINE_GUN) && !m_pSchedules->hasSchedule(SCHED_SNIPE), 0.5f,
-					static_cast<uint32_t>(reinterpret_cast<uintptr_t>(pDied)& static_cast<uintptr_t>(0xFFFFFFFF)), m_vListenPosition)
+					static_cast<uint32_t>(reinterpret_cast<std::uintptr_t>(pDied)& static_cast<std::uintptr_t>(0xFFFFFFFF)), m_vListenPosition)
 
 				//m_pSchedules->removeSchedule(SCHED_INVESTIGATE_NOISE);
 				//m_pSchedules->addFront(new CBotInvestigateNoiseSched(CBotGlobals::entityOrigin(pDied),m_vListenPosition));
@@ -2082,7 +2082,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 	int id = -1;
 	Vector vGoal;
 	edict_t *pBombTarget = nullptr;
-	uintptr_t intData = static_cast<uintptr_t>(util->getIntData());
+	std::uintptr_t intData = static_cast<std::uintptr_t>(util->getIntData());
 
 	switch ( util->getId() )
 	{
@@ -2099,7 +2099,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 		// find sniper point facing the enemy
 		{
 #if defined(_WIN64) || defined(__x86_64__) || defined(__amd64__)
-		edict_t* pEnemy = reinterpret_cast<edict_t*>(static_cast<uintptr_t>(util->getIntData()));
+		edict_t* pEnemy = reinterpret_cast<edict_t*>(static_cast<std::uintptr_t>(util->getIntData()));
 #else
 		edict_t* pEnemy = reinterpret_cast<edict_t*>(util->getIntData());
 #endif

@@ -444,7 +444,7 @@ edict_t* CWeapons::findWeapon(edict_t* pPlayer, const char* szWeaponName)
 
 bool CBotWeapons::update(const bool bOverrideAllFromEngine)
 {
-	uintptr_t iWeaponsSignature = 0x0; // check sum of weapons
+	std::uintptr_t iWeaponsSignature = 0x0; // check sum of weapons
 	edict_t* pWeapon;
 
 	const CBaseHandle* m_Weapons = CClassInterface::getWeaponList(m_pBot->getEdict());
@@ -454,8 +454,8 @@ bool CBotWeapons::update(const bool bOverrideAllFromEngine)
 	{
 		// create a 'hash' of current weapons
 		pWeapon = m_Weapon_iter == nullptr ? nullptr : INDEXENT(m_Weapon_iter->GetEntryIndex());
-		iWeaponsSignature += reinterpret_cast<uintptr_t>(pWeapon) +
-			static_cast<uintptr_t>(pWeapon == nullptr ? 0 : static_cast<unsigned>(CClassInterface::getWeaponState(pWeapon)));
+		iWeaponsSignature += reinterpret_cast<std::uintptr_t>(pWeapon) +
+			static_cast<std::uintptr_t>(pWeapon == nullptr ? 0 : static_cast<unsigned>(CClassInterface::getWeaponState(pWeapon)));
 
 		if (m_Weapon_iter != nullptr) {
 			m_Weapon_iter++;
@@ -894,8 +894,9 @@ void CBotWeapons::clearWeapons()
 {
 	for (CBotWeapon& m_theWeapon : m_theWeapons)
 	{
-		std::memset(&m_theWeapon, 0, sizeof(CBotWeapon));
-		//m_theWeapons[i].setHasWeapon(false);
+		m_theWeapon = CBotWeapon(); // Assign a default-constructed instance [APG]RoboCop[CL]
+		// Alternatively, call a reset or clear method if available
+		// m_theWeapon.reset();
 	}
 }
 

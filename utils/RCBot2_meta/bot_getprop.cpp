@@ -376,7 +376,7 @@ datamap_t* VGetDataDescMap(CBaseEntity* pThisPtr, const int offset)
 		struct
 		{
 			void* addr;
-			intptr_t adjustor;
+			std::intptr_t adjustor;
 		} s;
 } u;
 	u.s.addr = vfunc;
@@ -814,14 +814,14 @@ edict_t *CClassInterface::FindEntityByNetClass(const int start, const char *clas
 }
 
 
- int CClassInterface::getTF2Score (const edict_t* edict) 
+int CClassInterface::getTF2Score(const edict_t* edict)
 {
-	if ( edict_t *res = CTeamFortress2Mod::findResourceEntity() )
+	if (edict_t* res = CTeamFortress2Mod::findResourceEntity())
 	{
 		const int* score_array = g_GetProps[GETPROP_TF2SCORE].getIntPointer(res);
 
-		if ( score_array )
-			return score_array[ENTINDEX(edict)-1];
+		if (score_array)
+			return score_array[static_cast<std::size_t>(ENTINDEX(edict) - 1)];
 	}
 
 	return 0;

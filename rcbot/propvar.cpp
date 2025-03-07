@@ -78,27 +78,27 @@ void CPropertyVarBase::Term()
 
 int CPropertyVarInt::Get() const
 {
-	return entprops->GetEntProp(m_entity.GetEntryIndex(), m_type, const_cast<char*>(m_propname.c_str()));
+	return entprops->GetEntProp(m_entity.GetEntryIndex(), m_type, m_propname.c_str());
 }
 
 bool CPropertyVarBool::Get() const
 {
-	return entprops->GetEntPropBool(m_entity.GetEntryIndex(), m_type, const_cast<char*>(m_propname.c_str()));
+	return entprops->GetEntPropBool(m_entity.GetEntryIndex(), m_type, m_propname.c_str());
 }
 
 float CPropertyVarFloat::Get() const
 {
-	return entprops->GetEntPropFloat(m_entity.GetEntryIndex(), m_type, const_cast<char*>(m_propname.c_str()));
+	return entprops->GetEntPropFloat(m_entity.GetEntryIndex(), m_type, m_propname.c_str());
 }
 
 Vector CPropertyVarVector::Get() const
 {
-    return entprops->GetEntPropVector(m_entity.GetEntryIndex(), m_type, const_cast<char*>(m_propname.c_str()));
+    return entprops->GetEntPropVector(m_entity.GetEntryIndex(), m_type, m_propname.c_str());
 }
 
 void CPropertyVarVector::Get(Vector &dest) const
 {
-	const Vector source = entprops->GetEntPropVector(m_entity.GetEntryIndex(), m_type, const_cast<char*>(m_propname.c_str()));
+	const Vector source = entprops->GetEntPropVector(m_entity.GetEntryIndex(), m_type, m_propname.c_str());
 	dest.x = source.x;
 	dest.y = source.y;
 	dest.z = source.z;

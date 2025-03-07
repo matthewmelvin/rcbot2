@@ -886,7 +886,7 @@ protected:
 	float m_fAvoidTime;
 	///////////////////////////////////
 	// current impulse command
-	int m_iImpulse;
+	byte m_iImpulse;
 	// buttons held
 	int m_iButtons;
 	// bots forward move speed

@@ -38,7 +38,7 @@
 
 enum : std::uint32_t
 {
-	INVALID_ENT_REFERENCE = 0xFFFFFFFF
+	INVALID_ENT_REFERENCE = 0xFFFFFFFF // TODO: replace magic number [APG]RoboCop[CL]
 };
 
 enum PropType : std::uint8_t

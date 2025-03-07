@@ -115,14 +115,14 @@ CWaypointFlagMenu::CWaypointFlagMenu(CBotMenu* pPrev)
 	// 8. More...
 	// 9. Go Back
 
-	const size_t iNumTypes = CWaypointTypes::getNumTypes();
+	const std::size_t iNumTypes = CWaypointTypes::getNumTypes();
 
-	int iNumAdded = 0;
+	std::size_t iNumAdded = 0;
 
 	CBotMenu* pCurrent = this;
 	CBotMenu* pParent = pPrev;
 
-	for (size_t i = 0; i < iNumTypes; i++)
+	for (std::size_t i = 0; i < iNumTypes; i++)
 	{
 		if (!CWaypointTypes::getTypeByIndex(i)->forMod(iMod))
 			continue;
@@ -371,7 +371,7 @@ void CBotMenu::render(CClient* pClient)
 		debugoverlay->ScreenPosition(0.5f, 0.5f, screen);
 		debugoverlay->ScreenPosition(point,screen);*/
 
-	for (std::size_t i = 0; i < m_MenuItems.size(); i++)
+	for (int i = 0; i < static_cast<int>(m_MenuItems.size()); i++)
 	{
 		CBotMenuItem* item = m_MenuItems[i];
 

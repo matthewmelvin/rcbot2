@@ -207,7 +207,7 @@ void CBot::runPlayerMove()
 	}
 
 	cmd.buttons = m_iButtons;
-	cmd.impulse = m_iImpulse; //impulse should be as 'byte' not 'int'? [APG]RoboCop[CL]
+	cmd.impulse = m_iImpulse;
 	cmd.viewangles = m_vViewAngles;
 	cmd.weaponselect = m_iSelectWeapon;
 	cmd.tick_count = gpGlobals->tickcount;
@@ -1787,7 +1787,7 @@ void CBot ::debugBot(char *msg)
 
 	szConditions[0] = 0; // initialise string
 
-	for (size_t iCond = 0; iCond < NUM_CONDITIONS; iCond++)
+	for (std::size_t iCond = 0; iCond < NUM_CONDITIONS; iCond++)
 	{
 		if ( m_iConditions[iCond] )
 		{
@@ -1828,7 +1828,7 @@ void CBot ::debugBot(char *msg)
 		Enemy: %s (name = '%s')\n \
 		---CONDITIONS---\n%s",
 		m_szBotName,
-		m_CurrentUtil >= 0 ? g_szUtils[m_CurrentUtil] : "none",
+		m_CurrentUtil < BOT_UTIL_MAX + 1 ? g_szUtils[m_CurrentUtil] : "none",
 		m_pSchedules->isEmpty() ? "none" : m_pSchedules->getCurrentSchedule()->getIDString(),
 		hastask ? task_string : "none",
 		g_szLookTaskToString[m_iLookTask],

@@ -209,10 +209,12 @@ public:
 
 	static Vector getVelocity (const edict_t *pPlayer );
 
-	static bool isBoundsDefinedInEntitySpace( edict_t *pEntity )
+	static bool isBoundsDefinedInEntitySpace(edict_t* pEntity)
 	{
-		return (pEntity->GetCollideable()->GetSolidFlags() & FSOLID_FORCE_WORLD_ALIGNED) == 0 &&
-			pEntity->GetCollideable()->GetSolid() != SOLID_BBOX && pEntity->GetCollideable()->GetSolid() != SOLID_NONE;
+		const ICollideable* pCollideable = pEntity->GetCollideable(); // Store the result in a local pointer [APG]RoboCop[CL]
+		return (pCollideable->GetSolidFlags() & FSOLID_FORCE_WORLD_ALIGNED) == 0 &&
+			pCollideable->GetSolid() != SOLID_BBOX &&
+			pCollideable->GetSolid() != SOLID_NONE;
 	}
 	
 	static Vector getOBBCenter( edict_t *pEntity );

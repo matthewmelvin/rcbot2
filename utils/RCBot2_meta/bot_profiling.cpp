@@ -163,7 +163,7 @@ void CProfileTimers::updateAndDisplay()
 
             for (const CProfileTimer& m_Timer : m_Timers)
             {
-                highest = std::max<double>(m_Timer.getOverall(), highest);
+                highest = std::max<double>(static_cast<double>(m_Timer.getOverall()), highest);
             }
 
             // Next update in 1 second

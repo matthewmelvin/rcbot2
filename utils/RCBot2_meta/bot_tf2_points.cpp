@@ -287,7 +287,7 @@ CTeamControlPointRound *CTeamControlPointMaster:: getCurrentRound ( )
 	// HACK: we use one of the known CBaseEntity-sized entities to compute the offset to the first subclass member for CTeamControlPointMaster / CTeamControlPointRound
 	const std::size_t baseEntityOffset = servertools->GetEntityFactoryDictionary()->FindFactory("simple_physics_brush")->GetEntitySize();
 
-	return reinterpret_cast<CTeamControlPointRound*>(reinterpret_cast<uintptr_t>(pent) + baseEntityOffset);
+	return reinterpret_cast<CTeamControlPointRound*>(reinterpret_cast<std::uintptr_t>(pent) + baseEntityOffset);
 }
 
 //////////////////

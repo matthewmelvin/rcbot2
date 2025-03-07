@@ -858,7 +858,7 @@ private:
 	CBot* m_pBot;
 
 	// checksum mask of weapons bot already has so we know if we need to update or not
-	uintptr_t m_iWeaponsSignature;
+	std::uintptr_t m_iWeaponsSignature;
 
 	// weapons local to the bot only
 	// (holds ammo/preference etc and link to actual weapon)

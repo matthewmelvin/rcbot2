@@ -2259,7 +2259,7 @@ void CBotTF2 :: pointCaptured()
 	taunt();
 }
 
-void CBotTF2 :: spyDisguise (const int iTeam, const unsigned iClass)
+void CBotTF2 :: spyDisguise (const int iTeam, const byte iClass)
 {
 	//char cmd[256];
 
@@ -4558,7 +4558,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 						(CTeamFortress2Mod::hasRoundStarted()||CTeamFortress2Mod::isMapType(TF_MAP_MVM)) && (!
 							m_bIsCarryingObj || m_bIsCarryingTeleExit) && bMoveObjs && m_pTeleEntrance && m_pTeleExit && 
 				m_fTeleporterExtPlacedTime && (fTeleporterExtPlaceTime > rcbot_move_tele_time.GetFloat()) &&
-				(((60.0f * m_iTeleportedPlayers)/fTeleporterExtPlaceTime)<rcbot_move_tele_tpm.GetFloat()),
+				(((60.0f * static_cast<float>(m_iTeleportedPlayers))/fTeleporterExtPlaceTime)<rcbot_move_tele_tpm.GetFloat()),
 				(fTeleporterExitHealthPercent*getHealthPercent()*fMetalPercent) + (static_cast<float>(
 					m_bIsCarryingTeleExit)))
 		}
@@ -4813,7 +4813,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 	ADD_UTILITY(BOT_UTIL_SNIPE, (iClass == TF_CLASS_SNIPER) && m_pWeapons->getCurrentWeaponInSlot(0)
 		&& !m_pWeapons->getCurrentWeaponInSlot(0)->isProjectile()
 		&& !m_pWeapons->getCurrentWeaponInSlot(0)->outOfAmmo(this) && !hasSomeConditions(CONDITION_PARANOID)
-		&& !bHasFlag && (getHealthPercent() > 0.2f), 0.95f);
+		&& !bHasFlag && (getHealthPercent() > 0.2f), 0.95f)
 	//ADD_UTILITY(BOT_UTIL_SNIPE_CROSSBOW, (iClass == TF_CLASS_SNIPER) && m_pWeapons->hasWeapon(TF2_WEAPON_BOW) && !m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_BOW))->outOfAmmo(this) && !hasSomeConditions(CONDITION_PARANOID) && !bHasFlag && (getHealthPercent()>0.2f), 0.95f)
 
 	ADD_UTILITY(BOT_UTIL_ROAM,true,0.0001f)
@@ -5042,7 +5042,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 
 				do
 				{
-					CClients::clientDebugMsg(this, BOT_DEBUG_UTIL, "%s = %0.3f, this = %p", g_szUtils[next->getId()], next->getUtility(), static_cast<void*>(this));
+					CClients::clientDebugMsg(this, BOT_DEBUG_UTIL, "%s = %0.3f, this = %p", g_szUtils[next->getId()], next->getUtility(), this);
 				}
 
 				while ( (++i<10) && ((next = utils.nextBest()) != nullptr) );

@@ -1204,7 +1204,7 @@ void CTeamFortress2Mod::updatePointMaster()
 			// HACK: we use one of the known CBaseEntity-sized entities to compute the offset to the first subclass member for CTeamControlPointMaster / CTeamControlPointRound
 			const std::size_t baseEntityOffset = servertools->GetEntityFactoryDictionary()->FindFactory("simple_physics_brush")->GetEntitySize();
 
-			const uintptr_t pMasterMembers = reinterpret_cast<uintptr_t>(servergameents->EdictToBaseEntity(pMaster)) + baseEntityOffset;
+			const std::uintptr_t pMasterMembers = reinterpret_cast<std::uintptr_t>(servergameents->EdictToBaseEntity(pMaster)) + baseEntityOffset;
 			m_PointMaster = reinterpret_cast<CTeamControlPointMaster*>(pMasterMembers);
 			m_PointMasterResource = pMaster;
 			
@@ -1222,7 +1222,7 @@ void CTeamFortress2Mod::updatePointMaster()
 					try
 					{
 						CBaseEntity *pent = m_PointMaster->m_ControlPointRounds[r];
-						CTeamControlPointRound* pointRound = reinterpret_cast<CTeamControlPointRound*>(reinterpret_cast<uintptr_t>(pent) + baseEntityOffset);
+						CTeamControlPointRound* pointRound = reinterpret_cast<CTeamControlPointRound*>(reinterpret_cast<std::uintptr_t>(pent) + baseEntityOffset);
 
 						logger->Log(LogLevel::DEBUG, "Control Points for Round %d", r);
 

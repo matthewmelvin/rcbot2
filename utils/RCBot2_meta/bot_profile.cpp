@@ -50,8 +50,8 @@ CBotProfile :: CBotProfile (const CBotProfile &other)
 }
 
 CBotProfile :: CBotProfile (
-		const char *szName, 
-		const char *szModel,
+		const char* szName, 
+		const char* szModel,
 		const int iTeam,
 		const int iVisionTicks,
 		const int iPathTicks,

@@ -624,21 +624,21 @@ public:
 	{
 		const int *score_array = g_GetProps[GETPROP_DOD_SCORE].getIntPointer(resource);
 
-		return score_array!= nullptr ? score_array[ENTINDEX(pPlayer)] : 0;
+		return score_array != nullptr ? score_array[static_cast<std::size_t>(ENTINDEX(pPlayer))] : 0;
 	}
 
 	static int getPlayerObjectiveScoreDOD (edict_t* resource, const edict_t* pPlayer)
 	{
 		const int *score_array = g_GetProps[GETPROP_DOD_OBJSCORE].getIntPointer(resource);
 
-		return score_array!= nullptr ? score_array[ENTINDEX(pPlayer)] : 0;
+		return score_array != nullptr ? score_array[static_cast<std::size_t>(ENTINDEX(pPlayer))] : 0;
 	}
 
 	static int getPlayerDeathsDOD (edict_t* resource, const edict_t* pPlayer)
 	{
 		const int *score_array = g_GetProps[GETPROP_DOD_DEATHS].getIntPointer(resource);
 
-		return score_array!= nullptr ? score_array[ENTINDEX(pPlayer)] : 0;
+		return score_array != nullptr ? score_array[static_cast<std::size_t>(ENTINDEX(pPlayer))] : 0;
 	}
 
 	static float getSmokeSpawnTime ( edict_t *pSmoke )

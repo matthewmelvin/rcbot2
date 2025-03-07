@@ -774,7 +774,7 @@ CBotCommandInline DebugMemoryCheckCommand("memorycheck", CMD_ACCESS_DEBUG, [](co
 	}
 	else if (strcmp(args[2], "string") == 0)
 	{
-		const string_t* str = reinterpret_cast<string_t*>(reinterpret_cast<uintptr_t>(pent) + offset * sizeof(string_t));
+		const string_t* str = reinterpret_cast<string_t*>(reinterpret_cast<std::uintptr_t>(pent) + offset * sizeof(string_t));
 
 		if (str)
 			CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s - offset %d - Value(string) = %s", args[0], offset, STRING(*str));
@@ -813,7 +813,7 @@ CBotCommandInline DebugMstrOffsetSearch("mstr_offset_search", CMD_ACCESS_DEBUG, 
 
 	while (offset < 1000)
 	{
-		const uintptr_t mempoint = reinterpret_cast<uintptr_t>(pMasterEntity) + offset;
+		const std::uintptr_t mempoint = reinterpret_cast<std::uintptr_t>(pMasterEntity) + offset;
 		const CTeamControlPointMaster* PointMaster = reinterpret_cast<CTeamControlPointMaster*>(mempoint);
 
 		try

@@ -24,6 +24,7 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <cstdint>
 
 #include "convar.h"
 #include "icvar.h"
@@ -47,7 +48,8 @@ const char *LOGLEVEL_ANSI_COLORS[] = { "\x1B[1;31m", "\x1B[1;91m", "\x1B[1;33m",
 #if defined(_WIN64) || defined(_WIN32)
 #define FOREGROUND_YELLOW (FOREGROUND_GREEN | FOREGROUND_RED)
 #define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
-constexpr DWORD LOGLEVEL_WINCON_COLORS[] = { FOREGROUND_RED,
+//Supposed to be `WORD` not `DWORD`? [APG]RoboCop[CL]
+constexpr WORD LOGLEVEL_WINCON_COLORS[] = { FOREGROUND_RED,
 	                                     FOREGROUND_RED | FOREGROUND_INTENSITY,
 	                                     FOREGROUND_YELLOW,
 	                                     FOREGROUND_GREEN | FOREGROUND_INTENSITY,
@@ -61,7 +63,7 @@ const Color LOGLEVEL_CONSOLE_COLORS[] = {
 	{ 19, 198, 13, 255 }, { 59, 120, 255, 255 }, { 97, 214, 214, 255 },
 };
 
-enum MessageColorizationMode
+enum MessageColorizationMode : std::uint8_t
 {
 	Colorize_None,
 
@@ -142,7 +144,7 @@ void CBotLogger::Log(const LogLevel level, const char *fmt, ...)
 		icvar->ConsoleColorPrintf(LOGLEVEL_CONSOLE_COLORS[level], "[RCBot] %s: %s\n", LOGLEVEL_STRINGS[level], buf);
 		break;
 	case Colorize_None:
-	default:
+	//default:
 		if (level <= LogLevel::WARN)
 		{
 			Warning("[RCBot] %s: %s\n", LOGLEVEL_STRINGS[level], buf);
