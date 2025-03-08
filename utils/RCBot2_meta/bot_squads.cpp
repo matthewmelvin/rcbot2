@@ -378,8 +378,7 @@ Vector CBotSquad :: GetFormationVector (const edict_t* pEdict)
  */
 int CBotSquad::GetFormationPosition(const edict_t* pEdict)
 {
-	const std::_Deque_iterator<std::_Deque_val<std::_Deque_simple_types<MyEHandle>>> it = std::find(
-		m_SquadMembers.begin(), m_SquadMembers.end(), pEdict);
+	const auto it = std::find(m_SquadMembers.begin(), m_SquadMembers.end(), pEdict);
 	return it != m_SquadMembers.end() ? std::distance(m_SquadMembers.begin(), it) : 0;
 }
 

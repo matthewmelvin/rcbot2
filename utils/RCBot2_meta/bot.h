@@ -750,7 +750,7 @@ public:
 	// bot is defending -- mod specific stuff
 	virtual void defending () {}
 
-	virtual void hearVoiceCommand ( edict_t *pPlayer, byte cmd );
+	virtual void hearVoiceCommand ( edict_t *pPlayer, byte voiceCmd );
 
 	virtual void grenadeThrown ();
 

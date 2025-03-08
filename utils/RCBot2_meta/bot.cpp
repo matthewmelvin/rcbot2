@@ -2528,7 +2528,7 @@ void CBot::modAim ( edict_t *pEntity, Vector &v_origin, Vector *v_desired_offset
 
 }
 
-void CBot::hearVoiceCommand(edict_t* pPlayer, byte cmd) //Needs properly implemented? [APG]RoboCop[CL]
+void CBot::hearVoiceCommand(edict_t* pPlayer, byte voiceCmd) //Needs properly implemented? [APG]RoboCop[CL]
 {
 }
 
