@@ -49,7 +49,6 @@ CBotCommandInline DebugGameEventCommand("gameevent", CMD_ACCESS_DEBUG, [](CClien
 CBotCommandInline DebugBotCommand("bot", CMD_ACCESS_DEBUG, [](CClient* pClient, const BotCommandArgs& args)
 {
 	if (!args[0] || !*args[0]) {
-		extern IServerGameEnts* servergameents;
 		// do a traceline in front of player
 
 		const Vector vOrigin = pClient->getOrigin();
@@ -63,8 +62,8 @@ CBotCommandInline DebugBotCommand("bot", CMD_ACCESS_DEBUG, [](CClient* pClient, 
 
 		if ((pEntity = CBotGlobals::getTraceResult()->m_pEnt) != nullptr)
 		{
-			edict_t* pEdict = servergameents->BaseEntityToEdict(pEntity);
-			if (CBots::getBotPointer(pEdict) != nullptr)
+			extern IServerGameEnts* servergameents;
+			if (edict_t* pEdict = servergameents->BaseEntityToEdict(pEntity); CBots::getBotPointer(pEdict) != nullptr)
 			{
 				pClient->setDebugBot(pEdict);
 				CBotGlobals::botMessage(pClient->getPlayer(), 0, "debug bot set to bot you are looking at");
@@ -259,15 +258,12 @@ CBotCommandInline BotTaskCommand("givetask", CMD_ACCESS_DEBUG, [](CClient* pClie
 				else if (!strcmp(args[0], "gren"))
 				{
 					CBotWeapons* pWeapons = pBot->getWeapons();
-					CBotWeapon* gren = pWeapons->getGrenade();
 
-					if (gren)
+					if (CBotWeapon* gren = pWeapons->getGrenade())
 					{
 						CBotSchedule* sched = new CBotSchedule(
 							new CThrowGrenadeTask(gren,	pBot->getAmmo(static_cast<std::size_t>(gren->getWeaponInfo()->getAmmoIndex1())),
-								pClient->getOrigin()
-							)
-						);
+								pClient->getOrigin()));
 
 						pSched->add(sched);
 					}
@@ -276,9 +272,7 @@ CBotCommandInline BotTaskCommand("givetask", CMD_ACCESS_DEBUG, [](CClient* pClie
 				{
 					if (pClient)
 					{
-						CWaypoint* pWaypoint = CWaypoints::getWaypoint(CWaypoints::nearestWaypointGoal(CWaypointTypes::W_FL_SNIPER, pClient->getOrigin(), 200.0f, pBot->getTeam()));
-
-						if (pWaypoint)
+						if (CWaypoint* pWaypoint = CWaypoints::getWaypoint(CWaypoints::nearestWaypointGoal(CWaypointTypes::W_FL_SNIPER, pClient->getOrigin(), 200.0f, pBot->getTeam())))
 						{
 #if SOURCE_ENGINE == SE_TF2
 							//if ( CClassInterface::getTF2Class() )
@@ -394,9 +388,7 @@ CBotCommandInline PrintProps("printprops", CMD_ACCESS_DEBUG,
 				unsigned m_offset;
 				g_PrintProps = true;
 
-				ServerClass* sc = UTIL_FindServerClass(args[0]);
-
-				if (sc)
+				if (ServerClass* sc = UTIL_FindServerClass(args[0]))
 					UTIL_FindSendPropInfo(sc, "", &m_offset);
 
 				g_PrintProps = false;
@@ -425,9 +417,7 @@ CBotCommandInline SetProp("setprop", CMD_ACCESS_DEBUG, [](const CClient* pClient
 				extern bool g_PrintProps;
 				unsigned m_offset;
 
-				ServerClass* sc = UTIL_FindServerClass(args[0]);
-
-				if (sc)
+				if (const ServerClass* sc = UTIL_FindServerClass(args[0]))
 				{
 					UTIL_FindSendPropInfo(sc, args[1], &m_offset);
 
@@ -439,9 +429,7 @@ CBotCommandInline SetProp("setprop", CMD_ACCESS_DEBUG, [](const CClient* pClient
 						pUnknown = pNearest->GetUnknown();
 						pEntity = pUnknown->GetBaseEntity();
 
-						void* data = reinterpret_cast<char*>(pEntity) + m_offset;
-
-						if (data)
+						if (void* data = reinterpret_cast<char*>(pEntity) + m_offset)
 						{
 							bool* booldata = static_cast<bool*>(data);
 							int* intdata = static_cast<int*>(data);
@@ -482,16 +470,13 @@ CBotCommandInline GetProp("getprop", CMD_ACCESS_DEBUG, [](const CClient* pClient
 		if ((args[0] && *args[0]) && (args[1] && *args[1]))
 		{
 			edict_t* pPlayer = pClient->getPlayer();
-			edict_t* pNearest = CClassInterface::FindEntityByNetClassNearest(pClient->getOrigin(), args[0]);
 
-			if (pNearest)
+			if (edict_t* pNearest = CClassInterface::FindEntityByNetClassNearest(pClient->getOrigin(), args[0]))
 			{
 				extern bool g_PrintProps;
 				unsigned m_offset = 0;
 
-				ServerClass* sc = UTIL_FindServerClass(args[0]);
-
-				if (sc)
+				if (const ServerClass* sc = UTIL_FindServerClass(args[0]))
 				{
 					UTIL_FindSendPropInfo(sc, args[1], &m_offset);
 
@@ -506,9 +491,7 @@ CBotCommandInline GetProp("getprop", CMD_ACCESS_DEBUG, [](const CClient* pClient
 							preoffs = std::atoi(args[2]);
 						}
 
-						void* data = reinterpret_cast<char*>(pEntity) + m_offset;
-
-						if (data)
+						if (void* data = reinterpret_cast<char*>(pEntity) + m_offset)
 						{
 							const Vector vdata = *(static_cast<Vector*>(data) + preoffs);
 
@@ -570,9 +553,7 @@ CBotCommandInline FindClassname("findclassname", CMD_ACCESS_DEBUG, [](const CCli
 	{
 		if (args[0] && *args[0])
 		{
-			const char* pclass = CClassInterface::FindEntityNetClass(0, args[0]);
-
-			if (pclass)
+			if (const char* pclass = CClassInterface::FindEntityNetClass(0, args[0]))
 			{
 				CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s network name = %s", args[0], pclass);
 			}
@@ -684,9 +665,7 @@ CBotCommandInline DebugMemoryScanCommand("memoryscan", CMD_ACCESS_DEBUG, [](cons
 
 				if (str != nullptr)
 				{
-					const char* pszstr = STRING(*str);
-
-					if (pszstr)
+					if (const char* pszstr = STRING(*str))
 						bfound = (strcmp(pszstr, args[1]) == 0);
 				}
 			}
@@ -774,9 +753,7 @@ CBotCommandInline DebugMemoryCheckCommand("memorycheck", CMD_ACCESS_DEBUG, [](co
 	}
 	else if (strcmp(args[2], "string") == 0)
 	{
-		const string_t* str = reinterpret_cast<string_t*>(reinterpret_cast<std::uintptr_t>(pent) + offset * sizeof(string_t));
-
-		if (str)
+		if (const string_t* str = reinterpret_cast<string_t*>(reinterpret_cast<std::uintptr_t>(pent) + offset * sizeof(string_t)))
 			CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s - offset %d - Value(string) = %s", args[0], offset, STRING(*str));
 		else
 			CBotGlobals::botMessage(pClient->getPlayer(), 0, "%s - offset %d - INVALID string", args[0], offset);

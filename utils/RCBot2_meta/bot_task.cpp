@@ -145,9 +145,7 @@ void CBotTF2MedicHeal::execute(CBot *pBot,CBotSchedule *pSchedule)
 
 		if ( !CClassInterface::getVelocity(pHeal,&vVelocity) || vVelocity.Length2D() > 1.0f )
 		{
-			IPlayerInfo *p = playerinfomanager->GetPlayerInfo(pHeal);
-		
-			if ( p )
+			if ( IPlayerInfo *p = playerinfomanager->GetPlayerInfo(pHeal) )
 			{
 				if ( p->GetLastUserCommand().buttons & IN_JUMP )
 				{
@@ -4032,8 +4030,7 @@ void CCSSEngageEnemyTask::execute(CBot *pBot, CBotSchedule *pSchedule)
 	{
 		if(pWeapon)
 		{
-			const CBotWeapon *weapon = pBot->getWeapons()->getWeapon(CWeapons::getWeaponByShortName(pWeapon->GetClassName()));
-			if(weapon)
+			if(const CBotWeapon *weapon = pBot->getWeapons()->getWeapon(CWeapons::getWeaponByShortName(pWeapon->GetClassName())))
 			{
 				if(weapon->isMelee())
 				{
@@ -4820,9 +4817,7 @@ void CMessAround::execute ( CBot *pBot, CBotSchedule *pSchedule )
 		}
 		else if ( pBot->FInViewCone(m_pFriendly) )
 		{
-			CBotWeapon *pWeapon = pBot->getBestWeapon(nullptr,true,true);
-
-			if ( pWeapon )
+			if ( CBotWeapon *pWeapon = pBot->getBestWeapon(nullptr,true,true) )
 			{
 				pBot->selectBotWeapon(pWeapon);
 

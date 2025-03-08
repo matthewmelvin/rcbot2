@@ -130,9 +130,7 @@ bool CTeamFortress2Mod::isSuddenDeath()
 	if (!mp_stalemate_enable.IsValid() || !mp_stalemate_enable.GetBool() || isMapType(TF_MAP_ARENA))
 		return false;
 
-	void *pGameRules = GetGameRules();
-
-	if (pGameRules)
+	if (void *pGameRules = GetGameRules())
 	{
 		const int iRoundState = CClassInterface::TF2_getRoundState(pGameRules);
 		 
@@ -1094,15 +1092,12 @@ edict_t *CTeamFortress2Mod :: nearestDispenser (const Vector& vOrigin, const int
 	for (tf_disp_t& m_Dispenser : m_Dispensers)
 	{
 		//m_Dispensers[i]
-		edict_t* pDisp = m_Dispenser.disp.get();
 
-		if ( pDisp )
+		if ( edict_t* pDisp = m_Dispenser.disp.get() )
 		{
-			if ( CTeamFortress2Mod::getTeam(pDisp) == team )
+			if ( getTeam(pDisp) == team )
 			{
-				const float fDist = (CBotGlobals::entityOrigin(pDisp) - vOrigin).Length();
-
-				if ( fDist < fNearest )
+				if (const float fDist = (CBotGlobals::entityOrigin(pDisp) - vOrigin).Length(); fDist < fNearest )
 				{
 					pNearest = pDisp;
 					fNearest = fDist;
@@ -1194,9 +1189,7 @@ void CTeamFortress2Mod::updatePointMaster()
 {
 	if ( m_PointMasterResource.get() == nullptr)
 	{
-		edict_t *pMaster = CClassInterface::FindEntityByClassnameNearest(Vector(0,0,0),"team_control_point_master",65535);
-
-		if ( pMaster )
+		if ( edict_t *pMaster = CClassInterface::FindEntityByClassnameNearest(Vector(0,0,0),"team_control_point_master",65535) )
 		{
 			extern IServerGameEnts *servergameents;
 			extern IServerTools *servertools;
@@ -1335,9 +1328,7 @@ void CTeamFortress2Mod :: roundReset ()
 	{
 		if ( !m_bMVMFlagStartValid )
 		{
-			CWaypoint *pGoal = CWaypoints::randomWaypointGoal(CWaypointTypes::W_FL_FLAG);
-
-			if ( pGoal )
+			if ( CWaypoint *pGoal = CWaypoints::randomWaypointGoal(CWaypointTypes::W_FL_FLAG) )
 			{
 				m_vNearestTankLocation = m_vMVMFlagStart = m_vFlagLocationBlue = pGoal->getOrigin();
 				m_bMVMFlagStartValid = m_bFlagLocationValidBlue = true;
@@ -1353,9 +1344,7 @@ void CTeamFortress2Mod :: roundReset ()
 
 		if ( !m_bMVMCapturePointValid )
 		{
-			CWaypoint *pGoal = CWaypoints::randomWaypointGoal(CWaypointTypes::W_FL_CAPPOINT);
-
-			if ( pGoal )
+			if ( CWaypoint *pGoal = CWaypoints::randomWaypointGoal(CWaypointTypes::W_FL_CAPPOINT) )
 			{
 				m_vMVMCapturePoint = pGoal->getOrigin();
 				m_bMVMCapturePointValid = true;

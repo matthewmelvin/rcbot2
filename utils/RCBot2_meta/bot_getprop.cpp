@@ -293,9 +293,8 @@ void CClassInterfaceValue :: findOffset ()
 {
 	//if (!m_offset)
 	//{
-	ServerClass *sc = UTIL_FindServerClass(m_class);
 
-	if ( sc )
+	if (const ServerClass *sc = UTIL_FindServerClass(m_class))
 	{
 		UTIL_FindSendPropInfo(sc,m_value,&m_offset);
 	}
@@ -818,9 +817,7 @@ int CClassInterface::getTF2Score(const edict_t* edict)
 {
 	if (edict_t* res = CTeamFortress2Mod::findResourceEntity())
 	{
-		const int* score_array = g_GetProps[GETPROP_TF2SCORE].getIntPointer(res);
-
-		if (score_array)
+		if (const int* score_array = g_GetProps[GETPROP_TF2SCORE].getIntPointer(res))
 			return score_array[static_cast<std::size_t>(ENTINDEX(edict) - 1)];
 	}
 

@@ -162,9 +162,7 @@ CBotSquad *CBotSquads::SquadJoin ( edict_t *pLeader, edict_t *pMember )
 	{
 		theSquad->AddMember(pMember);
 
-		CBotSquad* joinSquad = FindSquadByLeader(pLeader);
-
-		if ( joinSquad )
+		if ( CBotSquad* joinSquad = FindSquadByLeader(pLeader) )
 		{
 			// TODO make this a friend class so we could just join the squads directly?
 			for ( unsigned i = 0; i < joinSquad->numMembers(); i ++ )
@@ -380,7 +378,8 @@ Vector CBotSquad :: GetFormationVector (const edict_t* pEdict)
  */
 int CBotSquad::GetFormationPosition(const edict_t* pEdict)
 {
-	const auto it = std::find(m_SquadMembers.begin(), m_SquadMembers.end(), pEdict);
+	const std::_Deque_iterator<std::_Deque_val<std::_Deque_simple_types<MyEHandle>>> it = std::find(
+		m_SquadMembers.begin(), m_SquadMembers.end(), pEdict);
 	return it != m_SquadMembers.end() ? std::distance(m_SquadMembers.begin(), it) : 0;
 }
 
@@ -418,8 +417,7 @@ std::size_t CBotSquad::numMembers() const
 void CBotSquad :: ReturnAllToFormation ()
 {
 	for (const edict_t *member : m_SquadMembers) {
-		CBot *pBot = CBots::getBotPointer(member);
-		if (pBot) {
+		if (CBot *pBot = CBots::getBotPointer(member)) {
 			pBot->removeCondition(CONDITION_PUSH);
 			pBot->removeCondition(CONDITION_COVERT);
 			pBot->updateCondition(CONDITION_CHANGED);

@@ -521,9 +521,7 @@ float CBotFortress :: getHealFactor ( edict_t *pPlayer )
 
 		if ( bHeavyClass )
 		{
-			IPlayerInfo* info = playerinfomanager->GetPlayerInfo(pPlayer);
-
-			if ( info )
+			if ( IPlayerInfo* info = playerinfomanager->GetPlayerInfo(pPlayer) )
 			{
 				if ( info->GetLastUserCommand().buttons & IN_ATTACK )
 					fFactor += 1.0f;
@@ -1332,9 +1330,7 @@ bool CBotTF2 :: needAmmo()
 {
 	if ( getClass() == TF_CLASS_ENGINEER )
 	{
-		const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_WRENCH));
-
-		if ( pWeapon )
+		if ( const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_WRENCH)) )
 		{
 			const int iMetal = pWeapon->getAmmo(this);
 
@@ -1346,36 +1342,28 @@ bool CBotTF2 :: needAmmo()
 	}
 	else if ( getClass() == TF_CLASS_SOLDIER )
 	{
-		const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_ROCKETLAUNCHER));
-
-		if ( pWeapon )
+		if ( const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_ROCKETLAUNCHER)) )
 		{
 			return ( pWeapon->getAmmo(this) < 1 );
 		}
 	}
 	else if ( getClass() == TF_CLASS_DEMOMAN )
 	{
-		const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_GRENADELAUNCHER));
-
-		if ( pWeapon )
+		if ( const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_GRENADELAUNCHER)) )
 		{
 			return ( pWeapon->getAmmo(this) < 1 );
 		}
 	}
 	else if ( getClass() == TF_CLASS_HWGUY )
 	{
-		const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_MINIGUN));
-
-		if ( pWeapon )
+		if ( const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_MINIGUN)) )
 		{
 			return ( pWeapon->getAmmo(this) < 1 );
 		}
 	}
 	else if ( getClass() == TF_CLASS_PYRO )
 	{
-		const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_FLAMETHROWER));
-
-		if ( pWeapon )
+		if ( const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_FLAMETHROWER)) )
 		{
 			return ( pWeapon->getAmmo(this) < 1 );
 		}
@@ -1458,9 +1446,8 @@ void CBotFortress :: modThink ()
 	if ( m_bInitAlive )
 	{
 		const Vector vOrigin = getOrigin();
-		CWaypoint *pWpt = CWaypoints::getWaypoint(CWaypoints::nearestWaypointGoal(CWaypointTypes::W_FL_TELE_ENTRANCE,vOrigin,4096.0f,m_iTeam));
 
-		if ( pWpt )
+		if ( CWaypoint *pWpt = CWaypoints::getWaypoint(CWaypoints::nearestWaypointGoal(CWaypointTypes::W_FL_TELE_ENTRANCE,vOrigin,4096.0f,m_iTeam)) )
 		{
 			// Get the nearest waypoint outside spawn (flagged as a teleporter entrance)
 			// useful for Engineers and medics who want to camp for players
@@ -1491,9 +1478,7 @@ void CBotFortress :: modThink ()
 
 bool CBotFortress :: isTeleporterUseful ( edict_t *pTele ) const
 {
-	edict_t *pExit = CTeamFortress2Mod::getTeleporterExit(pTele);
-
-	if ( pExit )
+	if ( edict_t *pExit = CTeamFortress2Mod::getTeleporterExit(pTele) )
 	{
 		if ( !CTeamFortress2Mod::isTeleporterSapped(pTele) && !CTeamFortress2Mod::isTeleporterSapped(pExit) && !CClassInterface::isObjectBeingBuilt(pExit) && !CClassInterface::isObjectBeingBuilt(pTele) && !CClassInterface::isObjectCarried(pExit) && !CClassInterface::isObjectCarried(pTele) )
 		{
@@ -2004,9 +1989,7 @@ void CBotTF2 :: updateCarrying ()
 {
 	if ( (m_bIsCarryingObj = CClassInterface::isCarryingObj(m_pEdict)) == true )
 	{
-		edict_t *pCarriedObj = CClassInterface::getCarriedObj(m_pEdict);
-
-		if ( pCarriedObj )
+		if ( edict_t *pCarriedObj = CClassInterface::getCarriedObj(m_pEdict) )
 		{
 			m_bIsCarryingTeleExit = CTeamFortress2Mod::isTeleporterExit(pCarriedObj,m_iTeam,true);
 			m_bIsCarryingSentry = CTeamFortress2Mod::isSentry(pCarriedObj,m_iTeam,true);
@@ -2396,9 +2379,7 @@ void CBotTF2 :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 		m_vLastSeeEnemy = CBotGlobals::entityOrigin(m_pLastEnemy);
 		m_vLastSeeEnemyBlastWaypoint = m_vLastSeeEnemy;
 
-		CWaypoint *pWpt = CWaypoints::getWaypoint(CWaypointLocations::NearestBlastWaypoint(m_vLastSeeEnemy,getOrigin(),4096.0f,-1,true,true,false,false,0,false));
-			
-		if ( pWpt )
+		if ( CWaypoint *pWpt = CWaypoints::getWaypoint(CWaypointLocations::NearestBlastWaypoint(m_vLastSeeEnemy,getOrigin(),4096.0f,-1,true,true,false,false,0,false)) )
 			m_vLastSeeEnemyBlastWaypoint = pWpt->getOrigin();
 
 		updateCondition(CONDITION_CHANGED);
@@ -3786,9 +3767,7 @@ int CBotFortress :: getSpyDisguiseClass (const int iTeam) const
 
 		if ( CBotGlobals::entityIsValid(pPlayer) && (CTeamFortress2Mod::getTeam(pPlayer) == iTeam))
 		{
-			int _class = CClassInterface::getTF2Class(pPlayer);
-
-			if ( _class )
+			if ( int _class = CClassInterface::getTF2Class(pPlayer) )
 				availableClasses.emplace_back(_class);
 		}
 	}
@@ -5071,9 +5050,7 @@ bool CBotTF2 :: canDeployStickies ()
 	}
 
 	// enough ammo???
-	const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_PIPEBOMBS));
-
-	if (pWeapon)
+	if (const CBotWeapon *pWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_PIPEBOMBS)))
 	{
 		return (pWeapon->hasWeapon() && pWeapon->getAmmo(this) >= 6);
 	}
@@ -5247,8 +5224,7 @@ bool CBotTF2 :: select_CWeapon ( CWeapon *pWeapon )
 	if ( pBotWeapon && !pBotWeapon->isMelee() && pBotWeapon->canAttack() && pBotWeapon->outOfAmmo(this) )
 		return false;
 
-	const edict_t* pDesiredWeapon = CWeapons::findWeapon(m_pEdict, pWeapon->getWeaponName());
-	if ( pDesiredWeapon )
+	if ( const edict_t* pDesiredWeapon = CWeapons::findWeapon(m_pEdict, pWeapon->getWeaponName()) )
 		m_iSelectWeapon = ENTINDEX(pDesiredWeapon);
 
 	return true;
@@ -5256,12 +5232,9 @@ bool CBotTF2 :: select_CWeapon ( CWeapon *pWeapon )
 
 bool CBotTF2 :: selectBotWeapon ( CBotWeapon *pBotWeapon )
 {
-	const CWeapon *pSelect = pBotWeapon->getWeaponInfo();
-
-	if ( pSelect )
+	if ( const CWeapon *pSelect = pBotWeapon->getWeaponInfo() )
 	{
-		const edict_t* pDesiredWeapon = CWeapons::findWeapon(m_pEdict, pSelect->getWeaponName());
-		if ( pDesiredWeapon )
+		if ( const edict_t* pDesiredWeapon = CWeapons::findWeapon(m_pEdict, pSelect->getWeaponName()) )
 		{
 			m_iSelectWeapon = ENTINDEX(pDesiredWeapon);
 			return true;
@@ -6282,9 +6255,8 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 					CWaypoint *pWpt = CWaypoints::getWaypoint(CWaypointLocations::NearestBlastWaypoint(vLoc,pWptBlast->getOrigin(),4096.0,CWaypoints::getWaypointIndex(pWptBlast),true,false,true,false,getTeam(),true,1024.0f));
 					*/
 				int iAiming;
-				CWaypoint *pWpt = CWaypoints::nearestPipeWaypoint(vEnemy,getOrigin(),&iAiming);
 
-					if ( pWpt )
+				if ( CWaypoint *pWpt = CWaypoints::nearestPipeWaypoint(vEnemy,getOrigin(),&iAiming) )
 					{
 						CFindPathTask *findpath = new CFindPathTask(pEnemy);
 						CBotTask *pipetask = new CBotTF2Spam(pWpt->getOrigin(),vEnemy,util->getWeaponChoice());
@@ -6335,9 +6307,8 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 				}
 
 				int iAiming;
-				CWaypoint *pWpt = CWaypoints::nearestPipeWaypoint(vEnemy,getOrigin(),&iAiming);
 
-					if ( pWpt )
+				if ( CWaypoint *pWpt = CWaypoints::nearestPipeWaypoint(vEnemy,getOrigin(),&iAiming) )
 					{
 						CFindPathTask *findpath = new CFindPathTask(pEnemy);
 						CBotTask* pipetask = new CBotTF2DemomanPipeEnemy(
@@ -7237,9 +7208,7 @@ int CBotFortress :: getMetal () const
 {
 	if ( m_iClass == TF_CLASS_ENGINEER )
 	{
-		const CBotWeapon *pWrench = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_WRENCH));
-
-		if ( pWrench )
+		if ( const CBotWeapon *pWrench = m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_WRENCH)) )
 		{
 			return pWrench->getAmmo(this);
 		}

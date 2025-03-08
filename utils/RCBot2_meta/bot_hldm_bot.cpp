@@ -320,9 +320,8 @@ bool CHLDMBot :: executeAction (const eBotAction iAction)
 	case BOT_UTIL_THROW_GRENADE:
 		{
 		// find hide waypoint
-			CWaypoint *pWaypoint = CWaypoints::getWaypoint(CWaypointLocations::GetCoverWaypoint(getOrigin(),m_vLastSeeEnemy, nullptr));
 
-			if ( pWaypoint )
+		if ( CWaypoint *pWaypoint = CWaypoints::getWaypoint(CWaypointLocations::GetCoverWaypoint(getOrigin(),m_vLastSeeEnemy, nullptr)) )
 			{
 				CBotSchedule *pSched = new CBotSchedule();
 				pSched->addTask(new CThrowGrenadeTask(
@@ -340,9 +339,8 @@ bool CHLDMBot :: executeAction (const eBotAction iAction)
 	case BOT_UTIL_SNIPE:
 		{
 			// roam
-			CWaypoint *pWaypoint = CWaypoints::randomWaypointGoal(CWaypointTypes::W_FL_SNIPER);
 
-			if ( pWaypoint )
+			if ( CWaypoint *pWaypoint = CWaypoints::randomWaypointGoal(CWaypointTypes::W_FL_SNIPER) )
 			{
 				CBotSchedule* snipe = new CBotSchedule();
 				CBotTask *findpath = new CFindPathTask(CWaypoints::getWaypointIndex(pWaypoint));

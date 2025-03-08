@@ -1208,9 +1208,7 @@ bool CWaypointNavigator :: getNextRoutePoint ( Vector *vPoint )
 {
 	if ( !m_currentRoute.empty() )
 	{
-		const int head = m_currentRoute.top();
-
-		if (head)
+		if (const int head = m_currentRoute.top())
 		{
 			static CWaypoint *pW;
 			pW = CWaypoints::getWaypoint(head);
@@ -1315,9 +1313,7 @@ void CWaypointNavigator :: updatePosition ()
 
 			// Bot passed into this waypoint safely, update belief
 
-			const bot_statistics_t *stats = m_pBot->getStats();
-
-			if ( stats )
+			if ( const bot_statistics_t *stats = m_pBot->getStats() )
 			{
 				if ( stats->stats.m_iEnemiesVisible > stats->stats.m_iTeamMatesVisible && stats->stats.m_iEnemiesInRange>0 )
 					beliefOne(iWaypointID,BELIEF_DANGER,100.0f);
@@ -2036,10 +2032,8 @@ void CWaypoints :: drawWaypoints( CClient *pClient )
 
 	if ( pClient->isPathWaypointOn() )
 	{
-		const CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint());
-
 		// valid waypoint
-		if ( pWpt )
+		if ( const CWaypoint* pWpt = getWaypoint(pClient->currentWaypoint()) )
 			pWpt->drawPaths(pClient->getPlayer(),pClient->getDrawType());
 	}
 }
@@ -2314,9 +2308,7 @@ int CWaypoints :: addWaypoint ( CClient *pClient, const char *type1, const char 
 
 	if ( rcbot_wpt_autotype.GetInt() && (!bUseTemplate || rcbot_wpt_autotype.GetInt()==2) )
 	{
-		IPlayerInfo *pPlayerInfo = playerinfomanager->GetPlayerInfo(pClient->getPlayer());
-
-		if ( pPlayerInfo )
+		if ( IPlayerInfo *pPlayerInfo = playerinfomanager->GetPlayerInfo(pClient->getPlayer()) )
 		{
 			if ( pPlayerInfo->GetLastUserCommand().buttons & IN_DUCK )
 				iFlags |= CWaypointTypes::W_FL_CROUCH;
@@ -2324,9 +2316,7 @@ int CWaypoints :: addWaypoint ( CClient *pClient, const char *type1, const char 
 
 		for ( int i = 0; i < gpGlobals->maxEntities; i ++ )
 		{
-			edict_t* pEdict = INDEXENT(i);
-
-			if ( pEdict )
+			if ( edict_t* pEdict = INDEXENT(i) )
 			{
 				if ( !pEdict->IsFree() )
 				{

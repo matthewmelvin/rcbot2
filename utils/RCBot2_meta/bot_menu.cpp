@@ -67,9 +67,8 @@ const char* CWaypointFlagMenu::getCaption(CClient* pClient, WptColor& color)
 	pClient->updateCurrentWaypoint();
 
 	const int iWpt = pClient->currentWaypoint();
-	const CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt);
 
-	if (pWpt)
+	if (const CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt))
 	{
 		color = CWaypointTypes::getColour(pWpt->getFlags());
 		snprintf(m_szCaption, sizeof(m_szCaption), "Waypoint Flags ID = [%d]", iWpt);
@@ -207,9 +206,7 @@ const char* CWaypointMenu::getCaption(CClient* pClient, WptColor& color)
 
 const char* CWaypointYawMenuItem::getCaption(CClient* pClient, WptColor& color)
 {
-	const CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint());
-
-	if (pWpt)
+	if (const CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint()))
 		snprintf(m_szCaption, sizeof(m_szCaption), "Yaw = %d degrees (press to update)", static_cast<int>(pWpt->getAimYaw()));
 	else
 		snprintf(m_szCaption, sizeof(m_szCaption), "No Waypoint");
@@ -219,18 +216,15 @@ const char* CWaypointYawMenuItem::getCaption(CClient* pClient, WptColor& color)
 
 void CWaypointYawMenuItem::activate(CClient* pClient)
 {
-	CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint());
-
-	if (pWpt)
+	if (CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint()))
 		pWpt->setAim(CBotGlobals::playerAngles(pClient->getPlayer()).y);
 }
 
 void CWaypointAreaIncrease::activate(CClient* pClient)
 {
 	const int iWpt = pClient->currentWaypoint();
-	CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt);
 
-	if (pWpt)
+	if (CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt))
 	{
 		pWpt->setArea(pWpt->getArea() + 1);
 	}
@@ -239,9 +233,8 @@ void CWaypointAreaIncrease::activate(CClient* pClient)
 void CWaypointAreaDecrease::activate(CClient* pClient)
 {
 	const int iWpt = pClient->currentWaypoint();
-	CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt);
 
-	if (pWpt)
+	if (CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt))
 	{
 		pWpt->setArea(pWpt->getArea() - 1);
 	}
@@ -250,9 +243,8 @@ void CWaypointAreaDecrease::activate(CClient* pClient)
 void CWaypointRadiusIncrease::activate(CClient* pClient)
 {
 	const int iWpt = pClient->currentWaypoint();
-	CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt);
 
-	if (pWpt)
+	if (CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt))
 	{
 		const float fRadius = pWpt->getRadius();
 
@@ -266,13 +258,10 @@ void CWaypointRadiusIncrease::activate(CClient* pClient)
 void CWaypointRadiusDecrease::activate(CClient* pClient)
 {
 	const int iWpt = pClient->currentWaypoint();
-	CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt);
 
-	if (pWpt)
+	if (CWaypoint* pWpt = CWaypoints::getWaypoint(iWpt))
 	{
-		const float fRadius = pWpt->getRadius();
-
-		if (fRadius > 32.0f)
+		if (const float fRadius = pWpt->getRadius(); fRadius > 32.0f)
 			pWpt->setRadius(fRadius - 32.0f);
 		else
 			pWpt->setRadius(0.0f);
@@ -291,9 +280,7 @@ void CWaypointCutMenuItem::activate(CClient* pClient)
 {
 	pClient->updateCurrentWaypoint();
 
-	CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint());
-
-	if (pWpt)
+	if (const CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint()))
 	{
 		pClient->setWaypointCut(pWpt);
 		CWaypoints::deleteWaypoint(pClient->currentWaypoint());
@@ -312,9 +299,7 @@ void CWaypointCopyMenuItem::activate(CClient* pClient)
 {
 	pClient->updateCurrentWaypoint();
 
-	CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint());
-
-	if (pWpt)
+	if (const CWaypoint* pWpt = CWaypoints::getWaypoint(pClient->currentWaypoint()))
 	{
 		pClient->setWaypointCopy(pWpt);
 	}

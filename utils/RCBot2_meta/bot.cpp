@@ -1242,9 +1242,8 @@ void CBot :: updateConditions ()
 					removeCondition(CONDITION_SEE_SQUAD_LEADER);
 
 				float fSpeed = 0.0f;
-				const CClient *pClient = CClients::get(pLeader);
 
-				if ( pClient )
+				if ( const CClient *pClient = CClients::get(pLeader) )
 					fSpeed = pClient->getSpeed();
 
 				// update squad idle condition. If squad is idle, bot can move around a small radius 
@@ -1527,9 +1526,7 @@ void CBot::setLastEnemy(edict_t *pEnemy)
 
 bool CBot :: selectBotWeapon ( CBotWeapon *pBotWeapon )
 {
-	const int id = pBotWeapon->getWeaponIndex();
-
-	if ( id )
+	if ( const int id = pBotWeapon->getWeaponIndex() )
 	{
 		selectWeapon(id);
 		return true;
@@ -2875,13 +2872,9 @@ void CBot :: changeAngles (float fSpeed, const float* fIdeal, float* fCurrent, f
 
 bool CBot :: select_CWeapon ( CWeapon *pWeapon )
 {
-	const CBotWeapon *pSelect = m_pWeapons->getWeapon(pWeapon);
-
-	if ( pSelect )
+	if ( const CBotWeapon *pSelect = m_pWeapons->getWeapon(pWeapon) )
 	{
-		const int id = pSelect->getWeaponIndex();
-
-		if ( id )
+		if ( const int id = pSelect->getWeaponIndex() )
 		{
 			failWeaponSelect();
 			selectWeapon(id);
@@ -3074,9 +3067,8 @@ void CBot :: getTasks (unsigned iIgnore)
 		return; // already got some tasks left
 
 	// roam
-	CWaypoint *pWaypoint = CWaypoints::getWaypoint(CWaypoints::randomFlaggedWaypoint(getTeam()));
 
-	if ( pWaypoint )
+	if ( CWaypoint *pWaypoint = CWaypoints::getWaypoint(CWaypoints::randomFlaggedWaypoint(getTeam())) )
 	{
 		m_pSchedules->add(new CBotGotoOriginSched(pWaypoint->getOrigin()));
 	}

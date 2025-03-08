@@ -837,15 +837,13 @@ void CWeapons::loadWeapons(const char* szWeaponListName, const WeaponsData_t* pD
 		CBotGlobals::buildFileName(szFilename, "weapons", BOT_CONFIG_FOLDER, "ini", false);
 
 		if (kv && kv->LoadFromFile(filesystem, szFilename, nullptr)) {
-			KeyValues* weaponListKey = kv->FindKey(szWeaponListName);
+			if (KeyValues* weaponListKey = kv->FindKey(szWeaponListName)) {
 
-			if (weaponListKey) {
 				for (KeyValues* subKey = weaponListKey->GetFirstSubKey(); subKey != nullptr; subKey = subKey->GetNextTrueSubKey()) {
 					WeaponsData_t newWeapon;
 					std::memset(&newWeapon, 0, sizeof(WeaponsData_t));
 
-					const char* szKeyName = subKey->GetName();
-					if (szKeyName) {
+					if (const char* szKeyName = subKey->GetName()) {
 						std::string lowered(szKeyName);
 						std::transform(lowered.begin(), lowered.end(), lowered.begin(), ::tolower);
 
@@ -858,8 +856,7 @@ void CWeapons::loadWeapons(const char* szWeaponListName, const WeaponsData_t* pD
 						newWeapon.m_iAmmoIndex = subKey->GetInt("m_iAmmoIndex");
 						newWeapon.m_iPreference = subKey->GetInt("m_iPreference");
 
-						KeyValues* flags = subKey->FindKey("flags");
-						if (flags) {
+						if (KeyValues* flags = subKey->FindKey("flags")) {
 							for (const auto& flag : g_weaponFlagMap) {
 								if (flags->GetInt(flag.first.c_str(), 0) == 1) {
 									newWeapon.m_iFlags |= flag.second;

@@ -512,9 +512,7 @@ void CClient :: think ()
 
 					if ( m_bAutoEventWaypointAutoType )
 					{
-						CWaypointType *pMainType = CWaypointTypes::getTypeByFlags(m_iAutoEventWaypoint);
-
-						if ( pMainType )
+						if ( CWaypointType *pMainType = CWaypointTypes::getTypeByFlags(m_iAutoEventWaypoint) )
 							CWaypoints::addWaypoint(this,pMainType->getName(),"","","");
 						else
 							CWaypoints::addWaypoint(m_pPlayer, m_vAutoEventWaypointOrigin,
@@ -971,9 +969,7 @@ void CClients::giveMessage(const char* msg, const float fTime, const edict_t* pP
 
 const char *CClient :: getName () const
 {
-	IPlayerInfo *playerinfo = playerinfomanager->GetPlayerInfo( m_pPlayer );
-
-	if ( playerinfo )
+	if ( IPlayerInfo *playerinfo = playerinfomanager->GetPlayerInfo( m_pPlayer ) )
 		return playerinfo->GetName();
 
 	return nullptr;
@@ -1058,9 +1054,7 @@ bool CClient :: isUsed () const
 
 Vector CClient :: getOrigin () const
 {
-	IPlayerInfo *playerinfo = playerinfomanager->GetPlayerInfo( m_pPlayer );
-
-	if ( playerinfo )
+	if ( IPlayerInfo *playerinfo = playerinfomanager->GetPlayerInfo( m_pPlayer ) )
 	{
 		return  playerinfo->GetAbsOrigin() + Vector(0,0,32);
 	}

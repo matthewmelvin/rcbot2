@@ -947,9 +947,7 @@ bool RCBotPluginMeta::Hook_LevelInit(const char *pMapName,
 
 	CBots::mapInit();
 
-	CBotMod *pMod = CBotGlobals::getCurrentMod();
-	
-	if ( pMod )
+	if ( CBotMod *pMod = CBotGlobals::getCurrentMod() )
 		pMod->mapInit();
 
 	CBotSquads::FreeMemory();
