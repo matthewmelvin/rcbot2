@@ -110,8 +110,8 @@ const int cpindex = m_WaypointAreaToIndexTranslation[wptarea];
 	if ( waypointflags & CWaypointTypes::W_FL_AREAONLY )
 	{
 		// AND
-		return m_ValidPoints[0][0][cpindex].bValid && m_ValidPoints[1][1][cpindex].bValid || 
-			   m_ValidPoints[0][1][cpindex].bValid && m_ValidPoints[1][0][cpindex].bValid;
+		return (m_ValidPoints[0][0][cpindex].bValid && m_ValidPoints[1][1][cpindex].bValid) || 
+			   (m_ValidPoints[0][1][cpindex].bValid && m_ValidPoints[1][0][cpindex].bValid);
 	}
 
 	// OR

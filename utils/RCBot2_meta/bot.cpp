@@ -2539,7 +2539,7 @@ void CBot :: grenadeThrown ()
 
 void CBot::voiceCommand(byte voiceCmd)
 {
-	
+
 }
 
 void CBot :: checkCanPickup ( edict_t *pPickup )
@@ -3507,7 +3507,7 @@ bool CBots :: needToAddBot ()
 {
 	const int iClients = CBotGlobals::numClients();
 
-	return m_iMinBots!=-1&&CBots::numBots() < m_iMinBots || iClients < m_iMaxBots&&m_iMaxBots!=-1;
+	return (m_iMinBots!=-1 && CBots::numBots() < m_iMinBots) || (iClients < m_iMaxBots && m_iMaxBots != -1);
 }
 
 bool CBots :: needToKickBot ()

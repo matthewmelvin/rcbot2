@@ -4181,9 +4181,9 @@ bool CBotTF2::healPlayer(edict_t* pPlayer, edict_t* pPrevPlayer)
 	if (CBotGlobals::isPlayer(m_pHeal))
 	{
 		// Simple UBER check : healing player not ubered already
-		if (!CTeamFortress2Mod::TF2_IsPlayerInvuln(m_pHeal) && !CTeamFortress2Mod::isFlagCarrier(m_pHeal) &&
-			(m_pEnemy&&isVisible(m_pEnemy)) || (static_cast<float>(m_pPlayerInfo->GetHealth()) / 
-				static_cast<float>(m_pPlayerInfo->GetMaxHealth()) < 0.33f || getHealthPercent() < 0.33f))
+		if ((!CTeamFortress2Mod::TF2_IsPlayerInvuln(m_pHeal) && !CTeamFortress2Mod::isFlagCarrier(m_pHeal) &&
+			(m_pEnemy&&isVisible(m_pEnemy))) || ((static_cast<float>(m_pPlayerInfo->GetHealth()) / 
+				static_cast<float>(m_pPlayerInfo->GetMaxHealth()) < 0.33f || getHealthPercent() < 0.33f)))
 		{
 			if (CTeamFortress2Mod::hasRoundStarted())
 			{

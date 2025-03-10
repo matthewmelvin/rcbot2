@@ -388,7 +388,7 @@ CBotCommandInline PrintProps("printprops", CMD_ACCESS_DEBUG,
 				unsigned m_offset;
 				g_PrintProps = true;
 
-				if (ServerClass* sc = UTIL_FindServerClass(args[0]))
+				if (const ServerClass* sc = UTIL_FindServerClass(args[0]))
 					UTIL_FindSendPropInfo(sc, "", &m_offset);
 
 				g_PrintProps = false;

@@ -60,6 +60,7 @@
 #endif
 #include "igameevents.h"
 #include "Color.h"
+class CBasePlayer; // forward declaration required by imovehelper.h (included by usercmd.h) -caxanga334
 #include "usercmd.h"
 
 #include "bot_utility.h"

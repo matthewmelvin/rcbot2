@@ -47,6 +47,7 @@
 #include "bot_mtrand.h"
 #include "bot_waypoint_locations.h"
 #include "bot_getprop.h"
+#include "rcbot/logging.h"
 
 #include <cstring>
 
@@ -142,6 +143,18 @@ void CHLDMBot :: spawnInit ()
 	m_fFixWeaponTime = 0.0f;
 	m_fUseButtonTime = 0.0f;
 	m_fUseCrateTime = 0.0f;
+
+	ConVarRef hl2_normspeed("hl2_normspeed");
+
+	if (!hl2_normspeed.IsValid())
+	{
+		logger->Log(LogLevel::ERROR, "Unable to find \"hl2_normspeed\" ConVar!");
+		m_fCachedNormSpeed = 190.0f; // hl2_normspeed default value -caxanga334
+	}
+	else
+	{
+		m_fCachedNormSpeed = hl2_normspeed.GetFloat();
+	}
 }
 
 // Is pEdict an enemy? return true if enemy / false if not
@@ -549,7 +562,7 @@ void CHLDMBot :: getTasks (unsigned iIgnore)
 
 void CHLDMBot :: modThink ()
 {
-	m_fIdealMoveSpeed = CClassInterface::getMaxSpeed(m_pEdict);
+	m_fIdealMoveSpeed = m_fCachedNormSpeed;
 
 	// update hitbox hull
 	//m_pEdict->GetCollideable()->GetCollisionOrigin();

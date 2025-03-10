@@ -52,6 +52,7 @@
 #include <cmath>
 #include <cstring>
 #include <cstdint>
+#include <array>
 
 const char *g_DODClassCmd[2][6] = 
 { {"cls_garand","cls_tommy","cls_bar","cls_spring","cls_30cal","cls_bazooka"},
@@ -98,9 +99,9 @@ void CDODBot :: bombEvent ( int iEvent, const int iCP, const int iTeam )
 	}
 }
 
-CDODBot :: CDODBot()
+CDODBot :: CDODBot() :
+	CBot()
 {
-	CBot();
 	CDODBot::init(true);
 }
 
@@ -447,9 +448,10 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 				//bInvestigate = false;
 
 				// Find Hide Spot
+				// utility data is int32_t, casting as uintptr will crash on x64. -caxanga334
 				ADD_UTILITY_DATA_VECTOR(BOT_UTIL_SNIPE_POINT,
 					!hasEnemy() && (m_iClass == DOD_CLASS_SNIPER) && getSniperRifle() && !
-					getSniperRifle()->outOfAmmo(this), 1.0f, static_cast<int>(reinterpret_cast<std::uintptr_t>(pKiller)),
+					getSniperRifle()->outOfAmmo(this), 1.0f, engine->IndexOfEdict(pKiller),
 					vecEnemy)
 
 			}
@@ -469,7 +471,7 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 
 				ADD_UTILITY_DATA_VECTOR(BOT_UTIL_SNIPE_POINT,
 					!hasEnemy() && (m_iClass == DOD_CLASS_SNIPER) && getSniperRifle() && !getSniperRifle()->outOfAmmo(this),
-					1.0f, static_cast<int>(reinterpret_cast<std::uintptr_t>(pKiller)), vecEnemy)
+					1.0f, engine->IndexOfEdict(pKiller), vecEnemy)
 
 				//ADD_UTILITY_DATA_VECTOR(BOT_UTIL_MOVEUP_MG,!hasEnemy() && (m_iClass == DOD_CLASS_MACHINEGUNNER) && getMG() && !getMG()->outOfAmmo(this),1.0f,1,vecEnemy);
 			}
@@ -592,7 +594,7 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 				ADD_UTILITY_DATA_VECTOR(
 					BOT_UTIL_INVESTIGATE_POINT,
 					!m_pSchedules->hasSchedule(SCHED_DEPLOY_MACHINE_GUN) && !m_pSchedules->hasSchedule(SCHED_SNIPE), 0.5f,
-					static_cast<uint32_t>(reinterpret_cast<std::uintptr_t>(pDied)& static_cast<std::uintptr_t>(0xFFFFFFFF)), m_vListenPosition)
+					engine->IndexOfEdict(pDied), m_vListenPosition)
 
 				//m_pSchedules->removeSchedule(SCHED_INVESTIGATE_NOISE);
 				//m_pSchedules->addFront(new CBotInvestigateNoiseSched(CBotGlobals::entityOrigin(pDied),m_vListenPosition));
@@ -1085,7 +1087,7 @@ void CDODBot :: chooseClass (const bool bIsChangingClass)
 	}
 	else
 	{
-		float fClassFitness[7]; // 6 classes
+		std::array<float, 7U> fClassFitness{ 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
 		float fTotalFitness = 0;
 
 		const int iTeam = getTeam();
@@ -1097,11 +1099,6 @@ void CDODBot :: chooseClass (const bool bIsChangingClass)
 		fClassFitness[DOD_CLASS_SNIPER] *= 0.6f;
 		fClassFitness[DOD_CLASS_MACHINEGUNNER] *= 0.8f;
 		fClassFitness[DOD_CLASS_ROCKET] *= 0.5f;
-
-		for (float& fClassFit : fClassFitness)
-		{
-			fClassFit = 1.0f;
-		}
 
 		if (bIsChangingClass && (m_iClass < 6))
 			fClassFitness[m_iClass] = 0.1f;
@@ -2071,27 +2068,46 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 	int id = -1;
 	Vector vGoal;
 	edict_t *pBombTarget = nullptr;
-	std::uintptr_t intData = static_cast<std::uintptr_t>(util->getIntData());
 
 	switch ( util->getId() )
 	{
 	case  BOT_UTIL_INVESTIGATE_POINT:
+	{
+		edict_t* edict = engine->PEntityOfEntIndex(util->getIntData());
+
+		if (!edict || edict->IsFree() || edict->GetIServerEntity() == nullptr)
+		{
+			return false;
+		}
+
 		m_pSchedules->removeSchedule(SCHED_INVESTIGATE_NOISE);
-		m_pSchedules->addFront(new CBotInvestigateNoiseSched(
-			CBotGlobals::entityOrigin(reinterpret_cast<edict_t*>(intData)), util->getVectorData()));
+		m_pSchedules->addFront(new CBotInvestigateNoiseSched(CBotGlobals::entityOrigin(edict), util->getVectorData()));
 		return true;
+	}
 	case BOT_UTIL_COVER_POINT:
+	{
+		edict_t* edict = engine->PEntityOfEntIndex(util->getIntData());
+
+		if (!edict || edict->IsFree() || edict->GetIServerEntity() == nullptr)
+		{
+			return false;
+		}
+
 		m_pSchedules->removeSchedule(SCHED_CROUCH_AND_HIDE);
-		m_pSchedules->addFront(new CCrouchHideSched(reinterpret_cast<edict_t*>(intData)));
+		m_pSchedules->addFront(new CCrouchHideSched(edict));
 		return true;
+	}
 	case BOT_UTIL_SNIPE_POINT:
 		// find sniper point facing the enemy
 		{
-#if defined(_WIN64) || defined(__x86_64__) || defined(__amd64__)
-		edict_t* pEnemy = reinterpret_cast<edict_t*>(static_cast<std::uintptr_t>(util->getIntData()));
-#else
-		edict_t* pEnemy = reinterpret_cast<edict_t*>(util->getIntData());
-#endif
+
+			edict_t* pEnemy = engine->PEntityOfEntIndex(util->getIntData());
+
+			if (!pEnemy || pEnemy->IsFree() || pEnemy->GetIServerEntity() == nullptr)
+			{
+				return false;
+			}
+
 
 			Vector vEnemyOrigin = CBotGlobals::entityOrigin(pEnemy);
 
@@ -2418,9 +2434,11 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 		break;
 	case BOT_UTIL_DEFEND_NEAREST_BOMB:
 		vGoal = util->getVectorData();
+		[[fallthrough]]; // tell the compiler that fallthrough is the intended behavior here. (C++17 feature) -caxanga334
 	case BOT_UTIL_DEFEND_BOMB: // fall through -- no break
 		if ( util->getId() == BOT_UTIL_DEFEND_BOMB )
 			CDODMod::m_Flags.getRandomBombToDefend(this,&vGoal,m_iTeam,&pBombTarget,&id);
+		[[fallthrough]];
 	case BOT_UTIL_DEFEND_POINT:
 		{
 			int i_area = -1;
