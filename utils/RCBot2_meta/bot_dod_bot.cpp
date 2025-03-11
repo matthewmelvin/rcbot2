@@ -2760,7 +2760,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 
 		if ( CWaypoint *pWaypoint = CWaypoints::getWaypoint(CWaypoints::randomFlaggedWaypoint(getTeam())) )
 			{
-				if ( inSquad() && !isSquadLeader() )
+			if ( inSquad() && !isSquadLeader() && m_pSquad->IsSquadLeaderValid() )
 				{
 					if ( pWaypoint->distanceFrom(m_pSquad->GetFormationVector(m_pEdict)) > CWaypointLocations::REACHABLE_RANGE )
 						return false;
