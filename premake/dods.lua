@@ -43,10 +43,12 @@ project "RCBot2-DODS"
         "../sm_ext/**.cpp",
         "../utils/RCBot2_meta/**.h",
         "../utils/RCBot2_meta/**.cpp",
+        "../versioning/**.h",
+        "../versioning/**.cpp",
 	}
 
     filter { "system:Linux" }
         defines { "NO_HOOK_MALLOC", "NO_MALLOC_OVERRIDE" }
 
     filter {}
-        defines { "RCBOT_MAXPLAYERS=65", "OVERRIDE_RUNCMD" }
+        defines { "RCBOT_MAXPLAYERS=65", "OVERRIDE_RUNCMD", "SM_EXT" }

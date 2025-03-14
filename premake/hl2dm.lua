@@ -43,10 +43,12 @@ project "RCBot2-HL2DM"
         "../sm_ext/**.cpp",
         "../utils/RCBot2_meta/**.h",
         "../utils/RCBot2_meta/**.cpp",
+        "../versioning/**.h",
+        "../versioning/**.cpp",
 	}
 
     filter { "system:Linux" }
         defines { "NO_HOOK_MALLOC", "NO_MALLOC_OVERRIDE" }
 
     filter {}
-        defines { "RCBOT_MAXPLAYERS=101" }
+        defines { "RCBOT_MAXPLAYERS=101", "SM_EXT" }

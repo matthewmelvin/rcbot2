@@ -43,7 +43,9 @@ project "RCBot2-ORANGEBOX"
         "../sm_ext/**.cpp",
         "../utils/RCBot2_meta/**.h",
         "../utils/RCBot2_meta/**.cpp",
+        "../versioning/**.h",
+        "../versioning/**.cpp",
 	}
 
     filter {}
-        defines { "RCBOT_MAXPLAYERS=65" }
+        defines { "RCBOT_MAXPLAYERS=65", "SM_EXT" }
