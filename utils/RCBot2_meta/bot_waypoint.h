@@ -253,7 +253,7 @@ public:
 	CWaypoint(const Vector& vOrigin, const int iFlags = 0, const int iYaw = 0)
 	{
 		m_thePaths.clear();
-		init(); // this function resets a bunch of variables that are manually set again below
+		init(); // this function resets a bunch of variables that are manually set again below - caxanga334
 		m_bUsed = true;
 		setAim(iYaw);
 		m_fNextCheckGroundTime = 0.0f;
