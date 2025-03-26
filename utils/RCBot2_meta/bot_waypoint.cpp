@@ -56,6 +56,7 @@
 #include "bot_wpt_dist.h"
 
 #include "rcbot/logging.h"
+#include "rcbot/utils.h"
 
 #include <algorithm>
 #include <cmath>
@@ -1584,8 +1585,10 @@ void CWaypoint :: draw ( edict_t *pEdict, const bool bDrawPaths, const unsigned 
 				}
 			}
 		}
+		[[fallthrough]];
 	case DRAWTYPE_DEBUGENGINE3:
 		fDistance = 72.0f;
+		[[fallthrough]];
 	case DRAWTYPE_DEBUGENGINE2:
 		// draw area
 		if ( pEdict )
@@ -1624,6 +1627,7 @@ void CWaypoint :: draw ( edict_t *pEdict, const bool bDrawPaths, const unsigned 
 			}
 		}
 		// this will drop down -- don't break
+		[[fallthrough]];
 	case DRAWTYPE_DEBUGENGINE:
 
 #ifndef __linux__
@@ -2305,6 +2309,8 @@ int CWaypoints :: addWaypoint ( CClient *pClient, const char *type1, const char 
 	if ( pPlayer->GetFlags() & FL_DUCKING )
 		iFlags |= CWaypoint::W_FL_CROUCH;		*/
 
+	float maxRange = rcbot_wpt_autotype_detection_range.GetFloat();
+	maxRange = std::clamp(maxRange, 80.0f, 512.0f); // clamp the variable to sane values
 
 	if ( rcbot_wpt_autotype.GetInt() && (!bUseTemplate || rcbot_wpt_autotype.GetInt()==2) )
 	{
@@ -2314,22 +2320,34 @@ int CWaypoints :: addWaypoint ( CClient *pClient, const char *type1, const char 
 				iFlags |= CWaypointTypes::W_FL_CROUCH;
 		}
 
-		for ( int i = 0; i < gpGlobals->maxEntities; i ++ )
+		for (int i = 0; i < gpGlobals->maxEntities; i++)
 		{
-			if ( edict_t* pEdict = INDEXENT(i) )
+			edict_t* pEdict = rcbot2utils::EdictOfIndex(i);
+
+			if (rcbot2utils::IsValidEdict(pEdict))
 			{
-				if ( !pEdict->IsFree() )
+				const float rangeToOrigin = (rcbot2utils::GetEntityOrigin(pEdict) - vWptOrigin).Length();
+				const float rangeToCenter = (rcbot2utils::GetWorldSpaceCenter(pEdict) - vWptOrigin).Length(); // for brush entities
+				const float fDistance = std::min(rangeToOrigin, rangeToCenter); // select the smallest between the two distances
+
+				if (fDistance <= maxRange)
 				{
-					if ( pEdict->m_pNetworkable && pEdict->GetIServerEntity() )
+					fMaxDistance = std::max(fDistance, fMaxDistance);
+
+					pCurrentMod->addWaypointFlags(pClient->getPlayer(), pEdict, &iFlags, &iArea, &fMaxDistance);
+				}
+				else
+				{
+					// distances are unreliable for brush entities, also do a bounds check if the distance above failed
+					Vector vWptTop = vWptOrigin;
+					vWptTop.z += CWaypoint::WAYPOINT_HEIGHT;
+
+					if (rcbot2utils::PointIsWithinTrigger(pEdict, vWptOrigin) || rcbot2utils::PointIsWithinTrigger(pEdict, vWptTop))
 					{
-						const float fDistance = (CBotGlobals::entityOrigin(pEdict) - vWptOrigin).Length();
+						// Waypoint origin collides with a entity bound
+						fMaxDistance = std::max(fDistance, fMaxDistance);
 
-						if ( fDistance <= 80.0f )
-						{
-							fMaxDistance = std::max(fDistance, fMaxDistance);
-
-							pCurrentMod->addWaypointFlags(pClient->getPlayer(),pEdict,&iFlags,&iArea,&fMaxDistance);
-						}
+						pCurrentMod->addWaypointFlags(pClient->getPlayer(), pEdict, &iFlags, &iArea, &fMaxDistance);
 					}
 				}
 			}
