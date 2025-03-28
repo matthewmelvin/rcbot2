@@ -841,7 +841,7 @@ int CTeamFortress2Mod::getArea()
 	return 0;
 }
 
-bool CTeamFortress2Mod :: isPayloadBomb ( edict_t *pEntity, int iTeam )
+bool CTeamFortress2Mod :: isPayloadBomb ( edict_t *pEntity, const int iTeam )
 {
 	const string_t mapname = gpGlobals->mapname;
 
