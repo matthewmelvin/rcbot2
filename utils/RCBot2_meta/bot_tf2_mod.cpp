@@ -528,35 +528,50 @@ bool CTeamFortress2Mod :: isFlag (edict_t *pEntity, const int iTeam)
 	return (!iTeam || getEnemyTeam(iTeam) == getTeam(pEntity)) && std::strcmp(pEntity->GetClassName(),"item_teamflag")==0;
 }
 
-bool CTeamFortress2Mod ::isBoss (edict_t *pEntity, float *fFactor)
+bool CTeamFortress2Mod::isBoss(edict_t* pEntity, float* fFactor)
 {
-	if ( m_bBossSummoned )
+	if (m_bBossSummoned)
 	{
-		if ( m_pBoss.get() && CBotGlobals::entityIsAlive(m_pBoss.get()) )
+		if (m_pBoss.get() && CBotGlobals::entityIsAlive(m_pBoss.get()))
 			return m_pBoss.get() == pEntity;
-		if ( std::strcmp(pEntity->GetClassName(),"merasmus")==0||
-			std::strcmp(pEntity->GetClassName(),"headless_hatman")==0||
-			std::strcmp(pEntity->GetClassName(),"eyeball_boss")==0||
-			std::strcmp(pEntity->GetClassName(),"tf_zombie")==0 ||
-			std::strcmp(pEntity->GetClassName(),"base_boss")==0) // For Krampus and any other NPCs which uses base_boss entity - RussiaTails
+		if (std::strcmp(pEntity->GetClassName(), "merasmus") == 0 ||
+			std::strcmp(pEntity->GetClassName(), "headless_hatman") == 0 ||
+			std::strcmp(pEntity->GetClassName(), "eyeball_boss") == 0 ||
+			std::strcmp(pEntity->GetClassName(), "tf_zombie") == 0 ||
+			std::strcmp(pEntity->GetClassName(), "base_boss") == 0) // For Krampus and any other NPS which uses base_boss entity - RussiaTails
 		{
 			m_pBoss = pEntity;
 			return true;
 		}
 	}
-	else if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || isMapType(TF_MAP_CART) || isMapType(TF_MAP_KOTH) || isMapType(TF_MAP_PASS)
-		|| isMapType(TF_MAP_CP) || isMapType(TF_MAP_PD) || isMapType(TF_MAP_ARENA) || isMapType(TF_MAP_SAXTON) || isMapType(TF_MAP_SD) || isMapType(TF_MAP_DM))
+	else if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || isMapType(TF_MAP_CART) || isMapType(TF_MAP_CTF) || isMapType(TF_MAP_KOTH) ||
+		isMapType(TF_MAP_CP) || isMapType(TF_MAP_PD) || isMapType(TF_MAP_ARENA) || isMapType(TF_MAP_SAXTON) || isMapType(TF_MAP_SD) || isMapType(TF_MAP_DM))
 	{
-		if ( m_pBoss.get() == pEntity )
+		if (m_pBoss.get() == pEntity)
 			return true;
 		// TODO: to allow RCBot to target Mafia Skeleton in pl_spineyard [APG]RoboCop[CL]
 		// for bots to target skeletons [APG]RoboCop[CL]
-		if (std::strcmp(pEntity->GetClassName(),"tf_zombie")==0)
+		if (std::strcmp(pEntity->GetClassName(), "tf_zombie") == 0 ||
+			std::strcmp(pEntity->GetClassName(), "base_boss") == 0 || // For Krampus and any other NPS which uses base_boss entity - RussiaTails
+			std::strcmp(pEntity->GetClassName(), "tf_robot_botler") == 0 || // Botler Robots from Embargo entity - RussiaTails
+			std::strcmp(pEntity->GetClassName(), "prop_soccer_ball") == 0)
 		{
 			m_pBoss = pEntity;
 			return true;
 		}
-		
+		if (isTankBoss(pEntity))
+		{
+			if (CTeamFortress2Mod::getTeam(pEntity) == TF2_TEAM_RED)
+			{
+				return false;
+			}
+			if (fFactor != nullptr)
+				*fFactor = 200.0f;
+
+			m_pBoss = pEntity;
+			return true;
+		}
+
 	}
 	else if (CTeamFortress2Mod::isMapType(TF_MAP_PIPEBALL))
 	{
@@ -579,12 +594,16 @@ bool CTeamFortress2Mod ::isBoss (edict_t *pEntity, float *fFactor)
 		}
 
 	}
-	else if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) )
+	else if (CTeamFortress2Mod::isMapType(TF_MAP_MVM))
 	{
-		if ( m_pBoss.get() == pEntity )
+		if (m_pBoss.get() == pEntity)
 			return true;
 		if (isTankBoss(pEntity))
 		{
+			if (CTeamFortress2Mod::getTeam(pEntity) == TF2_TEAM_RED)
+			{
+				return false;
+			}
 			if (fFactor != nullptr)
 				*fFactor = 200.0f;
 
@@ -841,27 +860,35 @@ int CTeamFortress2Mod::getArea()
 	return 0;
 }
 
-bool CTeamFortress2Mod :: isPayloadBomb ( edict_t *pEntity, const int iTeam )
+bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 {
 	const string_t mapname = gpGlobals->mapname;
 
 	const char* szmapname = mapname.ToCStr();
 
-	if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CART) && !(/*std::strncmp(szmapname, "plr_cutter", 10) == 0 || */std::strncmp(szmapname, "pl_embargo", 10) == 0 || std::strncmp(szmapname, "tow_", 4) == 0))
+	if (std::strncmp(szmapname, "pl_embargo", 10) == 0 && engine->IndexOfEdict(pEdict) >= 400) // Make bots focus on payload only - RussiaTails
 	{
-		return std::strncmp(pEntity->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEntity) == iTeam;
+		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
 	}
-	if (std::strncmp(szmapname, "pl_embargo", 10) == 0  && engine->IndexOfEdict(pEntity) >= 400) // Make bots focus on payload only - RussiaTails
+	if (std::strncmp(szmapname, "plr_cutter", 10) == 0)
 	{
-		return std::strncmp(pEntity->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEntity) == iTeam;
+		if ((engine->IndexOfEdict(pEdict) >= 400) && (CClassInterface::getTeam(pEdict) == TF2_TEAM_RED))
+		{
+			return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
+		}
+		if ((engine->IndexOfEdict(pEdict) >= 400) && (CClassInterface::getTeam(pEdict) == TF2_TEAM_BLUE))
+		{
+			return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
+		}
+		return nullptr;
 	}
-	/*if (std::strncmp(szmapname, "plr_cutter", 10) == 0 && engine->IndexOfEdict(pEntity) >= 400)
-	{
-		return std::strncmp(pEntity->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEntity) == iTeam;
-	}*/
 	if (std::strncmp(szmapname, "tow_", 4) == 0)
 	{
-		return std::strncmp(pEntity->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
+		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
+	}
+	else if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CART) && !(std::strncmp(szmapname, "plr_cutter", 10) == 0 || std::strncmp(szmapname, "pl_embargo", 10) == 0 || std::strncmp(szmapname, "tow_", 4) == 0))
+	{
+		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
 	}
 	return false;
 }
