@@ -7470,6 +7470,10 @@ enum : std::int8_t
 
 bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 {
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+	
 	bool bIsPipeBomb = false, bIsRocket = false, bValid = false, bIsBoss = false,
 		bIsGrenade = false;
 
