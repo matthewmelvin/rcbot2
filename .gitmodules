@@ -39,4 +39,4 @@
 	url = https://github.com/alliedmodders/sourcemod
 [submodule "hl2sdk-manifests"]
 	path = hl2sdk-manifests
-	url = https://github.com/alliedmodders/hl2sdk-manifests.git
+	url = https://github.com/alliedmodders/hl2sdk-manifests
