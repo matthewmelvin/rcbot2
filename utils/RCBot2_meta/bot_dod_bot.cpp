@@ -2334,7 +2334,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 			else
 				iWaypointType = CWaypointTypes::W_FL_SNIPER;
 
-			if ( inSquad() && !isSquadLeader() )
+			if ( inSquad() && !isSquadLeader() && m_pSquad->IsSquadLeaderValid() )
 			{
 				edict_t *pSquadLeader = m_pSquad->GetLeader();
 				Vector vSquadLeaderOrigin = CBotGlobals::entityOrigin(pSquadLeader);

@@ -53,6 +53,7 @@
 #include "bot_squads.h"
 #include "bot_waypoint_visibility.h"
 #include "bot_synergy.h"
+#include "rcbot/utils.h"
 
 //caxanga334: SDK 2013 contains macros for std::min and std::max which causes errors when compiling
 //#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
@@ -4456,9 +4457,12 @@ void CBotTF2DemomanPipeJump :: execute (CBot *pBot, CBotSchedule *pSchedule)
 		return;
 	}
 
-	if ( m_pPipeBomb )
+	edict_t* pPipeBomb = m_pPipeBomb.get();
+
+	// pipe bomb entity is set on state 0
+	if (m_iState > 0)
 	{
-		if ( !CBotGlobals::entityIsValid(m_pPipeBomb) )
+		if (!rcbot2utils::IsValidEdict(pPipeBomb))
 		{
 			fail();
 			return;
@@ -4482,13 +4486,14 @@ void CBotTF2DemomanPipeJump :: execute (CBot *pBot, CBotSchedule *pSchedule)
 			else if ( m_bFired && m_iStartingAmmo > m_pWeapon->getClip1(pBot) )
 			{
 				// find pipe bomb
-				m_pPipeBomb = CClassInterface::FindEntityByClassnameNearest(pBot->getOrigin(),"tf_projectile_pipe_remote",150.0f, nullptr);
+				edict_t* pipe = CClassInterface::FindEntityByClassnameNearest(pBot->getOrigin(), "tf_projectile_pipe_remote", 150.0f, nullptr);
 
-				if ( m_pPipeBomb )
+				if (rcbot2utils::IsValidEdict(pipe))
 				{
 					// set this up incase of fail, the bot knows he has a sticky there
 					static_cast<CBotTF2*>(pBot)->setStickyTrapType(m_vStart,TF_TRAP_TYPE_ENEMY);
 					m_iState++;
+					m_pPipeBomb = pipe;
 				}
 				else
 					fail();
@@ -4520,7 +4525,7 @@ void CBotTF2DemomanPipeJump :: execute (CBot *pBot, CBotSchedule *pSchedule)
 		{
 			Vector vel;
 
-			if ( CClassInterface::getVelocity(m_pPipeBomb,&vel) )
+			if ( CClassInterface::getVelocity(pPipeBomb, &vel) )
 			{
 				if ( vel.Length() > 1.0f )
 					break; // wait until the pipe bomb has rested
@@ -4529,11 +4534,11 @@ void CBotTF2DemomanPipeJump :: execute (CBot *pBot, CBotSchedule *pSchedule)
 			Vector v_comp = m_vEnd - m_vStart;
 			v_comp = v_comp / v_comp.Length();
 
-			const Vector v_pipe = CBotGlobals::entityOrigin(m_pPipeBomb);
+			const Vector v_pipe = CBotGlobals::entityOrigin(pPipeBomb);
 			Vector v_startrunup = v_pipe - v_comp * rcbot_demo_runup_dist.GetFloat();
 			v_startrunup.z = v_pipe.z;
 
-			pBot->lookAtEdict(m_pPipeBomb);
+			pBot->lookAtEdict(pPipeBomb);
 			pBot->setLookAtTask(LOOK_EDICT);
 
 			// m_pPipeBomb != NULL
@@ -4550,7 +4555,7 @@ void CBotTF2DemomanPipeJump :: execute (CBot *pBot, CBotSchedule *pSchedule)
 		{
 			Vector v_comp = m_vEnd - m_vStart;
 			v_comp = v_comp / v_comp.Length();
-			const Vector v_pipe = CBotGlobals::entityOrigin(m_pPipeBomb);
+			const Vector v_pipe = CBotGlobals::entityOrigin(pPipeBomb);
 
 			Vector v_endrunup = v_pipe + v_comp * rcbot_demo_runup_dist.GetFloat();
 			v_endrunup.z = v_pipe.z;
