@@ -3653,7 +3653,7 @@ bool CBotTF2 :: wantToFollowEnemy()
 			return true;
 		}
 	}
-	else if ( (m_fLastKnownTeamFlagTime > 0) && (pEnemy != nullptr) && (CTeamFortress2Mod::isMapType(TF_MAP_CTF)||CTeamFortress2Mod::isMapType(TF_MAP_MVM)) )
+	else if ( (m_fLastKnownTeamFlagTime > 0) && (pEnemy != nullptr) && (CTeamFortress2Mod::isMapType(TF_MAP_CTF)||CTeamFortress2Mod::isMapType(TF_MAP_MVM)||CTeamFortress2Mod::isMapType(TF_MAP_RD)||CTeamFortress2Mod::isMapType(TF_MAP_CP)||CTeamFortress2Mod::isMapType(TF_MAP_TC)) )
 	{
 		const Vector vDefend = m_vLastKnownTeamFlagPoint;
 
@@ -4475,7 +4475,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 		updateCarrying();
 	}
 
-	ADD_UTILITY(BOT_UTIL_CAPTURE_FLAG,(CTeamFortress2Mod::isMapType(TF_MAP_CTF)||CTeamFortress2Mod::isMapType(TF_MAP_SD)) && bHasFlag,0.95f)
+	ADD_UTILITY(BOT_UTIL_CAPTURE_FLAG,(CTeamFortress2Mod::isMapType(TF_MAP_CTF)||CTeamFortress2Mod::isMapType(TF_MAP_SD)||CTeamFortress2Mod::isMapType(TF_MAP_TC)||CTeamFortress2Mod::isMapType(TF_MAP_CP)||CTeamFortress2Mod::isMapType(TF_MAP_RD)) && bHasFlag,0.95f)
 
 	if ( iClass == TF_CLASS_ENGINEER )
 	{
@@ -4781,9 +4781,9 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 	ADD_UTILITY(BOT_UTIL_GETFLAG, (CTeamFortress2Mod::isMapType(TF_MAP_CTF)||(CTeamFortress2Mod::isMapType(TF_MAP_SD)&&CTeamFortress2Mod::canTeamPickupFlag_SD(iTeam,false))) && !bHasFlag,fGetFlagUtility)
 	ADD_UTILITY(BOT_UTIL_GETFLAG_LASTKNOWN, (CTeamFortress2Mod::isMapType(TF_MAP_CTF)||CTeamFortress2Mod::isMapType(TF_MAP_MVM)||(CTeamFortress2Mod::isMapType(TF_MAP_SD)&&CTeamFortress2Mod::canTeamPickupFlag_SD(iTeam,true))) && !bHasFlag && (m_fLastKnownFlagTime && (m_fLastKnownFlagTime > engine->Time())), fGetFlagUtility+0.1f)
 
-	ADD_UTILITY(BOT_UTIL_DEFEND_FLAG, CTeamFortress2Mod::isMapType(TF_MAP_MVM)||(CTeamFortress2Mod::isMapType(TF_MAP_CTF) && !bHasFlag), fDefendFlagUtility+0.1f)
+	ADD_UTILITY(BOT_UTIL_DEFEND_FLAG, CTeamFortress2Mod::isMapType(TF_MAP_MVM)||(CTeamFortress2Mod::isMapType(TF_MAP_CTF) && !bHasFlag)||(CTeamFortress2Mod::isMapType(TF_MAP_CP) && !bHasFlag)||(CTeamFortress2Mod::isMapType(TF_MAP_TC) && !bHasFlag)||(CTeamFortress2Mod::isMapType(TF_MAP_RD) && !bHasFlag), fDefendFlagUtility+0.1f)
 	ADD_UTILITY(BOT_UTIL_DEFEND_FLAG_LASTKNOWN, !bHasFlag &&
-		(CTeamFortress2Mod::isMapType(TF_MAP_CTF) || CTeamFortress2Mod::isMapType(TF_MAP_MVM) ||
+		(CTeamFortress2Mod::isMapType(TF_MAP_CTF) || CTeamFortress2Mod::isMapType(TF_MAP_MVM) || CTeamFortress2Mod::isMapType(TF_MAP_TC) || CTeamFortress2Mod::isMapType(TF_MAP_CP) || CTeamFortress2Mod::isMapType(TF_MAP_RD) ||
 		(CTeamFortress2Mod::isMapType(TF_MAP_SD) && 
 		(CTeamFortress2Mod::getFlagCarrierTeam()==CTeamFortress2Mod::getEnemyTeam(iTeam)))) &&
 		(m_fLastKnownTeamFlagTime && (m_fLastKnownTeamFlagTime > engine->Time())), 
@@ -4962,7 +4962,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 			fDefendFlagUtility + 0.3f)
 
 		ADD_UTILITY(BOT_UTIL_DEMO_STICKYTRAP_FLAG_LASTKNOWN,
-			(CTeamFortress2Mod::isMapType(TF_MAP_MVM) || CTeamFortress2Mod::isMapType(TF_MAP_CTF) || (CTeamFortress2Mod::isMapType(TF_MAP_SD) &&
+			(CTeamFortress2Mod::isMapType(TF_MAP_MVM) || CTeamFortress2Mod::isMapType(TF_MAP_CTF) || CTeamFortress2Mod::isMapType(TF_MAP_CP) || CTeamFortress2Mod::isMapType(TF_MAP_TC) || CTeamFortress2Mod::isMapType(TF_MAP_RD) || (CTeamFortress2Mod::isMapType(TF_MAP_SD) &&
 			(CTeamFortress2Mod::getFlagCarrierTeam() == CTeamFortress2Mod::getEnemyTeam(iTeam)))) && !bHasFlag &&
 			(m_fLastKnownTeamFlagTime && (m_fLastKnownTeamFlagTime > engine->Time())), fDefendFlagUtility + 0.4f)
 
