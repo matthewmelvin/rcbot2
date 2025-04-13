@@ -877,18 +877,21 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 		{
 			return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
 		}
-		return nullptr;
+		return false; // Replace nullptr with false
 	}
 	if (std::strncmp(szmapname, "tow_", 4) == 0)
 	{
 		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
 	}
-	else if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CART) && !(std::strncmp(szmapname, "plr_cutter", 10) == 0 || std::strncmp(szmapname, "pl_embargo", 10) == 0 || std::strncmp(szmapname, "tow_", 4) == 0))
+	if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) ||
+		(CTeamFortress2Mod::isMapType(TF_MAP_CART) &&
+			!(std::strncmp(szmapname, "plr_cutter", 10) == 0 || std::strncmp(szmapname, "pl_embargo", 10) == 0 || std::strncmp(szmapname, "tow_", 4) == 0)))
 	{
 		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
 	}
 	return false;
 }
+
 
 
 void CTeamFortress2Mod::checkMVMTankBoss(edict_t *pEntity)
