@@ -385,7 +385,7 @@ bool CBotFortress :: startGame()
 	    if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted() )
                 return true;
         
-            if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || CTeamFortress2Mod::isMapType(TF_MAP_GG) || std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "cw_", 3) == 0 || std::strncmp(szmapname, "ctf_2fort_sniperwars", 20) == 0 || std::strncmp(szmapname, "dm_", 3) == 0 )
+            if ( CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || CTeamFortress2Mod::isMapType(TF_MAP_GG) || std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "cw_", 3) == 0 || std::strncmp(szmapname, "ctf_2fort_sniperwars", 20) == 0 || std::strncmp(szmapname, "dm_", 3) == 0 )
                 return true;
 
 		selectClass();
