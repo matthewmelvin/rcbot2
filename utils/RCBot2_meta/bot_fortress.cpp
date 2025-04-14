@@ -363,6 +363,10 @@ bool CBotTF2 :: sentryRecentlyHadEnemy () const
 
 bool CBotFortress :: startGame()
 {
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+	
 	const int team = m_pPlayerInfo->GetTeamIndex();
 	
 	m_iClass = static_cast<TF_Class>(CClassInterface::getTF2Class(m_pEdict));
@@ -375,11 +379,14 @@ bool CBotFortress :: startGame()
 	{
 		chooseClass();
 	}
-	else if (m_iClass == TF_CLASS_MAX) // Removed "(m_iDesiredClass>0 && (m_iClass != m_iDesiredClass))" to avoid bots trying to change class when it was forced by something like in VSH and VIP maps
+	else if ((m_iDesiredClass > 0 && (m_iClass != m_iDesiredClass)) || (m_iClass == TF_CLASS_MAX)) // Removed "(m_iDesiredClass>0 && (m_iClass != m_iDesiredClass))" to avoid bots trying to change class when it was forced by something like in VSH and VIP maps
 	{
 		// can't change class in MVM during round!
-		//if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted() )
-		//	return true;
+	    if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted() )
+                return true;
+        
+            if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || CTeamFortress2Mod::isMapType(TF_MAP_GG) || std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "quake_", 6) == 0 || std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "ctf_2fort_sniperwars", 20) == 0 || std::strncmp(szmapname, "dm_", 3) == 0 )
+                return true;
 
 		selectClass();
 	}
