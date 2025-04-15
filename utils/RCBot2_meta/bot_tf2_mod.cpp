@@ -877,7 +877,7 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 		{
 			return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
 		}
-		return nullptr;
+		return false;
 	}
 	if (std::strncmp(szmapname, "plr_matterhorn", 14) == 0)
 	{
@@ -885,7 +885,7 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 		{
 			return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
 		}
-		return nullptr;
+		return false;
 	}
 	if (std::strncmp(szmapname, "tow_", 4) == 0)
 	{
