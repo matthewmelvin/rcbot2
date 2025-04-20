@@ -2478,6 +2478,10 @@ void CBotFortress :: callMedic ()
 
 bool CBotTF2 :: canGotoWaypoint (const Vector vPrevWaypoint, CWaypoint* pWaypoint, CWaypoint* pPrev)
 {
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+	
 	if (CBotFortress::canGotoWaypoint(vPrevWaypoint,pWaypoint,pPrev) )
 	{
 		static edict_t *pSentry;
@@ -2590,7 +2594,7 @@ bool CBotTF2 :: canGotoWaypoint (const Vector vPrevWaypoint, CWaypoint* pWaypoin
 						
 		}
 
-		if ( CTeamFortress2Mod::isMapType(TF_MAP_CART) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) )
+		if ( CTeamFortress2Mod::isMapType(TF_MAP_CART) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || (std::strncmp(szmapname, "sd_offload", 10) == 0) || (std::strncmp(szmapname, "cp_helmsdeep_v2", 15) == 0))
 		{
 			if ( m_pRedPayloadBomb.get() != nullptr)
 			{
@@ -2891,6 +2895,10 @@ void CBotTF2::modThink()
 	static bool bNeedHealth;
 	static bool bNeedAmmo;
 
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+
 	// FIX: MUST Update class
 	m_iClass = static_cast<TF_Class>(CClassInterface::getTF2Class(m_pEdict));
 
@@ -2944,6 +2952,13 @@ void CBotTF2::modThink()
 		{
 			m_pPushPayloadBomb = nullptr;
 			m_pDefendPayloadBomb = m_pBluePayloadBomb;
+		}
+	}
+	else if (std::strncmp(szmapname, "sd_offload", 10) == 0)
+	{
+		if ((getTeam() == TF2_TEAM_BLUE || getTeam() == TF2_TEAM_RED) && m_bHasFlag)
+		{
+			m_pPushPayloadBomb = m_pBluePayloadBomb;
 		}
 	}
 	/*else if (CTeamFortress2Mod::isMapType(TF_MAP_MVM))
@@ -4375,6 +4390,10 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 	//static float fHealthUtil = 0.5f;
 	//static float fAmmoUtil = 0.5f;
 
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+
 	// if in setup time this will tell bot not to shoot yet
 	wantToShoot(CTeamFortress2Mod::hasRoundStarted());
 	wantToListen(CTeamFortress2Mod::hasRoundStarted());	
@@ -4956,6 +4975,15 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 				(hasSomeConditions(CONDITION_PUSH)?0.25f:randomFloat(-0.1f,0.2f)))
 		}
 	}
+	else if (std::strncmp(szmapname, "sd_offload", 10) == 0)
+	{
+		if ((iTeam == TF2_TEAM_BLUE || iTeam == TF2_TEAM_RED) && m_bHasFlag)
+		{
+			ADD_UTILITY(BOT_UTIL_PUSH_PAYLOAD_BOMB, ((m_iClass != TF_CLASS_SPY) || !isDisguised()) && (m_pPushPayloadBomb != NULL),
+				fGetFlagUtility + (hasSomeConditions(CONDITION_PUSH) ? 0.25f : randomFloat(-0.1f, 0.2f)))
+				// Goto Payload bomb
+		}
+	}
 	
 	if ((m_iClass == TF_CLASS_DEMOMAN) && (m_iTrapType == TF_TRAP_TYPE_NONE) && canDeployStickies())
 	{
@@ -5266,6 +5294,10 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 	id =  util->getId();
 	pWaypoint = nullptr;
 
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+
 		switch ( id )
 		{
 		case BOT_UTIL_DEFEND_PAYLOAD_BOMB:
@@ -5420,7 +5452,7 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 			{
 				float fprob;
 
-				if ( (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CART)) )
+				if ( (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CART) || (std::strncmp(szmapname, "sd_offload", 10) == 0) || (std::strncmp(szmapname, "cp_helmsdeep_v2", 15) == 0)) )
 				{
 					if ( m_pDefendPayloadBomb != nullptr)
 					{
@@ -7817,7 +7849,11 @@ void CBotTF2::MannVsMachineAlarmTriggered(const Vector& vLoc)
 // Go back to Cap/Flag to 
 void CBotTF2 :: enemyAtIntel ( Vector vPos, const int type, const int iArea )
 {
+	
+	const string_t mapname = gpGlobals->mapname;
 
+	const char* szmapname = mapname.ToCStr();
+	
 	if ( m_pSchedules->getCurrentSchedule() )
 	{
 		if ( m_pSchedules->getCurrentSchedule()->isID(SCHED_RETURN_TO_INTEL) )
@@ -7827,7 +7863,7 @@ void CBotTF2 :: enemyAtIntel ( Vector vPos, const int type, const int iArea )
 		}
 	}
 
-	if ( CBotGlobals::entityIsValid(m_pDefendPayloadBomb) && (CTeamFortress2Mod::isMapType(TF_MAP_CART)||CTeamFortress2Mod::isMapType(TF_MAP_CPPL)||CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE)) )
+	if ( CBotGlobals::entityIsValid(m_pDefendPayloadBomb) && (CTeamFortress2Mod::isMapType(TF_MAP_CART)||CTeamFortress2Mod::isMapType(TF_MAP_CPPL)||CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE)||(std::strncmp(szmapname, "sd_offload", 10) == 0) || (std::strncmp(szmapname, "cp_helmsdeep_v2", 15) == 0)) )
 	{
 		vPos = CBotGlobals::entityOrigin(m_pDefendPayloadBomb);
 	}
@@ -7837,7 +7873,7 @@ void CBotTF2 :: enemyAtIntel ( Vector vPos, const int type, const int iArea )
 		if ( ( m_iTrapType != TF_TRAP_TYPE_POINT ) || (iArea == m_iTrapCPIndex) )
 		{
 			// Stickies at PL Capture or bomb point
-			if ( (( m_iTrapType == TF_TRAP_TYPE_POINT ) || ( m_iTrapType == TF_TRAP_TYPE_PL )) && ( CTeamFortress2Mod::isMapType(TF_MAP_CART) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE)) )
+			if ( (( m_iTrapType == TF_TRAP_TYPE_POINT ) || ( m_iTrapType == TF_TRAP_TYPE_PL )) && ( CTeamFortress2Mod::isMapType(TF_MAP_CART) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE)||(std::strncmp(szmapname, "sd_offload", 10) == 0) || (std::strncmp(szmapname, "cp_helmsdeep_v2", 15) == 0)) )
 			{
 				edict_t *pBomb;
 
