@@ -40,3 +40,6 @@
 [submodule "hl2sdk-manifests"]
 	path = hl2sdk-manifests
 	url = https://github.com/alliedmodders/hl2sdk-manifests
+[submodule "alliedmodders/hl2sdk-proxy-repo"]
+	path = alliedmodders/hl2sdk-proxy-repo
+	url = https://github.com/alliedmodders/hl2sdk
