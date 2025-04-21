@@ -863,6 +863,8 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 
 	const char* szmapname = mapname.ToCStr();
 
+	const string_t model = pEdict->GetIServerEntity()->GetModelName();
+
 	if (std::strncmp(szmapname, "pl_embargo", 10) == 0 && engine->IndexOfEdict(pEdict) >= 400) // Make bots focus on payload only - RussiaTails
 	{
 		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
@@ -881,7 +883,7 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 	}
 	if (std::strncmp(szmapname, "plr_matterhorn", 14) == 0)
 	{
-		if (engine->IndexOfEdict(pEdict) >= 700)
+		if (engine->IndexOfEdict(pEdict) >= 730)
 		{
 			return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
 		}
@@ -891,7 +893,11 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 	{
 		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
 	}
-	else if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CART) && !(std::strncmp(szmapname, "plr_cutter", 10) == 0 || std::strncmp(szmapname, "plr_matterhorn", 14) == 0 || std::strncmp(szmapname, "pl_embargo", 10) == 0 || std::strncmp(szmapname, "tow_", 4) == 0))
+	if (std::strncmp(szmapname, "sd_offload", 10) == 0)
+	{
+		return (std::strncmp(pEdict->GetClassName(), "prop_dynamic", 12) == 0) && std::strcmp(model.ToCStr(), "models/props_doomsday/cap_point_small.mdl") == 0;
+	}
+	else if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::isMapType(TF_MAP_CART) && !(std::strncmp(szmapname, "plr_cutter", 10) == 0 || std::strncmp(szmapname, "plr_matterhorn", 14) == 0 || std::strncmp(szmapname, "pl_embargo", 10) == 0 || std::strncmp(szmapname, "sd_offload", 10) == 0 || std::strncmp(szmapname, "tow_", 4) == 0))
 	{
 		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
 	}
