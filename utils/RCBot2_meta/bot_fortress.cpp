@@ -7694,6 +7694,10 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 	{
 		bValid = true;
 	}
+	else if ( CTeamFortress2Mod::isBoss(pEdict) )
+	{
+		bIsBoss = bValid = true;
+	}
 	// "FrenzyTime" is the time it takes for the bot to check out where he got hurt
 	else if ( (m_iClass != TF_CLASS_SPY) || (m_fFrenzyTime > engine->Time()) )	
 	{
