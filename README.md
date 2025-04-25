@@ -104,7 +104,7 @@ Additionally, `rcbot/logging.{h,cpp}` is released separately under the
 ### Personal To-do list (TF2):-
 
 - To add delay reaction on spy's disguise exposure
-- To add Scream Fortress gamemode support
+- To add Slender Fortress gamemode support
 - To add PASS Time support
 - To disable using sniper waypoints when a bot holds a bow
 - To add support for some hybrid maps
