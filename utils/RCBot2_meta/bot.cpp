@@ -384,7 +384,7 @@ bool CBot :: createBotFromEdict(edict_t *pEdict, CBotProfile *pProfile)
 	engine->SetFakeClientConVarValue(pEdict,"cl_playermodel",szModel);
 	engine->SetFakeClientConVarValue(pEdict,"hud_fastswitch","1");
 
-	/*#if SOURCE_ENGINE == SE_TF2
+	#if SOURCE_ENGINE == SE_TF2
 	helpers->ClientCommand(pEdict, "jointeam auto");
 
 	//"heavy" should be "heavyweapons" in TF2?
@@ -410,7 +410,7 @@ bool CBot :: createBotFromEdict(edict_t *pEdict, CBotProfile *pProfile)
 	}
 	
 	helpers->ClientCommand(pEdict, cmd);
-	#endif*/
+	#endif
 	/////////////////////////////
 
 	return true;
