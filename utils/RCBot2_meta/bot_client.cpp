@@ -1023,9 +1023,7 @@ void CClient :: clientDisconnected ()
 			// Prevents crashes since RCBot2 tries to read the squad leader in some places without NULL checks.
 			if (pBot->inSquad() && pBot->isSquadLeader())
 			{
-				CBotSquad* squad = CBotSquads::FindSquadByLeader(m_pPlayer);
-
-				if (squad)
+				if (CBotSquad* squad = CBotSquads::FindSquadByLeader(m_pPlayer))
 				{
 					CBotSquads::RemoveSquad(squad);
 				}

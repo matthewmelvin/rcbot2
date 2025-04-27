@@ -99,8 +99,7 @@ void CDODBot :: bombEvent ( int iEvent, const int iCP, const int iTeam )
 	}
 }
 
-CDODBot :: CDODBot() :
-	CBot()
+CDODBot :: CDODBot()
 {
 	CDODBot::init(true);
 }

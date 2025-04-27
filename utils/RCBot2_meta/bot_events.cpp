@@ -1280,9 +1280,8 @@ void CBotEvents::executeEvent(void* pEvent, const eBotEventType iType)
 		//if ( ( iType != TYPE_IGAMEEVENT ) && pFound->hasEventId() )
 		//	bFound = pFound->isEventId(iEventId);
 		//else
-		const bool bFound = pFound->forCurrentMod() && pFound->isType(pInterface->getName());
 
-		if ( bFound )	
+		if ( const bool bFound = pFound->forCurrentMod() && pFound->isType(pInterface->getName()) )	
 		{
 			const int userid = pInterface->getInt("userid",-1);
 			// set pEvent id for quick checking

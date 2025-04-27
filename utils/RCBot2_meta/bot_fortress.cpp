@@ -879,9 +879,7 @@ void CBotFortress :: died ( edict_t *pKiller, const char *pszWeapon )
 
 void CBotTF2 :: buildingDestroyed ( int iType, edict_t *pAttacker, edict_t *pEdict )
 {
-	const eEngiBuild type = static_cast<eEngiBuild>(iType);
-
-	switch ( type )
+	switch ( const eEngiBuild type = static_cast<eEngiBuild>(iType) )
 	{
 	case ENGI_DISP:
 			m_pDispenser = nullptr;
