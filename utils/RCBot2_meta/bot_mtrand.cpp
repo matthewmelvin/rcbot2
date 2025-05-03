@@ -134,7 +134,7 @@ void MTRand_int32::seed(const unsigned long s)
   p = n; // force gen_state() to be called for next random number
 }
 
-void MTRand_int32::seed(const unsigned long* array, const size_t size) const
+void MTRand_int32::seed(const unsigned long* array, const int size) const
 { // init by array
     seed(19650218UL);
     size_t i = 1, j = 0;
@@ -155,7 +155,7 @@ void MTRand_int32::seed(const unsigned long* array, const size_t size) const
 }
 
 //TODO: 64-bit generator? [APG]RoboCop[CL]
-/*void MTRand_int64::seed(const unsigned long long* array, const size_t size) const
+/*void MTRand_int64::seed(const unsigned long long* array, const int size) const
 { // init by array for 64-bit generator
     seed(19650218ULL);
     size_t i = 1, j = 0;

@@ -133,6 +133,7 @@ std::size_t UTIL_Format(char *buffer, const std::size_t maxlength, const char *f
 METAMOD_PLUGIN* _GetPluginPtr(const char* path, const int fail_api)
 {
 	METAMOD_FN_ORIG_LOAD fn;
+	METAMOD_PLUGIN* pl = nullptr; // Declare and initialize `pl` at the top [APG]RoboCop[CL]
 	int ret;
 
 	if (!((g_hCore = openlib(path))))
@@ -160,8 +161,7 @@ METAMOD_PLUGIN* _GetPluginPtr(const char* path, const int fail_api)
 	{
 		goto error;
 	}
-
-	METAMOD_PLUGIN* pl = static_cast<METAMOD_PLUGIN*>(fn(METAMOD_PLAPI_NAME, &ret));
+	pl = static_cast<METAMOD_PLUGIN*>(fn(METAMOD_PLAPI_NAME, &ret));
 	if (!pl)
 	{
 		goto error;
@@ -173,6 +173,7 @@ error:
 	g_hCore = nullptr;
 	return nullptr;
 }
+
 
 DLL_EXPORT METAMOD_PLUGIN* CreateInterface_MMS(const MetamodVersionInfo* mvi, const MetamodLoaderInfo* mli)
 {
