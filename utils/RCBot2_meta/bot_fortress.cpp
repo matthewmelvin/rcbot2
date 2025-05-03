@@ -8024,6 +8024,9 @@ CBotTF2::CBotTF2(): m_nextVoicecmd()
 {
 	CBotFortress();
 	//m_nextVoicecmd();
+
+    //m_vStickyLocation = Vector(); // Initialize or reset the Vector object properly? [APG]RoboCop[CL]
+
 	m_iMvMUpdateTime = 0;
 	m_iDesiredResistType = 0;
 	m_pVTable = nullptr;
