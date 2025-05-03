@@ -90,7 +90,7 @@ public:
   void operator=(const MTRand_int32&) = delete; // assignment operator not defined
 // the two seed functions
 static void seed(unsigned long); // seed with 32 bit integer
-  void seed(const unsigned long*, int size) const; // seed with array
+  void seed(const unsigned long*, size_t size) const; // seed with array
 // overload operator() to make this a generator (functor)
   unsigned long operator()() { return rand_int32(); }
 // 2007-02-11: made the destructor virtual; thanks "double more" for pointing this out
@@ -108,10 +108,19 @@ static unsigned long twiddle(unsigned long, unsigned long); // used by gen_state
   void gen_state(); // generate new state
 };
 
+// Mask to isolate the most significant bit (MSB) in a 32-bit unsigned integer
+constexpr unsigned long MSB_MASK = 0x80000000UL;
+// Mask to represent all bits set in a 32-bit unsigned integer
+constexpr unsigned long BIT_MASK_32 = 0xFFFFFFFFUL;
+// Mask for all bits except the MSB
+constexpr unsigned long LSB_MASK = 0x7FFFFFFFUL;
+// Mersenne Twister constant
+constexpr unsigned long TEMPERING_CONSTANT = 0x9908B0DFUL; 
+
 // inline for speed, must therefore reside in header file
 inline unsigned long MTRand_int32::twiddle(const unsigned long u, const unsigned long v) {
-	return ((u & 0x80000000UL) | (v & 0x7FFFFFFFUL)) >> 1
-		^ (v & 1UL ? 0x9908B0DFUL : 0x0UL);
+	return ((u & MSB_MASK) | (v & LSB_MASK)) >> 1
+		^ (v & 1UL ? TEMPERING_CONSTANT : 0x0UL);
 }
 
 inline unsigned long MTRand_int32::rand_int32() { // generate 32 bit random int
