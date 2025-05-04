@@ -137,15 +137,15 @@ void MTRand_int32::seed(const unsigned long s)
 void MTRand_int32::seed(const unsigned long* array, const int size) const
 { // init by array
     seed(19650218UL);
-    size_t i = 1, j = 0;
-    for (size_t k = n > size ? n : size; k; --k) {
+    int i = 1, j = 0;
+    for (int k = n > size ? n : size; k; --k) {
         state[i] = (state[i] ^ (state[i - 1] ^ (state[i - 1] >> 30)) * 1664525UL)
             + array[j] + j; // non linear
         state[i] &= BIT_MASK_32; // for > 32 bit machines
         ++j; j %= size;
         if (++i == n) { state[0] = state[n - 1]; i = 1; }
     }
-    for (size_t k = n - 1; k; --k) {
+    for (int k = n - 1; k; --k) {
         state[i] = (state[i] ^ (state[i - 1] ^ (state[i - 1] >> 30)) * 1566083941UL) - i;
         state[i] &= BIT_MASK_32; // for > 32 bit machines
         if (++i == n) { state[0] = state[n - 1]; i = 1; }
