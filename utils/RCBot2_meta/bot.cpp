@@ -384,7 +384,7 @@ bool CBot :: createBotFromEdict(edict_t *pEdict, CBotProfile *pProfile)
 	engine->SetFakeClientConVarValue(pEdict,"cl_playermodel",szModel);
 	engine->SetFakeClientConVarValue(pEdict,"hud_fastswitch","1");
 
-	/*#if SOURCE_ENGINE == SE_TF2
+	#if SOURCE_ENGINE == SE_TF2
 	helpers->ClientCommand(pEdict, "jointeam auto");
 
 	//"heavy" should be "heavyweapons" in TF2?
@@ -396,21 +396,22 @@ bool CBot :: createBotFromEdict(edict_t *pEdict, CBotProfile *pProfile)
 	//"engineer", "sniper", "spy",
 	//};
 	
-	char cmd[32]; // conflicts with bot.h `CBotCmd cmd`? [APG]RoboCop[CL]
+	char command[32];
 
+	//TODO: To reduce any instability issues that could cause crashes [APG]RoboCop[CL]
 	if (m_iDesiredClass >= 0 && static_cast<unsigned>(m_iDesiredClass) < 10) {
 		char classNames[10][10] = {
 			"auto", "scout", "sniper", "soldier", "demoman", "medic", "heavy",
 			"pyro", "spy", "engineer"
 		};
-		snprintf(cmd, sizeof(cmd), "joinclass %s", classNames[m_iDesiredClass]);
+		snprintf(command, sizeof(command), "joinclass %s", classNames[m_iDesiredClass]);
 	}
 	else {
-		snprintf(cmd, sizeof(cmd), "joinclass auto");
+		snprintf(command, sizeof(command), "joinclass auto");
 	}
 	
-	helpers->ClientCommand(pEdict, cmd);
-	#endif*/
+	helpers->ClientCommand(pEdict, command);
+	#endif
 	/////////////////////////////
 
 	return true;
@@ -2035,9 +2036,9 @@ void CBot :: listenForPlayers ()
 		
 		float fFactor = 0.0f;
 
-		const CBotCmd cmd = p->GetLastUserCommand(); //conflicts with bot.h `CBotCmd cmd`? [APG]RoboCop[CL]
+		const CBotCmd command = p->GetLastUserCommand();
 
-		if ( cmd.buttons & IN_ATTACK )
+		if ( command.buttons & IN_ATTACK )
 		{
 			if ( wantToListenToPlayerAttack(pPlayer) )
 				fFactor += 1000.0f;
@@ -2064,7 +2065,7 @@ void CBot :: listenForPlayers ()
 		{
 			fMaxFactor = fFactor;
 			pListenNearest = pPlayer;
-			bIsNearestAttacking = cmd.buttons & IN_ATTACK;
+			bIsNearestAttacking = command.buttons & IN_ATTACK;
 		}
 	}
 
@@ -2909,9 +2910,9 @@ void CBot :: doLook ()
 		if ( m_iLookTask == LOOK_GROUND )
 			requiredAngles.x = 89.0f;
 
-		const CBotCmd cmd = m_pPlayerInfo->GetLastUserCommand(); //conflicts with bot.h `CBotCmd cmd`? [APG]RoboCop[CL]
+		const CBotCmd command = m_pPlayerInfo->GetLastUserCommand();
 
-		m_vViewAngles = cmd.viewangles;
+		m_vViewAngles = command.viewangles;
 
 		if (m_vViewAngles.x == 0.0f && m_vViewAngles.y == 0.0f) {
 			CClients::clientDebugMsg(BOT_DEBUG_AIM, "view angle invalid", this);

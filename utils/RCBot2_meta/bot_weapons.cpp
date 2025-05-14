@@ -924,9 +924,7 @@ CBotWeapon* CBotWeapons::getActiveWeapon(const char* szWeaponName, edict_t* pWea
 
 	if (szWeaponName && *szWeaponName)
 	{
-		const CWeapon* pWeapon = CWeapons::getWeapon(szWeaponName);
-
-		if (pWeapon)
+		if (const CWeapon* pWeapon = CWeapons::getWeapon(szWeaponName))
 		{
 			for (CBotWeapon& m_theWeapon : m_theWeapons)
 			{

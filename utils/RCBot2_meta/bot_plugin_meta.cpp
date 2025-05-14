@@ -754,9 +754,7 @@ void RCBotPluginMeta::Hook_ClientPutInServer(edict_t *pEntity, char const* playe
 	CBaseEntity *pEnt = servergameents->EdictToBaseEntity(pEntity); //`*pEnt` Unused? [APG]RoboCop[CL]
 	constexpr bool is_Rcbot = false;
 
-	CClient *pClient = CClients::clientConnected(pEntity);
-
-	if ( !is_Rcbot && pClient ) //`!is_Rcbot` Unused? [APG]RoboCop[CL]
+	if ( CClient *pClient = CClients::clientConnected(pEntity) )
 	{
 		if ( !engine->IsDedicatedServer() )
 		{

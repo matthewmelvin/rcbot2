@@ -5031,12 +5031,14 @@ void CBotTF2Spam :: execute (CBot *pBot, CBotSchedule *pSchedule)
 
 ///////////
 
-CBotTF2AttackSentryGunTask::CBotTF2AttackSentryGunTask (edict_t *pSentryGun, CBotWeapon *pWeapon) : m_pSentryGun(pSentryGun)
+CBotTF2AttackSentryGunTask::CBotTF2AttackSentryGunTask(edict_t* pSentryGun, CBotWeapon* pWeapon)
+	//: m_vStart(0, 0, 0), m_vHide(0, 0, 0) // Required for SGs to face the direction correctly? [APG]RoboCop[CL]
 {
 	m_iStartingWaypoint = 0;
 	m_iSentryWaypoint = 0;
 	m_fDist = 0.0f;
 	m_fTime = 0.0f;
+	m_pSentryGun = pSentryGun;
 	m_pWeapon = pWeapon;
 }
 

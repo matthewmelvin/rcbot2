@@ -379,7 +379,7 @@ bool CBotFortress :: startGame()
 	{
 		chooseClass();
 	}
-	else if ((m_iDesiredClass > 0 && (m_iClass != m_iDesiredClass)) || (m_iClass == TF_CLASS_MAX)) // Removed "(m_iDesiredClass>0 && (m_iClass != m_iDesiredClass))" to avoid bots trying to change class when it was forced by something like in VSH and VIP maps
+	/*else if ((m_iDesiredClass > 0 && (m_iClass != m_iDesiredClass)) || (m_iClass == TF_CLASS_MAX)) // Removed "(m_iDesiredClass>0 && (m_iClass != m_iDesiredClass))" to avoid bots trying to change class when it was forced by something like in VSH and VIP maps
 	{
 		// can't change class in MVM during round!
 	    if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted() )
@@ -389,7 +389,7 @@ bool CBotFortress :: startGame()
                 return true;
 
 		selectClass();
-	}
+	}*/
 	else
 		return true;
 
@@ -879,9 +879,7 @@ void CBotFortress :: died ( edict_t *pKiller, const char *pszWeapon )
 
 void CBotTF2 :: buildingDestroyed ( int iType, edict_t *pAttacker, edict_t *pEdict )
 {
-	const eEngiBuild type = static_cast<eEngiBuild>(iType);
-
-	switch ( type )
+	switch ( const eEngiBuild type = static_cast<eEngiBuild>(iType) )
 	{
 	case ENGI_DISP:
 			m_pDispenser = nullptr;
@@ -8026,6 +8024,9 @@ CBotTF2::CBotTF2(): m_nextVoicecmd()
 {
 	CBotFortress();
 	//m_nextVoicecmd();
+
+    //m_vStickyLocation = Vector(); // Initialize or reset the Vector object properly? [APG]RoboCop[CL]
+
 	m_iMvMUpdateTime = 0;
 	m_iDesiredResistType = 0;
 	m_pVTable = nullptr;
