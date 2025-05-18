@@ -1292,29 +1292,26 @@ void CBot :: updateConditions ()
 }
 
 // Called when working out route
-bool CBot :: canGotoWaypoint (const Vector vPrevWaypoint, CWaypoint *pWaypoint, CWaypoint *pPrev)
+bool CBot::canGotoWaypoint(const Vector& vPrevWaypoint, CWaypoint* pWaypoint, CWaypoint* pPrev)
 {
-	if ( pWaypoint->hasFlag(CWaypointTypes::W_FL_UNREACHABLE) ) 
+	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_UNREACHABLE))
 		return false;
-
-	if ( !pWaypoint->forTeam(getTeam()) )
+	if (!pWaypoint->forTeam(getTeam()))
 		return false;
-
-	if ( pWaypoint->hasFlag(CWaypointTypes::W_FL_OPENS_LATER) )
+	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_OPENS_LATER))
 	{
-		if ( pPrev != nullptr)
+		if (pPrev != nullptr)
 		{
 			return pPrev->isPathOpened(pWaypoint->getOrigin());
 		}
-		if ( vPrevWaypoint != pWaypoint->getOrigin() && !CBotGlobals::checkOpensLater(vPrevWaypoint,pWaypoint->getOrigin()) )
+		if (vPrevWaypoint != pWaypoint->getOrigin() && !CBotGlobals::checkOpensLater(vPrevWaypoint, pWaypoint->getOrigin()))
 			return false;
 	}
-
-	if ( pWaypoint->hasFlag(CWaypointTypes::W_FL_FALL) )
+	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_FALL))
 	{
-		if ( getHealthPercent() <= 0.1f )
+		if (getHealthPercent() <= 0.1f)
 		{
-			if ( vPrevWaypoint.z - pWaypoint->getOrigin().z > 200.0f )
+			if (vPrevWaypoint.z - pWaypoint->getOrigin().z > 200.0f)
 				return false;
 		}
 	}
@@ -2099,7 +2096,7 @@ void CBot :: listenToPlayer ( edict_t *pPlayer, bool bIsEnemy, const bool bIsAtt
 		}
 		else if ( bIsAttacking )
 		{
-			if ( !bIsEnemy && wantToInvestigateSound() )
+			if ( !bIsEnemy && wantToInvestigateSound() ) //TODO: !bIsEnemy always true? [APG]RoboCop[CL]
 			{
 				const QAngle angle = p->GetAbsAngles();
 				Vector forward;
@@ -3397,7 +3394,10 @@ void CBots :: botThink ()
 
 				#endif
 			}
-			if ( bot_command.GetString() && *bot_command.GetString() )
+
+			const char* command = bot_command.GetString();
+
+			if (command && *command)
 			{
 				helpers->ClientCommand(pBot->getEdict(),bot_command.GetString());
 

@@ -3263,7 +3263,7 @@ void CBotTF2Snipe :: execute (CBot *pBot, CBotSchedule *pSchedule)
 	if (pWeapon->getSlot() != 0)
 	{
 		CBotWeapons* pWeapons = pBot->getWeapons();
-		CBotWeapon* bot_weapon = pWeapons->getCurrentWeaponInSlot(0);
+		const CBotWeapon* bot_weapon = pWeapons->getCurrentWeaponInSlot(0);
 
 		if (bot_weapon && !pBot->select_CWeapon(bot_weapon->getWeaponInfo()))
 		{
