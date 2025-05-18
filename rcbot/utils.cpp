@@ -23,19 +23,19 @@ extern IStaticPropMgrServer* staticpropmgr;
 
 namespace private_utils
 {
-	static Vector GetOBBCenter(ICollideable* collider)
+	static Vector GetOBBCenter(const ICollideable* collider)
 	{
 		Vector result(0.0f, 0.0f, 0.0f);
 		VectorLerp(collider->OBBMins(), collider->OBBMaxs(), 0.5f, result);
 		return result;
 	}
 
-	static bool isBoundsDefinedInEntitySpace(ICollideable* collider)
+	static bool isBoundsDefinedInEntitySpace(const ICollideable* collider)
 	{
 		return ((collider->GetSolidFlags() & FSOLID_FORCE_WORLD_ALIGNED) == 0 && collider->GetSolid() != SOLID_BBOX && collider->GetSolid() != SOLID_NONE);
 	}
 
-	static Vector collisionToWorldSpace(const Vector& in, ICollideable* collider)
+	static Vector collisionToWorldSpace(const Vector& in, const ICollideable* collider)
 	{
 		Vector result(0.0f, 0.0f, 0.0f);
 
@@ -124,7 +124,7 @@ CBaseEntity* rcbot2utils::GetEntityFromHandleEntity(const IHandleEntity* pHandle
 	return pUnk->GetBaseEntity();
 }
 
-edict_t* rcbot2utils::GetHandleEdict(CBaseHandle& handle)
+edict_t* rcbot2utils::GetHandleEdict(const CBaseHandle& handle)
 {
 	if (!handle.IsValid())
 	{

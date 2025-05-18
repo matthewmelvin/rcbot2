@@ -4558,9 +4558,9 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 		static bool bMoveObjs;
 		const bool bCanBuild = m_pWeapons->hasWeapon(TF2_WEAPON_BUILDER);
 
-		const string_t mapname = gpGlobals->mapname;
+		const string_t string = gpGlobals->mapname;
 
-		const char* szmapname = mapname.ToCStr();
+		const char* str1 = string.ToCStr();
 
 		bMoveObjs = rcbot_move_obj.GetBool();
 
@@ -4626,7 +4626,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 			ADD_UTILITY(BOT_UTIL_ENGI_MOVE_SENTRY,(CTeamFortress2Mod::hasRoundStarted()||CTeamFortress2Mod::isMapType(TF_MAP_MVM)) && (!m_bIsCarryingObj || m_bIsCarryingSentry) && 
 				bMoveObjs && (m_fSentryPlaceTime>0.0f) && !bHasFlag && m_pSentryGun && (CClassInterface::getSentryEnemy(
 					m_pSentryGun) == NULL) && ((m_fLastSentryEnemyTime + 15.0f) < engine->Time()) &&
-				(!CTeamFortress2Mod::isMapType(TF_MAP_CP) || !std::strncmp(szmapname, "ctf_chouhen", 11) == 0 || !CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::m_ObjectiveResource.testProbWptArea(m_iSentryArea,m_iTeam)) &&
+				(!CTeamFortress2Mod::isMapType(TF_MAP_CP) || !std::strncmp(str1, "ctf_chouhen", 11) == 0 || !CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::m_ObjectiveResource.testProbWptArea(m_iSentryArea,m_iTeam)) &&
 				(fSentryPlaceTime>rcbot_move_sentry_time.GetFloat())&&(((60.0f*m_iSentryKills)/fSentryPlaceTime)<rcbot_move_sentry_kpm.GetFloat()),
 				(fMetalPercent*getHealthPercent()*fSentryHealthPercent)+(static_cast<float>(m_bIsCarryingSentry)))
 		}
@@ -5505,7 +5505,6 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 			{
 				Vector vRoute = Vector(0,0,0);
 				bool bUseRoute = false;
-				int iRouteWpt = -1;
 				bool bNest = false;
 
 				if ( (m_fUseRouteTime < engine->Time()) )
@@ -5516,6 +5515,7 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 
 					if ( pRoute )
 					{
+						int iRouteWpt = -1;
 						bUseRoute = true;
 						vRoute = pRoute->getOrigin();
 						m_fUseRouteTime = engine->Time() + randomFloat(30.0f,60.0f);

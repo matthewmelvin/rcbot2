@@ -886,7 +886,7 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 		}
 		return false;
 	}
-	if ((std::strncmp(szmapname, "tow_", 4) == 0 || std::strncmp(szmapname, "kotc_", 5) == 0) && !(std::strncmp(szmapname, "tow_impasse", 11) == 0))
+	if ((std::strncmp(szmapname, "tow_", 4) == 0 || std::strncmp(szmapname, "kotc_", 5) == 0) && std::strncmp(szmapname, "tow_impasse", 11) != 0)
 	{
 		return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0;
 	}

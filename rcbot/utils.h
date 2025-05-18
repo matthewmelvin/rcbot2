@@ -80,7 +80,7 @@ namespace rcbot2utils
 	 * @param handle Handle to dereference.
 	 * @return Edict pointer or NULL if the entity stored is no longer valid.
 	 */
-	edict_t* GetHandleEdict(CBaseHandle& handle);
+	edict_t* GetHandleEdict(const CBaseHandle& handle);
 	/**
 	 * @brief Stores an edict on a handle.
 	 * @param handle Handle to store the entity.
