@@ -367,38 +367,43 @@ bool CBotTF2 :: sentryRecentlyHadEnemy () const
 	return (m_fLastSentryEnemyTime + 15.0f) > engine->Time();
 }
 
-bool CBotFortress :: startGame()
+bool CBotFortress::startGame()
 {
 	const string_t mapname = gpGlobals->mapname;
 
 	const char* szmapname = mapname.ToCStr();
-	
-	const int team = m_pPlayerInfo->GetTeamIndex();
-	
-	m_iClass = static_cast<TF_Class>(CClassInterface::getTF2Class(m_pEdict));
 
-	if ( (team != TF2_TEAM_BLUE) && (team != TF2_TEAM_RED) )
+	const int team = m_pPlayerInfo->GetTeamIndex();
+
+	m_iClass = static_cast<TF_Class>(CClassInterface::getTF2Class(m_pEdict));
+	if ((team != TF2_TEAM_BLUE) && (team != TF2_TEAM_RED))
 	{
 		selectTeam();
 	}
-	else if ( m_iDesiredClass == -1 ) // invalid class
+	else if (m_iDesiredClass == -1) // invalid class
 	{
 		chooseClass();
 	}
-	else if (m_iClass == TF_CLASS_MAX) // Removed "(m_iDesiredClass>0 && (m_iClass != m_iDesiredClass))" to avoid bots trying to change class when it was forced by something like in VSH and VIP maps
+	else if (m_iClass == TF_CLASS_MAX)
+	// Removed "(m_iDesiredClass > 0 && (m_iClass != m_iDesiredClass))" to avoid bots trying to change class when it was forced by something like in VSH and VIP maps
 	{
 		// can't change class in MVM during round!
-	    if ( CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted() )
-                return true;
-        
-            if ( CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || CTeamFortress2Mod::isMapType(TF_MAP_GG) || std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "cw_", 3) == 0 || std::strncmp(szmapname, "ctf_2fort_sniperwars", 20) == 0 || std::strncmp(szmapname, "dm_", 3) == 0 )
-                return true;
-
+		if (CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted())
+		{
+			return true;
+		}
+		if (CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || CTeamFortress2Mod::isMapType(TF_MAP_GG) ||
+			std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "cw_", 3) == 0 ||
+			std::strncmp(szmapname, "ctf_2fort_sniperwars", 20) == 0 || std::strncmp(szmapname, "dm_", 3) == 0)
+		{
+			return true;
+		}
 		selectClass();
 	}
 	else
+	{
 		return true;
-
+	}
 	return false;
 }
 
@@ -4625,12 +4630,18 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 			iSentryLevel = CClassInterface::getTF2UpgradeLevel(m_pSentryGun);//CTeamFortress2Mod::getSentryLevel(m_pSentryGun);
 			fSentryHealthPercent = CClassInterface::getSentryHealth(m_pSentryGun)/CClassInterface::getTF2GetBuildingMaxHealth(m_pSentryGun);
 			// move sentry
-			ADD_UTILITY(BOT_UTIL_ENGI_MOVE_SENTRY,(CTeamFortress2Mod::hasRoundStarted()||CTeamFortress2Mod::isMapType(TF_MAP_MVM)) && (!m_bIsCarryingObj || m_bIsCarryingSentry) && 
-				bMoveObjs && (m_fSentryPlaceTime>0.0f) && !bHasFlag && m_pSentryGun && (CClassInterface::getSentryEnemy(
-					m_pSentryGun) == NULL) && ((m_fLastSentryEnemyTime + 15.0f) < engine->Time()) &&
-				(!CTeamFortress2Mod::isMapType(TF_MAP_CP) || !std::strncmp(str1, "ctf_chouhen", 11) == 0 || !CTeamFortress2Mod::isMapType(TF_MAP_CPPL) || CTeamFortress2Mod::m_ObjectiveResource.testProbWptArea(m_iSentryArea,m_iTeam)) &&
-				(fSentryPlaceTime>rcbot_move_sentry_time.GetFloat())&&(((60.0f*m_iSentryKills)/fSentryPlaceTime)<rcbot_move_sentry_kpm.GetFloat()),
-				(fMetalPercent*getHealthPercent()*fSentryHealthPercent)+(static_cast<float>(m_bIsCarryingSentry)))
+			ADD_UTILITY(BOT_UTIL_ENGI_MOVE_SENTRY,
+				(CTeamFortress2Mod::hasRoundStarted() || CTeamFortress2Mod::isMapType(TF_MAP_MVM)) &&
+				(!m_bIsCarryingObj || m_bIsCarryingSentry) && bMoveObjs && (m_fSentryPlaceTime > 0.0f) &&
+				!bHasFlag && m_pSentryGun && (CClassInterface::getSentryEnemy(m_pSentryGun) == nullptr) &&
+				((m_fLastSentryEnemyTime + 15.0f) < engine->Time()) &&
+				(!CTeamFortress2Mod::isMapType(TF_MAP_CP) || !(std::strncmp(str1, "ctf_chouhen", 11) == 0) ||
+					!CTeamFortress2Mod::isMapType(TF_MAP_CPPL) ||
+					CTeamFortress2Mod::m_ObjectiveResource.testProbWptArea(m_iSentryArea, m_iTeam)) &&
+				(fSentryPlaceTime > rcbot_move_sentry_time.GetFloat()) &&
+				(((60.0f * m_iSentryKills) / fSentryPlaceTime) < rcbot_move_sentry_kpm.GetFloat()),
+				(fMetalPercent* getHealthPercent()* fSentryHealthPercent) +
+				(static_cast<float>(m_bIsCarryingSentry)))
 		}
 
 		if ( m_pDispenser.get() )
