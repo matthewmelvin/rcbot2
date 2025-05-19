@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    This file is part of RCBot.
  *
@@ -2455,7 +2457,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 			if ( pWaypoint == nullptr)
 			{
 				bool defend_wpt = true; //Unused? [APG]RoboCop[CL]
-				defend_wpt = false;
+				//defend_wpt = false;
 
 				if ( distanceFrom(vGoal) > 1024 ) // outside waypoint bucket of goal
 					pWaypoint = CWaypoints::getPinchPointFromWaypoint(vGoal,vGoal);

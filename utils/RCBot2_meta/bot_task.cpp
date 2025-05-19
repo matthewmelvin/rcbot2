@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    part of https://rcbot2.svn.sourceforge.net/svnroot/rcbot2
  *
@@ -2090,12 +2092,12 @@ void CFindPathTask :: execute ( CBot *pBot, CBotSchedule *pSchedule )
 #endif
 
 		if ( pNav->workRoute( pBot->getOrigin(),
-							   m_vVector,
-							   &bFail,
-							   m_iInt==0,
-							   m_flags.bits.m_bNoInterruptions, 
-							   m_iWaypointId,
-							   pBot->getConditions(), m_iDangerPoint ) )
+		                      m_vVector,
+		                      &bFail,
+		                      m_iInt==0,
+		                      m_flags.bits.m_bNoInterruptions, 
+		                      m_iWaypointId,
+		                      pBot->getConditions(), m_iDangerPoint ) )
 		{
 			pBot->m_fWaypointStuckTime = engine->Time() + randomFloat(10.0f,15.0f);
 			pBot->moveFailed(); // reset
@@ -5032,7 +5034,7 @@ void CBotTF2Spam :: execute (CBot *pBot, CBotSchedule *pSchedule)
 ///////////
 
 CBotTF2AttackSentryGunTask::CBotTF2AttackSentryGunTask(edict_t* pSentryGun, CBotWeapon* pWeapon)
-	//: m_vStart(0, 0, 0), m_vHide(0, 0, 0) // Required for SGs to face the direction correctly? [APG]RoboCop[CL]
+	: m_pSentryGun(pSentryGun), m_vStart(0, 0, 0), m_vHide(0, 0, 0) // Required for SGs to face the direction correctly? [APG]RoboCop[CL]
 {
 	m_iStartingWaypoint = 0;
 	m_iSentryWaypoint = 0;

@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    part of https://rcbot2.svn.sourceforge.net/svnroot/rcbot2
  *
@@ -1123,8 +1125,6 @@ int CBotFortress :: engiBuildObject (int *iState, const eEngiBuild iObject, floa
 			float bestfraction = tr->fraction;
 
 			////////////////////////////////////////
-
-		const Vector v_left = -v_right;
 		
 			// left
 			CBotGlobals::traceLine(building,building - v_right*4096.0f,MASK_SOLID_BRUSHONLY,&filter);
@@ -1161,6 +1161,8 @@ int CBotFortress :: engiBuildObject (int *iState, const eEngiBuild iObject, floa
 #ifndef __linux__
 			if ( CClients::clientsDebugging(BOT_DEBUG_THINK) && !engine->IsDedicatedServer() )
 			{
+				const Vector v_left = -v_right;
+
 				debugoverlay->AddTriangleOverlay(v_src-v_left*32.0f,v_src+v_left*32.0f,v_src+(building-v_src),255,50,50,255,false,60.0f);
 				debugoverlay->AddLineOverlay(building,vchosen,255,50,50,false,60.0f);
 				debugoverlay->AddTextOverlayRGB(building+Vector(0,0,25),0,60.0f,255,255,255,255,"Chosen State: %d",iNextState);

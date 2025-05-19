@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    part of https://rcbot2.svn.sourceforge.net/svnroot/rcbot2
  *
@@ -2205,8 +2207,6 @@ void CBot :: doMove ()
 		{
 			if ( canAvoid(m_pAvoidEntity) )
 			{
-				const Vector m_vAvoidOrigin = CBotGlobals::entityOrigin(m_pAvoidEntity);
-
 				//m_vMoveTo = getOrigin() + ((m_vMoveTo-getOrigin())-((m_vAvoidOrigin-getOrigin())*bot_avoid_strength.GetFloat()));
 				//float fAvoidDist = distanceFrom(m_pAvoidEntity);
 
@@ -2225,6 +2225,8 @@ void CBot :: doMove ()
 #ifndef __linux__
 					if ( CClients::clientsDebugging(BOT_DEBUG_THINK) )
 					{
+						const Vector m_vAvoidOrigin = CBotGlobals::entityOrigin(m_pAvoidEntity);
+
 						debugoverlay->AddLineOverlay (getOrigin(), m_vAvoidOrigin, 0,0,255, false, 0.05f);
 						debugoverlay->AddLineOverlay (getOrigin(), m_bAvoidRight ? getOrigin()+vLeft*bot_avoid_strength.GetFloat():getOrigin()-vLeft*bot_avoid_strength.GetFloat(), 0,255,0, false, 0.05f);
 						debugoverlay->AddLineOverlay (getOrigin(), getOrigin() + vMove/vMove.Length()*bot_avoid_strength.GetFloat(), 255,0,0, false, 0.05f);
@@ -2232,7 +2234,6 @@ void CBot :: doMove ()
 					}
 #endif
 
-					//*/
 					//debugoverlay->AddLineOverlay (getOrigin(), m_vAvoidOrigin, 0,0,255, false, 0.05f);
 					//debugoverlay->AddLineOverlay (getOrigin(), m_bAvoidRight ? (getOrigin()+(vLeft*bot_avoid_strength.GetFloat())):(getOrigin()-(vLeft*bot_avoid_strength.GetFloat())), 0,255,0, false, 0.05f);
 					//debugoverlay->AddLineOverlay (getOrigin(), m_vMoveTo, 255,0,0, false, 0.05f);
@@ -3399,7 +3400,7 @@ void CBots :: botThink ()
 
 			if (command && *command)
 			{
-				helpers->ClientCommand(pBot->getEdict(),bot_command.GetString());
+				helpers->ClientCommand(pBot->getEdict(), command); // Use the cached value [APG]RoboCop[CL]
 
 				bot_command.SetValue("");
 			}
@@ -3587,7 +3588,8 @@ void CBots::kickRandomBotOnTeam(const int team)
 	const std::size_t botListSize = botList.size(); // Use std::size_t for size
 
 	if (botListSize > 0) {
-		snprintf(szCommand, sizeof(szCommand), "kickid %d\n", botList[static_cast<std::size_t>(randomInt(0, static_cast<int>(botListSize) - 1))]);
+		const int index = randomInt(0, static_cast<int>(botListSize) - 1);
+		snprintf(szCommand, sizeof(szCommand), "kickid %d\n", botList[static_cast<std::size_t>(index)]);
 	}
 
 	m_flAddKickBotTime = engine->Time() + 2.0f;
