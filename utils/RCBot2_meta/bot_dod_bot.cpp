@@ -2613,9 +2613,9 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 			removeCondition(CONDITION_SEE_CUR_ENEMY);
 			pFindPath->setCompleteInterrupt(CONDITION_SEE_CUR_ENEMY);
 			
-			if ( !CClassInterface::getVelocity(m_pLastEnemy,&vVelocity) )
+			if (!CClassInterface::getVelocity(m_pLastEnemy, &vVelocity))
 			{
-				if ( pClient )
+				if (pClient != nullptr)
 					vVelocity = pClient->getVelocity();
 			}
 
@@ -2788,6 +2788,8 @@ void CDODBot :: reachedCoverSpot (const int flags)
 	if ( pWeapon != nullptr)
 	{
 		bool bDontCrouchAndHide = false;
+
+		assert(pWeapon != nullptr);
 
 		if ( pWeapon && pWeapon->isDeployable() && !pWeapon->outOfAmmo(this) )
 		{
@@ -3302,9 +3304,11 @@ void CDODBot :: getTasks (unsigned iIgnore)
 		else if ( m_pWeapons->hasWeapon(DOD_WEAPON_FRAG_GER) )
 			pBotWeapon = m_pWeapons->getWeapon(CWeapons::getWeapon(DOD_WEAPON_FRAG_GER));
 				
-		// if within throw distance and outside balst radius, I can throw it
+		// if within throw distance and outside blast radius, I can throw it
 		if ( pBotWeapon && (!pBotWeapon->isExplosive() || (fDistance > BLAST_RADIUS)) && ( fDistance < (MAX_GREN_THROW_DIST+BLAST_RADIUS) ) )
 		{
+			assert(pBotWeapon != nullptr);
+
 			ADD_UTILITY_WEAPON(BOT_UTIL_THROW_GRENADE, pBotWeapon && (pBotWeapon->getAmmo(this) > 0),
 			                   hasSomeConditions(CONDITION_GREN) ? fGrenUtil*2 : fGrenUtil, pBotWeapon)
 		}

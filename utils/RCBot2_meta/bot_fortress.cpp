@@ -1760,36 +1760,35 @@ bool CBotTF2 :: hurt ( edict_t *pAttacker, const int iHealthNow, const bool bDon
 		}
 	}
 
-	if ( pAttacker )
+	if ((m_iClass == TF_CLASS_SPY) && !isCloaked() &&
+		!CTeamFortress2Mod::isSentry(pAttacker, CTeamFortress2Mod::getEnemyTeam(m_iTeam)))
 	{
-		if ( (m_iClass == TF_CLASS_SPY) && !isCloaked() && !CTeamFortress2Mod::isSentry(pAttacker,CTeamFortress2Mod::getEnemyTeam(m_iTeam)) )
+		// TODO: make sure I'm not just caught in crossfire
+		// search for other team members
+		if (!m_StatsCanUse.stats.m_iTeamMatesVisible || !m_StatsCanUse.stats.m_iTeamMatesInRange)
+			m_fFrenzyTime = engine->Time() + randomFloat(2.0f, 6.0f);
+
+		if (isDisguised())
+			detectedAsSpy(pAttacker, true);
+
+		if (CBotGlobals::isPlayer(pAttacker) &&
+			(iHealthNow < rcbot_spy_runaway_health.GetInt()) &&
+			(CClassInterface::getTF2SpyCloakMeter(m_pEdict) > 0.3f))
 		{
-			
-			// TODO: make sure I'm not just caught in crossfire
-			// search for other team members
-			if ( !m_StatsCanUse.stats.m_iTeamMatesVisible || !m_StatsCanUse.stats.m_iTeamMatesInRange )
-				m_fFrenzyTime = engine->Time() + randomFloat(2.0f,6.0f);
+			// cloak and run
+			spyCloak();
+			// hide and find health
+			m_pSchedules->removeSchedule(SCHED_GOOD_HIDE_SPOT);
+			m_pSchedules->addFront(new CGotoHideSpotSched(this, m_vHurtOrigin, new CBotTF2CoverInterrupt()));
+			wantToShoot(false);
+			m_fFrenzyTime = 0.0f;
 
-			if ( isDisguised() )
-				detectedAsSpy(pAttacker,true);
+			if (hasEnemy())
+				setLastEnemy(m_pEnemy);
 
-			if ( CBotGlobals::isPlayer(pAttacker) && (iHealthNow<rcbot_spy_runaway_health.GetInt()) && (CClassInterface::getTF2SpyCloakMeter(m_pEdict) > 0.3f) )
-			{
-				// cloak and run
-				spyCloak();
-				// hide and find health
-				m_pSchedules->removeSchedule(SCHED_GOOD_HIDE_SPOT);
-				m_pSchedules->addFront(new CGotoHideSpotSched(this,m_vHurtOrigin,new CBotTF2CoverInterrupt()));		
-				wantToShoot(false);
-				m_fFrenzyTime = 0.0f;
+			m_pEnemy = nullptr; // reset enemy
 
-				if ( hasEnemy() )
-					setLastEnemy(m_pEnemy);
-
-				m_pEnemy = nullptr; // reset enemy
-
-				return true;
-			}
+			return true;
 		}
 	}
 
@@ -3013,9 +3012,9 @@ void CBotTF2::modThink()
 	{
 		const int _forcedClass = rcbot_force_class.GetInt();
 		// Change class if not same class as forced one or class was forced but not anymore
-		if (m_iClass != _forcedClass && ((_forcedClass > 0 && _forcedClass < 10) || (m_classWasForced && (_forcedClass < 1 || _forcedClass > 9))))
+		if (m_iClass != _forcedClass && (_forcedClass > 0 && _forcedClass < 10))
 		{
-			m_classWasForced = _forcedClass > 0 && _forcedClass < 10;
+			m_classWasForced = true;
 			chooseClass();
 			selectClass();
 		}
@@ -4118,18 +4117,17 @@ bool CBotTF2::healPlayer(edict_t* pPlayer, edict_t* pPrevPlayer)
 
 	if (m_fMedicUpdatePosTime < engine->Time())
 	{
-		static CClient *pClient;
+		static CClient* pClient;
 		static float fSpeed;
 		const float fRand = randomFloat(1.0f, 2.0f);
 
 		pClient = CClients::get(m_pHeal);
 
-		if (pClient)
-			fSpeed = pClient->getSpeed();
+		fSpeed = pClient->getSpeed(); // No need for the null check? [APG]RoboCop[CL]
 
 		m_fMedicUpdatePosTime = engine->Time() + (fRand * (1.0f - (fSpeed / 320)));
 
-		if (p && (p->GetLastUserCommand().buttons & IN_ATTACK))
+		if (p != nullptr && (p->GetLastUserCommand().buttons & IN_ATTACK))
 		{
 			static QAngle eyes;
 			// keep out of cross fire
@@ -6317,13 +6315,15 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 						Vector vStand;
 						vStand = pStand->getOrigin();
 
-						if ( pWaypoint )
+						if (!pWaypoint)
 						{
-							m_pSchedules->add(new CBotTF2DemoPipeTrapSched(iDemoTrapType,vStand,vPoint,Vector(150,150,20),false,pWaypoint->getArea()));
-							return true;
+							// Handle the null case appropriately [APG]RoboCop[CL]
+							return false;
 						}
+						// Proceed with the current logic [APG]RoboCop[CL]
+						m_pSchedules->add(new CBotTF2DemoPipeTrapSched(iDemoTrapType, vStand, vPoint, Vector(150, 150, 20), false, pWaypoint->getArea()));
+						return true;
 					}
-
 				}
 			}
 			break;
@@ -6868,7 +6868,8 @@ void CBotTF2::modAim(edict_t* pEntity, Vector& v_origin, Vector* v_desired_offse
 			//{
 			if (CClassInterface::getVelocity(pEntity, &vVelocity))
 			{
-				if (pClient && (vVelocity == Vector(0, 0, 0)))
+				assert(pClient != nullptr);
+				if (vVelocity == Vector(0, 0, 0))
 					vVelocity = pClient->getVelocity();
 			}
 			else if (pClient)
@@ -7649,7 +7650,8 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 	{
 		if ( CBotGlobals::getTeam(pEdict) != getTeam() )
 		{
-			if (pEdict != nullptr && CBotGlobals::entityIsValid(pEdict)) {
+			assert(pEdict != nullptr);
+			if (CBotGlobals::entityIsValid(pEdict)) {
 				const int edictIndex = engine->IndexOfEdict(pEdict);
 				if (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_UberchargedHidden))
 					return false; // Don't attack MvM bots who are inside spawn.
