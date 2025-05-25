@@ -923,9 +923,10 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 	{
 		return (std::strncmp(pEdict->GetClassName(), "prop_dynamic", 12) == 0) && std::strcmp(model.ToCStr(), "models/props_doomsday/cap_point_small.mdl") == 0;
 	}
-	if (std::strncmp(szmapname, "ctf_system", 10) == 0)
+	if (std::strncmp(szmapname, "ctf_system", sizeof("ctf_system") - 1) == 0)
 	{
-		return std::strncmp(pEdict->GetClassName(), "item_teamflag", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
+		return std::strncmp(pEdict->GetClassName(), "item_teamflag", sizeof("item_teamflag") - 1) == 0
+			&& CClassInterface::getTeam(pEdict) == iTeam;
 	}
 	if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) ||
 		CTeamFortress2Mod::isMapType(TF_MAP_CPPL) ||

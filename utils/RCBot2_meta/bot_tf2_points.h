@@ -426,10 +426,11 @@ public:
 			iszOverlay = NULL_STRING;
 			iPlayersRequired = 0;
 			iTimedPoints = 0;
-			for (string_t& i : iszPreviousPoint)
+			/*for (string_t& i : iszPreviousPoint)
 			{
 				i = NULL_STRING;
-			}
+			}*/
+			std::fill(std::begin(iszPreviousPoint), std::end(iszPreviousPoint), NULL_STRING);
 			iTeamPoseParam = 0;
 		}
 
