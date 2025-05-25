@@ -4633,7 +4633,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 				(!m_bIsCarryingObj || m_bIsCarryingSentry) && bMoveObjs && (m_fSentryPlaceTime > 0.0f) &&
 				!bHasFlag && m_pSentryGun && (CClassInterface::getSentryEnemy(m_pSentryGun) == nullptr) &&
 				((m_fLastSentryEnemyTime + 15.0f) < engine->Time()) &&
-				(!CTeamFortress2Mod::isMapType(TF_MAP_CP) || !(std::strncmp(str1, "ctf_chouhen", 11) == 0) ||
+				(!CTeamFortress2Mod::isMapType(TF_MAP_CP) || std::strncmp(str1, "ctf_chouhen", 11) != 0 ||
 					!CTeamFortress2Mod::isMapType(TF_MAP_CPPL) ||
 					CTeamFortress2Mod::m_ObjectiveResource.testProbWptArea(m_iSentryArea, m_iTeam)) &&
 				(fSentryPlaceTime > rcbot_move_sentry_time.GetFloat()) &&
