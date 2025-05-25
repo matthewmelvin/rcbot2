@@ -788,77 +788,64 @@ void CDODBot :: spawnInit ()
 	m_LastHearVoiceCommand = DOD_VC_INVALID;
 }
 
-bool CDODBot :: isEnemy ( edict_t *pEdict, const bool bCheckWeapons )
+bool CDODBot::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 {
-	const int entity_index = ENTINDEX(pEdict);
+//	const int entity_index = ENTINDEX(pEdict);
 //#ifdef _DEBUG
 //	const char *pszClassname = pEdict->GetClassName();
 
 //#endif
 
-	if ( entity_index == 0 )
+	if (!pEdict) // Check for nullptr at the start
+		return false;
+
+	const int entity_index = ENTINDEX(pEdict);
+
+	if (entity_index == 0)
 		return false; // worldspawn
 
-	if ( entity_index > gpGlobals->maxClients )
+	if (entity_index > gpGlobals->maxClients)
 	{
 		const bool bRegisteredBreakable = CDODMod::isBreakableRegistered(pEdict, m_iTeam);
-
-		if ( !CBotGlobals::isBreakableOpen(pEdict) && ((pEdict == m_pNearestBreakable) || bRegisteredBreakable) )
+		if (!CBotGlobals::isBreakableOpen(pEdict) && ((pEdict == m_pNearestBreakable) || bRegisteredBreakable))
 		{
-
-			/*if ( std::strcmp("dod_ragdoll",pszClassname) == 0 )
+			if (rcbot_shoot_breakables.GetBool())
 			{
-				// break;
-				return false;
-			}*/
-
-			if ( rcbot_shoot_breakables.GetBool() )
-			{ 
-				if ( bRegisteredBreakable )  // this breakable is registered as explosive only
+				if (bRegisteredBreakable) // this breakable is registered as explosive only
 				{
 					return (distanceFrom(pEdict) > BLAST_RADIUS) && m_pWeapons->hasExplosives();
 				}
-				//else if ( (m_fLastSeeEnemy + 5.0f) > engine->Time() )
-				if ( DotProductFromOrigin(CBotGlobals::entityOrigin(pEdict)) > rcbot_shoot_breakable_cos.GetFloat() )
-					return ((m_fLastSeeEnemyPlayer+3.0f) < engine->Time()) && (distanceFrom(pEdict) < rcbot_shoot_breakable_dist.GetFloat()) && (CClassInterface::getPlayerHealth(pEdict) > 0);
+				if (DotProductFromOrigin(CBotGlobals::entityOrigin(pEdict)) > rcbot_shoot_breakable_cos.GetFloat())
+					return ((m_fLastSeeEnemyPlayer + 3.0f) < engine->Time()) &&
+					(distanceFrom(pEdict) < rcbot_shoot_breakable_dist.GetFloat()) &&
+					(CClassInterface::getPlayerHealth(pEdict) > 0);
 			}
 		}
 
 		return false;
 	}
-
-	if ( !pEdict )
-		return false;
-
-	if ( !pEdict->GetUnknown() )
+	if (!pEdict->GetUnknown())
 		return false; // left the server
-
-	// if no target on - listen sever player is a non target
-	if ( rcbot_notarget.GetBool() && (entity_index == 1) )
+	if (rcbot_notarget.GetBool() && (entity_index == 1))
 		return false;
-
-	if ( pEdict == m_pEdict )
+	if (pEdict == m_pEdict)
 		return false;
-
-	// not alive -- false
-	if ( !CBotGlobals::entityIsAlive(pEdict) )
+	if (!CBotGlobals::entityIsAlive(pEdict))
 		return false;
-
-	if ( CBotGlobals::getTeam(pEdict) == getTeam() )
+	if (CBotGlobals::getTeam(pEdict) == getTeam())
 	{
-		if ( rcbot_ffa.GetBool() == false )
+		if (rcbot_ffa.GetBool() == false)
 			return false;
 
 		// if true continue down -- don't return
 	}
-
-	if ( bCheckWeapons && m_pNearestSmokeToEnemy )
+	if (bCheckWeapons && m_pNearestSmokeToEnemy)
 	{
-		if ( !isVisibleThroughSmoke(m_pNearestSmokeToEnemy,pEdict) )
+		if (!isVisibleThroughSmoke(m_pNearestSmokeToEnemy, pEdict))
 			return false;
 	}
 
-	return true;	
+	return true;
 }
 
 void CDODBot :: handleWeapons ()
@@ -911,18 +898,18 @@ void CDODBot :: touchedWpt ( CWaypoint *pWaypoint, const int iNextWaypoint, cons
 	}
 	else if ( pWaypoint->hasFlag(CWaypointTypes::W_FL_BOMB_TO_OPEN) )
 	{
-		edict_t *pBombTarget = CDODMod::getBombTarget(pWaypoint);
+		edict_t* pBombTarget = CDODMod::getBombTarget(pWaypoint);
 
-		if ( CBotGlobals::entityIsValid(pBombTarget) )
+		if (pBombTarget && CBotGlobals::entityIsValid(pBombTarget))
 		{
 			Vector vBombTarget = CBotGlobals::entityOrigin(pBombTarget);  // `vBombTarget` Unused? [APG]RoboCop[CL]
 			const int state = CClassInterface::getDODBombState(pBombTarget);
 
-			if ( state != 0 )
+			if (state != 0)
 				m_pNearestPathBomb = pBombTarget;
 
-			// find bomb target for this waypoint and place bomb
-			if ( pBombTarget && (state != 0) && (CClassInterface::getDODBombTeam(pBombTarget) == m_iTeam) )
+			// Additional checks and operations
+			if ((state != 0) && (CClassInterface::getDODBombTeam(pBombTarget) == m_iTeam))
 			{
 				// check if someone isn't bombing already
 				// if ( (state == 2) || CDODMod::m_Flags.isTeamMatePlanting(m_pEdict,m_iTeam,pWaypoint->getOrigin()) )
