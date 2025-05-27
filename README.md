@@ -101,6 +101,14 @@ Additionally, `rcbot/logging.{h,cpp}` is released separately under the
 - CBotTF2::changeClass needs to be implemented to avoid bots punting when using ClassRestrictionsForBots.smx and `rcbot_change_classes 1`
 - To add TF2C support along with Black Mesa Source, Counter-Strike: Source, Synergy and Dystopia
 
+### Personal To-do list (TF2):-
+
+- To add delay reaction on spy's disguise exposure
+- To add Slender Fortress gamemode support
+- To add PASS Time support
+- To disable using sniper waypoints when a bot holds a bow
+- To add support for some hybrid maps
+
 ## Credits:-
 
 - Founder - Cheeseh
