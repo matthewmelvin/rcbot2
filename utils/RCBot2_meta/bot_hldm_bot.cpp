@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    This file is part of RCBot.
  *
@@ -312,10 +314,10 @@ bool CHLDMBot :: executeAction (const eBotAction iAction)
 
 			pFindPath->setCompleteInterrupt(CONDITION_SEE_CUR_ENEMY);
 			
-			if ( !CClassInterface::getVelocity(m_pLastEnemy,&vVelocity) )
+			assert(pClient != nullptr); // Ensure pClient is not null - [APG]RoboCop[CL]
+			if (!CClassInterface::getVelocity(m_pLastEnemy, &vVelocity))
 			{
-				if ( pClient )
-					vVelocity = pClient->getVelocity();
+				vVelocity = pClient->getVelocity();
 			}
 
 			pSchedule->addTask(pFindPath);

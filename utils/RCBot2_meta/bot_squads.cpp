@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    This file is part of RCBot.
  *
@@ -132,13 +134,12 @@ CBotSquad *CBotSquads::AddSquadMember ( edict_t *pLeader, edict_t *pMember )
 	// no squad with leader, make one
 	CBotSquad *theSquad = new CBotSquad(pLeader, pMember);
 	
-	if ( theSquad != nullptr)
+	CBot* pBot;
+	m_theSquads.emplace_back(theSquad);
+
+	if ((pBot = CBots::getBotPointer(pLeader)) != nullptr)
 	{
-		CBot *pBot;
-		m_theSquads.emplace_back(theSquad);
-		
-		if ( (pBot = CBots::getBotPointer(pLeader)) != nullptr)
-			pBot->setSquad(theSquad);
+		pBot->setSquad(theSquad);
 	}
 	
 	return theSquad;

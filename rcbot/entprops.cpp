@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /**
  * vim: set ts=4 :
  * =============================================================================
@@ -328,21 +330,28 @@ bool CBotEntProp::FindSendProp(SourceMod::sm_sendprop_info_t *info, CBaseEntity 
 /* Given an entity reference or index, fill out a CBaseEntity and/or edict.
    If lookup is successful, returns true and writes back the two parameters.
    If lookup fails, returns false and doesn't touch the params.  */
-bool CBotEntProp::IndexToAThings(const int num, CBaseEntity **pEntData, edict_t **pEdictData)
+bool CBotEntProp::IndexToAThings(const int num, CBaseEntity** pEntData, edict_t** pEdictData)
 {
-	CBaseEntity *pEntity = sm_gamehelpers->ReferenceToEntity(num);
+	if (num <= 0) {
+		logger->Log(LogLevel::ERROR, "Invalid entity reference %d", num);
+		return false;
+	}
+
+	CBaseEntity* pEntity = sm_gamehelpers->ReferenceToEntity(num);
 
 	if (!pEntity)
 	{
+		logger->Log(LogLevel::ERROR, "ReferenceToEntity(%d) returned nullptr", num);
 		return false;
 	}
 
 	const int index = sm_gamehelpers->ReferenceToIndex(num);
 	if (index > 0 && index <= sm_players->GetMaxClients())
 	{
-		SourceMod::IGamePlayer *pPlayer = sm_players->GetGamePlayer(index);
+		SourceMod::IGamePlayer* pPlayer = sm_players->GetGamePlayer(index);
 		if (!pPlayer || !pPlayer->IsConnected())
 		{
+			logger->Log(LogLevel::ERROR, "Player %d is not connected", index);
 			return false;
 		}
 	}
@@ -354,9 +363,10 @@ bool CBotEntProp::IndexToAThings(const int num, CBaseEntity **pEntData, edict_t 
 
 	if (pEdictData)
 	{
-		edict_t *pEdict = BaseEntityToEdict(pEntity);
+		edict_t* pEdict = BaseEntityToEdict(pEntity);
 		if (!pEdict || pEdict->IsFree())
 		{
+			logger->Log(LogLevel::ERROR, "BaseEntityToEdict returned nullptr or free edict for entity %d", num);
 			pEdict = nullptr;
 		}
 

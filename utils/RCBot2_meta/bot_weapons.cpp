@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    This file is part of RCBot.
  *
@@ -611,9 +613,6 @@ CBotWeapon* CBotWeapons::getBestWeapon(edict_t* pEnemy, const bool bAllowMelee, 
 	for (CBotWeapon& m_theWeapon : m_theWeapons)
 	{
 		CBotWeapon* pWeapon = &m_theWeapon;
-
-		if (!pWeapon)
-			continue;
 
 		if (!pWeapon->hasWeapon())
 			continue;

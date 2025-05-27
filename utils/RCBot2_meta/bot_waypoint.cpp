@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    This file is part of RCBot.
  *
@@ -586,15 +588,15 @@ CWaypoint *CWaypointNavigator :: chooseBestFromBelief ( const std::vector<CWaypo
 }
 
 // get the covering waypoint vector vCover
-bool CWaypointNavigator :: getCoverPosition (const Vector vCoverOrigin, Vector *vCover)
+bool CWaypointNavigator::getCoverPosition(const Vector& vCoverOrigin, Vector* vCover)
 {
 	const int iWpt = CWaypointLocations::GetCoverWaypoint(m_pBot->getOrigin(), vCoverOrigin, nullptr);
 
-	CWaypoint *pWaypoint = CWaypoints::getWaypoint(iWpt);
-	
-	if ( pWaypoint == nullptr)
+	CWaypoint* pWaypoint = CWaypoints::getWaypoint(iWpt);
+
+	if (pWaypoint == nullptr)
 		return false;
-	
+
 	*vCover = pWaypoint->getOrigin();
 
 	return true;
@@ -619,7 +621,7 @@ void CWaypointNavigator :: beliefOne (const int iWptIndex, const BotBelief iBeli
 }
 
 // get belief nearest to current origin using waypoints to store belief
-void CWaypointNavigator :: belief (const Vector vOrigin, const Vector vOther, const float fBelief,
+void CWaypointNavigator :: belief (const Vector& vOrigin, const Vector& vOther, const float fBelief,
 								   const float fStrength, const BotBelief iType)
 {
 	static float factor; //Unused? [APG]RoboCop[CL]
@@ -756,7 +758,7 @@ bool CWaypointNavigator :: getCrouchHideSpot ( Vector vCoverOrigin, Vector *vCov
 }
 */
 // get the hide spot position (vCover) from origin vCoverOrigin
-bool CWaypointNavigator :: getHideSpotPosition (const Vector vCoverOrigin, Vector *vCover)
+bool CWaypointNavigator :: getHideSpotPosition (const Vector& vCoverOrigin, Vector *vCover)
 {
 	int iWpt;
 
@@ -820,7 +822,7 @@ void CWaypointNavigator :: failMove ()
 	}
 }
 
-float CWaypointNavigator :: distanceTo (const Vector vOrigin)
+float CWaypointNavigator :: distanceTo (const Vector& vOrigin)
 {
 	if ( m_iCurrentWaypoint == -1 )
 		m_iCurrentWaypoint = CWaypointLocations::NearestWaypoint(m_pBot->getOrigin(),CWaypointLocations::REACHABLE_RANGE,-1,true,false,true, nullptr,false,m_pBot->getTeam());
@@ -843,8 +845,8 @@ float CWaypointNavigator :: distanceTo ( CWaypoint *pWaypoint )
 }
 
 // find route using A* algorithm
-bool CWaypointNavigator :: workRoute (const Vector vFrom,
-									  const Vector vTo, 
+bool CWaypointNavigator :: workRoute (const Vector& vFrom,
+									  const Vector& vTo, 
 									  bool *bFail,
 									  const bool bRestart,
 									  const bool bNoInterruptions,
@@ -1222,7 +1224,7 @@ bool CWaypointNavigator :: getNextRoutePoint ( Vector *vPoint )
 	return false;
 }
 
-bool CWaypointNavigator :: canGetTo (const Vector vOrigin)
+bool CWaypointNavigator :: canGetTo (const Vector& vOrigin)
 {
 	const int iwpt = CWaypointLocations::NearestWaypoint(vOrigin,100,-1,true,false,true, nullptr,false,m_pBot->getTeam());
 
@@ -3368,11 +3370,11 @@ void CWaypointTest :: go ( edict_t *pPlayer )
 						constexpr bool bnointerruptions = true;
 
 						while ( pNav->workRoute(
-							pWpt1->getOrigin(),
-							pWpt2->getOrigin(),
-							&bfail,
-							brestart,
-							bnointerruptions,j) 
+								pWpt1->getOrigin(),
+								pWpt2->getOrigin(),
+								&bfail,
+								brestart,
+								bnointerruptions,j) 
 							== 
 							false 
 							) {}

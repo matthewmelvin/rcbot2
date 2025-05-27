@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    This file is part of RCBot.
  *
@@ -67,7 +69,15 @@ char* CStrings::getString(const char* szString)
 	if (szString == nullptr)
 		return nullptr;
 
+	// Ensure MAX_STRINGS_HASH is large enough or validate the index - [APG]RoboCop[CL]
 	const unsigned short iHash = szString[0] % MAX_STRINGS_HASH;
+
+	// Validate that iHash is within bounds
+	if (iHash >= MAX_STRINGS_HASH)
+	{
+		// Handle error appropriately (e.g., log, throw exception, etc.) - [APG]RoboCop[CL]
+		return nullptr;
+	}
 
 	for (char* const szCompString : m_Strings[iHash])
 	{

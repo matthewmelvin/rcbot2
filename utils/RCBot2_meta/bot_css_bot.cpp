@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    This file is part of RCBot.
  *
@@ -541,27 +543,30 @@ float CCSSBot::getNextAttackDelay()
 void CCSSBot::modAim(edict_t *pEntity, Vector &v_origin, Vector *v_desired_offset, Vector &v_size, const float fDist, const float fDist2D)
 {
 	static bool aimforhead;
-	static CBotWeapon *pWp;
+	static CBotWeapon* pWp;
 
-	CBot::modAim(pEntity,v_origin,v_desired_offset,v_size,fDist,fDist2D);
+	CBot::modAim(pEntity, v_origin, v_desired_offset, v_size, fDist, fDist2D);
 
 	aimforhead = true;
 	pWp = getCurrentWeapon();
 
-	switch (pWp->getID())
+	if (pWp) // Check if pWp is not nullptr - [APG]RoboCop[CL]
 	{
+		switch (pWp->getID())
+		{
 		case CS_WEAPON_AWP:
 		case CS_WEAPON_SUPERSHOTGUN:
 		case CS_WEAPON_AUTOSHOTGUN:
+			{
+				aimforhead = false;
+				break;
+			}
+		}
+
+		if (pWp->isMelee())
 		{
 			aimforhead = false;
-			break;
 		}
-	}
-
-	if ( pWp && pWp->isMelee() )
-	{
-		aimforhead = false;
 	}
 
 	if(hasSomeConditions(CONDITION_SEE_ENEMY_HEAD) && aimforhead)
@@ -578,7 +583,7 @@ void CCSSBot::modAim(edict_t *pEntity, Vector &v_origin, Vector *v_desired_offse
 		v_desired_offset->x = 0;
 		v_desired_offset->y = 0;
 		v_desired_offset->z = 0;
-}
+	}
 }
 
 void CCSSBot::modThink()
@@ -1109,7 +1114,7 @@ void CCSSBot::touchedWpt(CWaypoint *pWaypoint, const int iNextWaypoint, const in
 	CBot::touchedWpt(pWaypoint, iNextWaypoint, iPrevWaypoint);
 }
 
-bool CCSSBot::canGotoWaypoint(const Vector vPrevWaypoint, CWaypoint* pWaypoint, CWaypoint* pPrev)
+bool CCSSBot::canGotoWaypoint(const Vector& vPrevWaypoint, CWaypoint* pWaypoint, CWaypoint* pPrev)
 {
 	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_NO_HOSTAGES) || pWaypoint->hasFlag(CWaypointTypes::W_FL_LADDER))
 	{

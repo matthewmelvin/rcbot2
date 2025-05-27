@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    part of https://rcbot2.svn.sourceforge.net/svnroot/rcbot2
  *
@@ -2090,12 +2092,12 @@ void CFindPathTask :: execute ( CBot *pBot, CBotSchedule *pSchedule )
 #endif
 
 		if ( pNav->workRoute( pBot->getOrigin(),
-							   m_vVector,
-							   &bFail,
-							   m_iInt==0,
-							   m_flags.bits.m_bNoInterruptions, 
-							   m_iWaypointId,
-							   pBot->getConditions(), m_iDangerPoint ) )
+		                      m_vVector,
+		                      &bFail,
+		                      m_iInt==0,
+		                      m_flags.bits.m_bNoInterruptions, 
+		                      m_iWaypointId,
+		                      pBot->getConditions(), m_iDangerPoint ) )
 		{
 			pBot->m_fWaypointStuckTime = engine->Time() + randomFloat(10.0f,15.0f);
 			pBot->moveFailed(); // reset
@@ -3110,8 +3112,9 @@ void CBotTF2SnipeCrossBow::execute(CBot *pBot, CBotSchedule *pSchedule)
 				m_vEnemy = CBotGlobals::entityOrigin(pBot->getEnemy());
 				m_fEnemyTime = engine->Time();
 
-				if (m_fAimTime == 0.0f)
-					m_fAimTime = engine->Time() + randomFloat(0.1f, 0.3f);
+				// Check m_fEnemyTime instead of m_fAimTime if that was the intention - [APG]RoboCop[CL]
+				if (m_fEnemyTime == 0.0f)
+					m_fEnemyTime = engine->Time() + randomFloat(0.1f, 0.3f);
 
 				// too close for sniper rifle
 				if (pBot->distanceFrom(pBot->getEnemy()) < 200.0f)
@@ -3263,9 +3266,9 @@ void CBotTF2Snipe :: execute (CBot *pBot, CBotSchedule *pSchedule)
 	if (pWeapon->getSlot() != 0)
 	{
 		CBotWeapons* pWeapons = pBot->getWeapons();
-		CBotWeapon* pWeapon = pWeapons->getCurrentWeaponInSlot(0); //TODO: `pWeapon` hides previous local declaration
+		const CBotWeapon* bot_weapon = pWeapons->getCurrentWeaponInSlot(0);
 
-		if (pWeapon && !pBot->select_CWeapon(pWeapon->getWeaponInfo()))
+		if (bot_weapon && !pBot->select_CWeapon(bot_weapon->getWeaponInfo()))
 		{
 			fail();
 			return;
@@ -3401,16 +3404,17 @@ void CBotTF2Snipe :: execute (CBot *pBot, CBotSchedule *pSchedule)
 
 		if ( CTeamFortress2Mod::TF2_IsPlayerZoomed(pBot->getEdict()) && pBot->hasEnemy() )
 		{
-			if ( pBot->hasSomeConditions(CONDITION_SEE_CUR_ENEMY) )
+			if (pBot->hasSomeConditions(CONDITION_SEE_CUR_ENEMY))
 			{
 				m_vEnemy = CBotGlobals::entityOrigin(pBot->getEnemy());
 				m_fEnemyTime = engine->Time();
 
-				if ( m_fAimTime == 0.0f )
-					m_fAimTime = engine->Time() + randomFloat(0.1f,0.3f);
+				// Check m_fEnemyTime instead of m_fAimTime if that was the intention - [APG]RoboCop[CL]
+				if (m_fEnemyTime == 0.0f)
+					m_fEnemyTime = engine->Time() + randomFloat(0.1f, 0.3f);
 
 				// too close for sniper rifle
-				if ( pBot->distanceFrom(pBot->getEnemy()) < 200.0f )
+				if (pBot->distanceFrom(pBot->getEnemy()) < 200.0f)
 				{
 					complete();
 					return;
@@ -3775,11 +3779,11 @@ void CThrowGrenadeTask ::execute (CBot *pBot,CBotSchedule *pSchedule)
 		return;
 	}
 
-	if ( !m_pWeapon )
+	/*if ( !m_pWeapon )
 	{
 		fail();
 		return;
-	}
+	}*/
 
 	const CBotWeapon* pWeapon = pBot->getCurrentWeapon();
 	pBot->wantToChangeWeapon(false);
@@ -5032,7 +5036,7 @@ void CBotTF2Spam :: execute (CBot *pBot, CBotSchedule *pSchedule)
 ///////////
 
 CBotTF2AttackSentryGunTask::CBotTF2AttackSentryGunTask(edict_t* pSentryGun, CBotWeapon* pWeapon)
-	//: m_vStart(0, 0, 0), m_vHide(0, 0, 0) // Required for SGs to face the direction correctly? [APG]RoboCop[CL]
+	: m_pSentryGun(pSentryGun), m_vStart(0, 0, 0), m_vHide(0, 0, 0) // Required for SGs to face the direction correctly? [APG]RoboCop[CL]
 {
 	m_iStartingWaypoint = 0;
 	m_iSentryWaypoint = 0;

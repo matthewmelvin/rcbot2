@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*
  *    part of https://rcbot2.svn.sourceforge.net/svnroot/rcbot2
  *
@@ -534,10 +536,10 @@ bool CBot :: checkStuck ()
 		}
 	}
 
-	if ( m_fWaypointStuckTime && m_fWaypointStuckTime < engine->Time() )
+	if (m_fWaypointStuckTime > 0.0f && m_fWaypointStuckTime < engine->Time())
 	{
 		m_bFailNextMove = true;
-		m_fWaypointStuckTime = engine->Time() + randomFloat(15.0f,20.0f);
+		m_fWaypointStuckTime = engine->Time() + randomFloat(15.0f, 20.0f);
 	}
 
 	if ( m_fCheckStuckTime > fTime )
@@ -1292,29 +1294,26 @@ void CBot :: updateConditions ()
 }
 
 // Called when working out route
-bool CBot :: canGotoWaypoint (const Vector vPrevWaypoint, CWaypoint *pWaypoint, CWaypoint *pPrev)
+bool CBot::canGotoWaypoint(const Vector& vPrevWaypoint, CWaypoint* pWaypoint, CWaypoint* pPrev)
 {
-	if ( pWaypoint->hasFlag(CWaypointTypes::W_FL_UNREACHABLE) ) 
+	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_UNREACHABLE))
 		return false;
-
-	if ( !pWaypoint->forTeam(getTeam()) )
+	if (!pWaypoint->forTeam(getTeam()))
 		return false;
-
-	if ( pWaypoint->hasFlag(CWaypointTypes::W_FL_OPENS_LATER) )
+	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_OPENS_LATER))
 	{
-		if ( pPrev != nullptr)
+		if (pPrev != nullptr)
 		{
 			return pPrev->isPathOpened(pWaypoint->getOrigin());
 		}
-		if ( vPrevWaypoint != pWaypoint->getOrigin() && !CBotGlobals::checkOpensLater(vPrevWaypoint,pWaypoint->getOrigin()) )
+		if (vPrevWaypoint != pWaypoint->getOrigin() && !CBotGlobals::checkOpensLater(vPrevWaypoint, pWaypoint->getOrigin()))
 			return false;
 	}
-
-	if ( pWaypoint->hasFlag(CWaypointTypes::W_FL_FALL) )
+	if (pWaypoint->hasFlag(CWaypointTypes::W_FL_FALL))
 	{
-		if ( getHealthPercent() <= 0.1f )
+		if (getHealthPercent() <= 0.1f)
 		{
-			if ( vPrevWaypoint.z - pWaypoint->getOrigin().z > 200.0f )
+			if (vPrevWaypoint.z - pWaypoint->getOrigin().z > 200.0f)
 				return false;
 		}
 	}
@@ -1931,10 +1930,14 @@ void CBot :: updateStatistics ()
 		m_Stats.data = 0;
 		m_iStatsIndex = 0; // reset to be sure in case of m_iStatsIndex > gpGlobals->maxClients
 
-		if ( !m_uSquadDetail.b1.said_area_clear && m_StatsCanUse.stats.m_iEnemiesInRange == 0 && m_StatsCanUse.stats.m_iEnemiesVisible == 0 && m_StatsCanUse.stats.m_iTeamMatesInRange > 0)
+		if (!m_uSquadDetail.b1.said_area_clear && m_StatsCanUse.stats.m_iEnemiesInRange == 0 &&
+			m_StatsCanUse.stats.m_iEnemiesVisible == 0 && m_StatsCanUse.stats.m_iTeamMatesInRange > 0)
 		{
-			if (!inSquad() || (isSquadLeader() && (m_fLastSeeEnemy && m_fLastSeeEnemy + 10.0f < engine->Time())))
+			if (!inSquad() || (isSquadLeader() &&
+				(m_fLastSeeEnemy > 0.0f && m_fLastSeeEnemy + 10.0f < engine->Time())))
+			{
 				areaClear();
+			}
 
 			m_uSquadDetail.b1.said_area_clear = true;
 		}
@@ -2099,7 +2102,7 @@ void CBot :: listenToPlayer ( edict_t *pPlayer, bool bIsEnemy, const bool bIsAtt
 		}
 		else if ( bIsAttacking )
 		{
-			if ( !bIsEnemy && wantToInvestigateSound() )
+			if ( !bIsEnemy && wantToInvestigateSound() ) //TODO: !bIsEnemy always true? [APG]RoboCop[CL]
 			{
 				const QAngle angle = p->GetAbsAngles();
 				Vector forward;
@@ -2208,8 +2211,6 @@ void CBot :: doMove ()
 		{
 			if ( canAvoid(m_pAvoidEntity) )
 			{
-				const Vector m_vAvoidOrigin = CBotGlobals::entityOrigin(m_pAvoidEntity);
-
 				//m_vMoveTo = getOrigin() + ((m_vMoveTo-getOrigin())-((m_vAvoidOrigin-getOrigin())*bot_avoid_strength.GetFloat()));
 				//float fAvoidDist = distanceFrom(m_pAvoidEntity);
 
@@ -2228,6 +2229,8 @@ void CBot :: doMove ()
 #ifndef __linux__
 					if ( CClients::clientsDebugging(BOT_DEBUG_THINK) )
 					{
+						const Vector m_vAvoidOrigin = CBotGlobals::entityOrigin(m_pAvoidEntity);
+
 						debugoverlay->AddLineOverlay (getOrigin(), m_vAvoidOrigin, 0,0,255, false, 0.05f);
 						debugoverlay->AddLineOverlay (getOrigin(), m_bAvoidRight ? getOrigin()+vLeft*bot_avoid_strength.GetFloat():getOrigin()-vLeft*bot_avoid_strength.GetFloat(), 0,255,0, false, 0.05f);
 						debugoverlay->AddLineOverlay (getOrigin(), getOrigin() + vMove/vMove.Length()*bot_avoid_strength.GetFloat(), 255,0,0, false, 0.05f);
@@ -2235,7 +2238,6 @@ void CBot :: doMove ()
 					}
 #endif
 
-					//*/
 					//debugoverlay->AddLineOverlay (getOrigin(), m_vAvoidOrigin, 0,0,255, false, 0.05f);
 					//debugoverlay->AddLineOverlay (getOrigin(), m_bAvoidRight ? (getOrigin()+(vLeft*bot_avoid_strength.GetFloat())):(getOrigin()-(vLeft*bot_avoid_strength.GetFloat())), 0,255,0, false, 0.05f);
 					//debugoverlay->AddLineOverlay (getOrigin(), m_vMoveTo, 255,0,0, false, 0.05f);
@@ -3397,9 +3399,12 @@ void CBots :: botThink ()
 
 				#endif
 			}
-			if ( bot_command.GetString() && *bot_command.GetString() )
+
+			const char* command = bot_command.GetString();
+
+			if (command && *command)
 			{
-				helpers->ClientCommand(pBot->getEdict(),bot_command.GetString());
+				helpers->ClientCommand(pBot->getEdict(), command); // Use the cached value [APG]RoboCop[CL]
 
 				bot_command.SetValue("");
 			}
@@ -3587,7 +3592,8 @@ void CBots::kickRandomBotOnTeam(const int team)
 	const std::size_t botListSize = botList.size(); // Use std::size_t for size
 
 	if (botListSize > 0) {
-		snprintf(szCommand, sizeof(szCommand), "kickid %d\n", botList[static_cast<std::size_t>(randomInt(0, static_cast<int>(botListSize) - 1))]);
+		const int index = randomInt(0, static_cast<int>(botListSize) - 1);
+		snprintf(szCommand, sizeof(szCommand), "kickid %d\n", botList[static_cast<std::size_t>(index)]);
 	}
 
 	m_flAddKickBotTime = engine->Time() + 2.0f;

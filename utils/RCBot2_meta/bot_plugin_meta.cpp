@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /**
  * vim: set ts=4 sw=4 tw=99 noet :
  * ======================================================
@@ -871,8 +873,8 @@ void RCBotPluginMeta::BotQuotaCheck() {
 				}
 			}
 
-			if (client != nullptr && client->getPlayer() != nullptr && client->isUsed()) {
-				IPlayerInfo *p = playerinfomanager->GetPlayerInfo(client->getPlayer());
+			if (client->getPlayer() != nullptr && client->isUsed()) {
+				IPlayerInfo* p = playerinfomanager->GetPlayerInfo(client->getPlayer());
 
 				if (p->IsConnected() && !p->IsFakeClient() && !p->IsHLTV()) {
 					human_count++;
