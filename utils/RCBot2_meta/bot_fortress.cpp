@@ -418,19 +418,12 @@ void CBotFortress ::pickedUpFlag()
 
 void CBotFortress :: checkHealingValid ()
 {
-	if ( m_pHeal )
+	if (m_pHeal)
 	{
-		if ( !CBotGlobals::entityIsValid(m_pHeal) || !CBotGlobals::entityIsAlive(m_pHeal) )
-		{
-			m_pHeal = nullptr;
-			removeCondition(CONDITION_SEE_HEAL);
-		}
-		else if ( !isVisible(m_pHeal) )
-		{
-			m_pHeal = nullptr;
-			removeCondition(CONDITION_SEE_HEAL);
-		}
-		else if ( getHealFactor(m_pHeal) == 0.0f )
+		if (!CBotGlobals::entityIsValid(m_pHeal) ||
+			!CBotGlobals::entityIsAlive(m_pHeal) ||
+			!isVisible(m_pHeal) ||
+			getHealFactor(m_pHeal) == 0.0f)
 		{
 			m_pHeal = nullptr;
 			removeCondition(CONDITION_SEE_HEAL);
