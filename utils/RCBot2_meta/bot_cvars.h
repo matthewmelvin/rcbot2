@@ -82,6 +82,7 @@ extern ConVar rcbot_tooltips;
 extern ConVar rcbot_debug_notasks;
 extern ConVar rcbot_debug_dont_shoot;
 extern ConVar rcbot_debug_show_route;
+extern ConVar rcbot_debug_stop_invtask;
 extern ConVar rcbot_tf2_autoupdate_point_time;
 extern ConVar rcbot_tf2_payload_dist_retreat;
 extern ConVar rcbot_spy_runaway_health;

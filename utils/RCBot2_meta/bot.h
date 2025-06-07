@@ -391,6 +391,11 @@ public:
 
 	virtual int getTeam ();
 
+	const char* getBotName() const
+	{
+		return m_szBotName;
+	}
+
 	bool isUnderWater ( ) const;
 
 	CBotWeapon *getBestWeapon ( edict_t *pEnemy, bool bAllowMelee = true, bool bAllowMeleeFallback = true, bool bMeleeOnly = false, bool bExplosivesOnly = false ) const;
