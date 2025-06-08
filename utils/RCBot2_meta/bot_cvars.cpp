@@ -97,7 +97,7 @@ ConVar rcbot_tooltips("rcbot_tooltips", "1", 0, "Enables/disables help tooltips"
 ConVar rcbot_debug_notasks("rcbot_debug_notasks", "0", 0, "Debug command, stops bots from doing tasks by themselves");
 ConVar rcbot_debug_dont_shoot("rcbot_debug_dont_shoot", "0", 0, "Debug command, stops bots from shooting everyone");
 ConVar rcbot_debug_show_route("rcbot_debug_show_route", "0", 0, "Debug command, shows waypoint route to host");
-ConVar rcbot_debug_stop_invtask("rcbot_debug_stop_invtask", "0", 0, "Debug command, stop investigate task once completed");
+ConVar rcbot_debug_stop_invtask("rcbot_debug_stop_invtask", "1", 0, "Debug command, stop investigate task once completed");
 ConVar rcbot_tf2_autoupdate_point_time("rcbot_tf2_autoupdate_point_time", "60", 0, "Time to automatically update points in TF2 for any changes");
 ConVar rcbot_tf2_payload_dist_retreat("rcbot_tf2_payload_dist_retreat", "512.0", 0, "Distance for payload bomb to be greater than at cap before defend team retreats");
 ConVar rcbot_spy_runaway_health("rcbot_spy_runaway_health", "70", 0, "health which spies run away after attacking");
