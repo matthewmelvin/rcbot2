@@ -145,6 +145,12 @@ bool CBotGlobals :: isCurrentMod (const eModId modid)
 	return m_pCurrentMod->getModId() == modid;
 }
 
+int CBotGlobals ::numPlayersPlaying()
+{
+
+	return CBotGlobals::numClients() - CBotGlobals::numPlayersOnTeam(1,false);
+}
+
 int CBotGlobals ::numPlayersOnTeam(const int iTeam, const bool bAliveOnly)
 {
 	int num = 0;

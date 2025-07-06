@@ -3139,7 +3139,7 @@ bool CBots::controlBot(const char* szOldName, const char* szName, const char* sz
 		return false;
 	}
 
-	if (m_iMaxBots != -1 && CBotGlobals::numClients() >= m_iMaxBots)
+	if (m_iMaxBots != -1 && CBotGlobals::numPlayersPlaying() >= m_iMaxBots)
 	{
 		logger->Log(LogLevel::ERROR, "Can't create bot, max_bots reached");
 		return false;
@@ -3173,7 +3173,7 @@ bool CBots :: createBot (const char *szClass, const char *szTeam, const char *sz
 	CBotMod *pMod = CBotGlobals::getCurrentMod(); // `*pMod` Unused? [APG]RoboCop[CL]
 	const char *szOVName = ""; // `szOVName` Unused? [APG]RoboCop[CL]
 
-	if ( m_iMaxBots != -1 && CBotGlobals::numClients() >= m_iMaxBots )
+	if ( m_iMaxBots != -1 && CBotGlobals::numPlayersPlaying() >= m_iMaxBots )
 		logger->Log(LogLevel::ERROR, "Can't create bot, max_bots reached");
 
 	m_flAddKickBotTime = engine->Time() + rcbot_addbottime.GetFloat();
@@ -3511,20 +3511,29 @@ void CBots :: mapInit ()
 
 bool CBots :: needToAddBot ()
 {
-	const int iClients = CBotGlobals::numClients();
+	const int iClients = CBotGlobals::numPlayersPlaying();
+	const int iBots = CBots::numBots();
 
-	return (m_iMinBots!=-1 && CBots::numBots() < m_iMinBots) || (iClients < m_iMaxBots && m_iMaxBots != -1);
+	if ((m_iMinBots!=-1 && iBots < m_iMinBots) || (iClients < m_iMaxBots && m_iMaxBots != -1)) {
+		return true;
+	}
+
+	return false;
 }
 
 bool CBots :: needToKickBot ()
 {
+	const int iClients = CBotGlobals::numPlayersPlaying();
+	const int iBots = CBots::numBots();
+
 	if ( m_flAddKickBotTime < engine->Time() )
 	{
-		if ( m_iMinBots != -1 && CBots::numBots() <= m_iMinBots )
+		if ( m_iMinBots != -1 && iBots <= m_iMinBots )
 			return false;
 
-		if ( m_iMaxBots > 0 && CBotGlobals::numClients() > m_iMaxBots )
+		if ( m_iMaxBots > 0 && iClients > m_iMaxBots ) {
 			return true;
+		}
 	}
 
 	return false;

@@ -97,6 +97,7 @@ public:
 	static float DotProductFromOrigin ( edict_t *pEnemy, const Vector& pOrigin );
 	static float DotProductFromOrigin (const Vector& vPlayer, const Vector& vFacing, const QAngle& eyes );
 
+	static int numPlayersPlaying();
 	static int numPlayersOnTeam(int iTeam, bool bAliveOnly);
 	static void setMapName ( const char *szMapName );
 	static char *getMapName (); 
