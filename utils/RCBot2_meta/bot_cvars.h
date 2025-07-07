@@ -105,6 +105,8 @@ extern ConVar rcbot_css_economy_eco_limit;
 extern ConVar rcbot_show_welcome_msg;
 extern ConVar rcbot_force_class;
 
+extern ConVar rcbot_ignore_spectators;
+
 extern ConVarRef sv_gravity;
 extern ConVarRef mp_teamplay;
 extern ConVarRef sv_tags;

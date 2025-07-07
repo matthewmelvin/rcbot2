@@ -147,8 +147,12 @@ bool CBotGlobals :: isCurrentMod (const eModId modid)
 
 int CBotGlobals ::numPlayersPlaying()
 {
+	int num = CBotGlobals::numClients();
 
-	return CBotGlobals::numClients() - CBotGlobals::numPlayersOnTeam(1,false);
+	if ( rcbot_ignore_spectators.GetBool() )
+		num -= CBotGlobals::numPlayersOnTeam(1,false);
+
+	return num;
 }
 
 int CBotGlobals ::numPlayersOnTeam(const int iTeam, const bool bAliveOnly)
