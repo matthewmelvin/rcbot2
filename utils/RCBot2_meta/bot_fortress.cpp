@@ -69,6 +69,7 @@
 #include <array>
 #include <cmath>
 #include <cstring>
+#include <numeric>
 
 #include "rcbot/tf2/conditions.h"
 #include "rcbot/entprops.h"
@@ -3824,13 +3825,12 @@ int CBotFortress :: getSpyDisguiseClass (const int iTeam) const
 	
 	if ( availableClasses.empty() )
 		return randomInt(1,9);
-	
-	float fTotal = 0.0f;
 
-	for (const int availableClass : availableClasses) //TODO: Improve for loop, replace it with std::accumulate ? [APG]RoboCop[CL]
-	{
-		fTotal += m_fClassDisguiseFitness[availableClass];
-	}
+	float fTotal = std::accumulate(availableClasses.begin(), availableClasses.end(), 0.0f,
+	                               [this](const float current_total, const int available_class)
+	                               {
+		                               return current_total + m_fClassDisguiseFitness[available_class];
+	                               });
 
 	if ( fTotal > 0.0f )
 	{
