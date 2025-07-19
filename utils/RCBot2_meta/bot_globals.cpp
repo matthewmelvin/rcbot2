@@ -147,10 +147,25 @@ bool CBotGlobals :: isCurrentMod (const eModId modid)
 
 int CBotGlobals ::numPlayersPlaying()
 {
+
 	int num = CBotGlobals::numClients();
 
-	if ( rcbot_ignore_spectators.GetBool() )
-		num -= CBotGlobals::numPlayersOnTeam(1,false);
+	if (rcbot_ignore_spectators.GetBool())
+	{
+		for ( int i = 1; i <= CBotGlobals::numClients(); i ++ )
+		{
+			edict_t* pEdict = INDEXENT(i);
+
+			if ( CBotGlobals::entityIsValid(pEdict) )
+			{
+				if ( CClassInterface::getTeam(pEdict) >= 2 )
+					continue;
+				if ( CBots::getBotPointer(pEdict) != NULL )
+					continue;
+				num--;
+			}
+		}
+	}
 
 	return num;
 }
