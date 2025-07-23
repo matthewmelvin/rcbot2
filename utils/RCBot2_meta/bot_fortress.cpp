@@ -4544,7 +4544,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 
 		if ( bNeedAmmo )
 			pWaypointAmmo = CWaypoints::getWaypoint(CWaypoints::getClosestFlagged(CWaypointTypes::W_FL_AMMO,vOrigin,getTeam(),&fAmmoDist,failedlist));
-		if ( bNeedHealth )
+		if ( bNeedHealth && !CTeamFortress2Mod::isSuddenDeath())
 			pWaypointHealth = CWaypoints::getWaypoint(CWaypoints::getClosestFlagged(CWaypointTypes::W_FL_HEALTH,vOrigin,getTeam(),&fHealthDist,failedlist));
 	}
 
@@ -4778,7 +4778,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 		ADD_UTILITY(BOT_UTIL_REMOVE_SENTRY_SAPPER,!m_bIsCarryingObj && (m_fRemoveSapTime<engine->Time()) &&!bHasFlag&&(m_pSentryGun!=NULL) && CTeamFortress2Mod::isMySentrySapped(m_pEdict),1000.0f)
 		ADD_UTILITY(BOT_UTIL_REMOVE_DISP_SAPPER,!m_bIsCarryingObj && (m_fRemoveSapTime<engine->Time()) &&!bHasFlag&&(m_pDispenser!=NULL) && CTeamFortress2Mod::isMyDispenserSapped(m_pEdict),1000.0f)
 
-		ADD_UTILITY_DATA(BOT_UTIL_GOTORESUPPLY_FOR_AMMO, !bIsUbered && !m_bIsCarryingObj && !bHasFlag && pWaypointResupply && bNeedAmmo && !m_pAmmo, 1000.0f / fResupplyDist, CWaypoints::getWaypointIndex(pWaypointResupply))
+		ADD_UTILITY_DATA(BOT_UTIL_GOTORESUPPLY_FOR_AMMO, !bIsUbered && !m_bIsCarryingObj && !bHasFlag && pWaypointResupply && bNeedAmmo && !m_pAmmo && !CTeamFortress2Mod::isSuddenDeath(), 1000.0f / fResupplyDist, CWaypoints::getWaypointIndex(pWaypointResupply))
 
 		ADD_UTILITY_DATA(BOT_UTIL_FIND_NEAREST_AMMO,!m_bIsCarryingObj && !bHasFlag&&bNeedAmmo&&!m_pAmmo&&pWaypointAmmo,(400.0f/fAmmoDist) + ((!CTeamFortress2Mod::hasRoundStarted() && CTeamFortress2Mod::isMapType(TF_MAP_MVM))?0.5f:0.0f),CWaypoints::getWaypointIndex(pWaypointAmmo))
 		// only if close
@@ -4810,7 +4810,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 				ADD_UTILITY(BOT_UTIL_FIND_SQUAD_LEADER,!hasSomeConditions(CONDITION_DEFENSIVE) && inSquad() && (m_pSquad->GetLeader()!=m_pEdict) && (!hasSomeConditions(CONDITION_SEE_SQUAD_LEADER) || !hasSomeConditions(CONDITION_SQUAD_LEADER_INRANGE)),hasSomeConditions(CONDITION_SQUAD_IDLE)?0.1f:2.0f)
 		}
 
-		ADD_UTILITY_DATA(BOT_UTIL_GOTORESUPPLY_FOR_AMMO, !bIsUbered && !m_bIsCarryingObj && !bHasFlag && pWaypointResupply && bNeedAmmo && !m_pAmmo, 1000.0f / fResupplyDist, CWaypoints::getWaypointIndex(pWaypointResupply))
+		ADD_UTILITY_DATA(BOT_UTIL_GOTORESUPPLY_FOR_AMMO, !bIsUbered && !m_bIsCarryingObj && !bHasFlag && pWaypointResupply && bNeedAmmo && !m_pAmmo && !CTeamFortress2Mod::isSuddenDeath(), 1000.0f / fResupplyDist, CWaypoints::getWaypointIndex(pWaypointResupply))
 		ADD_UTILITY_DATA(BOT_UTIL_FIND_NEAREST_AMMO, !bHasFlag&&bNeedAmmo&&!m_pAmmo&&pWaypointAmmo,(400.0f/fAmmoDist) + ((!CTeamFortress2Mod::hasRoundStarted() && CTeamFortress2Mod::isMapType(TF_MAP_MVM))?0.5f:0.0f),CWaypoints::getWaypointIndex(pWaypointAmmo))
 
 		if ( m_pNearestDisp )
@@ -4863,14 +4863,14 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 			fDefendFlagUtility = 0.0f;
 	}
 	ADD_UTILITY_DATA(BOT_UTIL_GOTORESUPPLY_FOR_HEALTH,
-	                 !bIsUbered && !m_bIsCarryingObj && !bHasFlag && pWaypointResupply && bNeedHealth && !m_pHealthkit,
-	                 1000.0f / fResupplyDist, CWaypoints::getWaypointIndex(pWaypointResupply))
+	            !bIsUbered && !m_bIsCarryingObj && !bHasFlag && pWaypointResupply && bNeedHealth && !m_pHealthkit && !CTeamFortress2Mod::isSuddenDeath(),
+	            1000.0f / fResupplyDist, CWaypoints::getWaypointIndex(pWaypointResupply))
 
 	ADD_UTILITY(BOT_UTIL_GETAMMOKIT, bNeedAmmo && m_pAmmo,
 	            1.0f + ((!CTeamFortress2Mod::hasRoundStarted() && CTeamFortress2Mod::isMapType(TF_MAP_MVM))?0.5f:0.0f))
 
-	ADD_UTILITY(BOT_UTIL_GETHEALTHKIT, bNeedHealth && m_pHealthkit,
-	            1.0f + ((!CTeamFortress2Mod::hasRoundStarted() && CTeamFortress2Mod::isMapType(TF_MAP_MVM))?0.5f:0.0f))
+	ADD_UTILITY(BOT_UTIL_GETHEALTHKIT, bNeedHealth && m_pHealthkit && !CTeamFortress2Mod::isSuddenDeath(),
+                    1.0f + ((!CTeamFortress2Mod::hasRoundStarted() && CTeamFortress2Mod::isMapType(TF_MAP_MVM))?0.5f:0.0f))
 
 	ADD_UTILITY(BOT_UTIL_GETFLAG,
 	            (CTeamFortress2Mod::isMapType(TF_MAP_CTF)||(CTeamFortress2Mod::isMapType(TF_MAP_RD)||(CTeamFortress2Mod
