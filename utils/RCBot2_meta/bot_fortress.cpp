@@ -582,6 +582,10 @@ bool CBotFortress :: setVisible ( edict_t *pEntity, const bool bVisible )
 {
 	const bool bValid = CBot::setVisible(pEntity,bVisible);
 
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+
 	// check for people to heal
 	if ( m_iClass == TF_CLASS_MEDIC )
 	{
@@ -717,6 +721,8 @@ bool CBotFortress :: setVisible ( edict_t *pEntity, const bool bVisible )
 				m_pNearestPipeGren = pEntity;
 			}
 		}
+		else if ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned()))
+			return false;
 	}
 	else if ( pEntity == m_pNearestEnemySentry )
 	{
@@ -934,7 +940,11 @@ void CBotTF2 :: buildingDestroyed ( int iType, edict_t *pAttacker, edict_t *pEdi
 
 void CBotFortress ::wantToDisguise(const bool bSet)
 {
-	if ((rcbot_tf2_debug_spies_cloakdisguise.GetBool()) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned()))))
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+
+	if ((rcbot_tf2_debug_spies_cloakdisguise.GetBool()) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) || ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && !(CTeamFortress2Mod::isBossSummoned())))
 	{
 		if ( bSet )
 			m_fSpyDisguiseTime = 0.0f;
@@ -2127,9 +2137,13 @@ void CBotTF2::MvM_Upgrade()
 
 void CBotTF2 :: checkBuildingsValid (bool bForce) // force check carrying
 {
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+	
 	if ( m_pSentryGun )
 	{
-		if ( !CBotGlobals::entityIsValid(m_pSentryGun) || !CBotGlobals::entityIsAlive(m_pSentryGun) || !CTeamFortress2Mod::isSentry(m_pSentryGun,m_iTeam) )
+		if ( (!CBotGlobals::entityIsValid(m_pSentryGun) || !CBotGlobals::entityIsAlive(m_pSentryGun) || !CTeamFortress2Mod::isSentry(m_pSentryGun,m_iTeam)) && !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned())))
 		{
 			m_pSentryGun = nullptr;
 			m_prevSentryHealth = 0;
@@ -2141,7 +2155,7 @@ void CBotTF2 :: checkBuildingsValid (bool bForce) // force check carrying
 
 	if ( m_pDispenser )
 	{
-		if ( !CBotGlobals::entityIsValid(m_pDispenser) || !CBotGlobals::entityIsAlive(m_pDispenser) || !CTeamFortress2Mod::isDispenser(m_pDispenser,m_iTeam) )
+		if ( (!CBotGlobals::entityIsValid(m_pDispenser) || !CBotGlobals::entityIsAlive(m_pDispenser) || !CTeamFortress2Mod::isDispenser(m_pDispenser,m_iTeam)) && !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned())))
 		{
 			m_pDispenser = nullptr;
 			m_prevDispHealth = 0;
@@ -2151,7 +2165,7 @@ void CBotTF2 :: checkBuildingsValid (bool bForce) // force check carrying
 
 	if ( m_pTeleEntrance )
 	{
-		if ( !CBotGlobals::entityIsValid(m_pTeleEntrance) || !CBotGlobals::entityIsAlive(m_pTeleEntrance) || !CTeamFortress2Mod::isTeleporterEntrance(m_pTeleEntrance,m_iTeam) )
+		if ( (!CBotGlobals::entityIsValid(m_pTeleEntrance) || !CBotGlobals::entityIsAlive(m_pTeleEntrance) || !CTeamFortress2Mod::isTeleporterEntrance(m_pTeleEntrance,m_iTeam)) && !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned())))
 		{
 			m_pTeleEntrance = nullptr;
 			m_prevTeleEntHealth = 0;
@@ -2161,7 +2175,7 @@ void CBotTF2 :: checkBuildingsValid (bool bForce) // force check carrying
 
 	if ( m_pTeleExit )
 	{
-		if ( !CBotGlobals::entityIsValid(m_pTeleExit) || !CBotGlobals::entityIsAlive(m_pTeleExit) || !CTeamFortress2Mod::isTeleporterExit(m_pTeleExit,m_iTeam) )
+		if ( (!CBotGlobals::entityIsValid(m_pTeleExit) || !CBotGlobals::entityIsAlive(m_pTeleExit) || !CTeamFortress2Mod::isTeleporterExit(m_pTeleExit,m_iTeam)) && !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned())))
 		{
 			m_pTeleExit = nullptr;
 			m_prevTeleExtHealth = 0;
@@ -2272,11 +2286,15 @@ void CBotTF2 :: pointCaptured()
 
 void CBotTF2 :: spyDisguise (const int iTeam, const byte iClass)
 {
+	const string_t mapname = gpGlobals->mapname;
+
+	const char* szmapname = mapname.ToCStr();
+
 	//char cmd[256];
 
-	if ((iTeam == 3) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned()))))
+	if ((iTeam == 3) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) || ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && !(CTeamFortress2Mod::isBossSummoned())))
 		m_iImpulse = 230 + iClass;
-	else if ((iTeam == 2) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned()))))
+	else if ((iTeam == 2) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) || ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && !(CTeamFortress2Mod::isBossSummoned())))
 		m_iImpulse = 220 + iClass;
 
 	m_fDisguiseTime = engine->Time();
@@ -4893,7 +4911,7 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 
 	ADD_UTILITY(BOT_UTIL_FIND_MEDIC_FOR_HEALTH,(m_iClass != TF_CLASS_MEDIC) && !bHasFlag && bNeedHealth && m_pLastSeeMedic.hasSeen(10.0f),1.0f)
 
-	if ( (m_pNearestEnemySentry.get() != nullptr) && !CTeamFortress2Mod::TF2_IsPlayerInvuln(m_pEdict) )
+	if ( (m_pNearestEnemySentry.get() != nullptr) && !CTeamFortress2Mod::TF2_IsPlayerInvuln(m_pEdict) && !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned())))
 	{
 		pWeapon = m_pWeapons->getPrimaryWeapon();
 
@@ -5580,6 +5598,8 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 				removeCondition(CONDITION_PUSH);
 				return true;
 			}
+			if ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned()))
+				return false;
 			break;
 		case BOT_UTIL_DEFEND_POINT:
 			{
@@ -7861,14 +7881,12 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 		{
 			if (CTeamFortress2Mod::isBossSummoned())
 			{
-				if (CBotGlobals::getTeam(pEdict) != getTeam() || CTeamFortress2Mod::isSentry(pEdict, iEnemyTeam) ||
-					CTeamFortress2Mod::isDispenser(pEdict, iEnemyTeam) ||
-					CTeamFortress2Mod::isTeleporter(pEdict, iEnemyTeam))
+				if (CBotGlobals::getTeam(pEdict) != getTeam())
 				{
 					bValid = false;
 				}
 			}
-			else if (!CTeamFortress2Mod::isBossSummoned())
+			/*else if (!CTeamFortress2Mod::isBossSummoned())
 			{
 				if (CBotGlobals::getTeam(pEdict) != getTeam() || CTeamFortress2Mod::isSentry(pEdict, iEnemyTeam) ||
 					CTeamFortress2Mod::isDispenser(pEdict, iEnemyTeam) ||
@@ -7876,7 +7894,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 				{
 					bValid = true;
 				}
-			}
+			}*/
 		}
 		/*if (mp_friendlyfire.GetInt() == 1)
 		{
@@ -7971,9 +7989,17 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 		if ( (m_iClass != TF_CLASS_SPY) && (CTeamFortress2Mod::isSentry(pEdict,iEnemyTeam) || 
 			CTeamFortress2Mod::isDispenser(pEdict,iEnemyTeam) || 
 			CTeamFortress2Mod::isTeleporter(pEdict,iEnemyTeam)) 
-			/*CTeamFortress2Mod::isTeleporterExit(pEdict,iEnemyTeam)*/ && !((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && (CTeamFortress2Mod::isBossSummoned())) )
+			/*CTeamFortress2Mod::isTeleporterExit(pEdict,iEnemyTeam)*/  )
 		{
-			bValid = true;
+			if (std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0)
+			{
+				if (CTeamFortress2Mod::isBossSummoned())
+				{
+					bValid = false;
+				}
+			}
+			else
+				bValid = true;
 		}
 		else if ( CTeamFortress2Mod::isPipeBomb ( pEdict, iEnemyTeam ) )
 			bIsPipeBomb = bValid = true;
