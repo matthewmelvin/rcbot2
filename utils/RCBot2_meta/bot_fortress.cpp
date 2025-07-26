@@ -4898,9 +4898,9 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 		(m_fLastKnownTeamFlagTime && (m_fLastKnownTeamFlagTime > engine->Time())), 
 		fDefendFlagUtility + (randomFloat (0.0f, 0.2f) - 0.1f))
 
-	ADD_UTILITY(BOT_UTIL_SNIPE, (iClass == TF_CLASS_SNIPER) && m_pWeapons->hasWeapon(TF2_WEAPON_SNIPERRIFLE)
-		&& !m_pWeapons->hasWeapon(TF2_WEAPON_BOW)
-		&& !m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_SNIPERRIFLE))->outOfAmmo(this) && !hasSomeConditions(CONDITION_PARANOID)
+	ADD_UTILITY(BOT_UTIL_SNIPE, (iClass == TF_CLASS_SNIPER) && (m_pWeapons->getCurrentWeaponInSlot(0) && !m_pWeapons->hasWeapon(TF2_WEAPON_BOW))
+		&& !m_pWeapons->getCurrentWeaponInSlot(0)->isProjectile()
+		&& !m_pWeapons->getCurrentWeaponInSlot(0)->outOfAmmo(this) && !hasSomeConditions(CONDITION_PARANOID)
 		&& !bHasFlag && (getHealthPercent() > 0.2f), 0.95f)
 	//ADD_UTILITY(BOT_UTIL_SNIPE_CROSSBOW, (iClass == TF_CLASS_SNIPER) && m_pWeapons->hasWeapon(TF2_WEAPON_BOW) && !m_pWeapons->getWeapon(CWeapons::getWeapon(TF2_WEAPON_BOW))->outOfAmmo(this) && !hasSomeConditions(CONDITION_PARANOID) && !bHasFlag && (getHealthPercent()>0.2f), 0.95f)
 
@@ -6606,8 +6606,11 @@ bool CBotTF2 :: executeAction ( CBotUtility *util )//eBotAction id, CWaypoint *p
 
 			if ( pWaypoint )
 			{
-				m_pSchedules->add(new CBotTF2SnipeSched(pWaypoint->getOrigin(),CWaypoints::getWaypointIndex(pWaypoint)));
-				return true;
+				if ((m_pWeapons->hasWeapon(TF2_WEAPON_BOW)) || (m_pWeapons->getCurrentWeaponInSlot(0)->isProjectile()))
+					return false;
+				else
+					m_pSchedules->add(new CBotTF2SnipeSched(pWaypoint->getOrigin(),CWaypoints::getWaypointIndex(pWaypoint)));
+						return true;
 			}
 			break;
 		case BOT_UTIL_GETFLAG_LASTKNOWN:
@@ -7384,7 +7387,7 @@ bool CBotTF2 :: handleAttack ( CBotWeapon *pWeapon, edict_t *pEnemy )
 				m_pButtons->letGo(IN_ATTACK);
 			}
 		}
-		else if (m_iClass == TF_CLASS_SNIPER && pWeapon->getWeaponInfo() && pWeapon->getWeaponInfo()->getSlot() == 0)
+		else if (m_iClass == TF_CLASS_SNIPER && pWeapon->getWeaponInfo() && pWeapon->getWeaponInfo()->getSlot() == 0  && ((!m_pWeapons->hasWeapon(TF2_WEAPON_BOW)) || !(m_pWeapons->getCurrentWeaponInSlot(0)->isProjectile())))
 		{
 			//stopMoving();
 
