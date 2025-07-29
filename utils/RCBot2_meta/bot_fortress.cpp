@@ -7383,7 +7383,7 @@ bool CBotTF2 :: handleAttack ( CBotWeapon *pWeapon, edict_t *pEnemy )
 				const float fSkill = 1.0f - fRandom;
 				
 				//m_fSnipeAttackTime = engine->Time() + (fSkill*1.0f) + ((4.0f*fDistFactor)*fSkill);
-				m_fSnipeAttackTime = engine->Time() + ((4.0f * fDistFactor));
+				m_fSnipeAttackTime = engine->Time() + ((2.0f * fDistFactor));
 				m_pButtons->letGo(IN_ATTACK);
 			}
 		}
