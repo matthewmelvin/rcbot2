@@ -126,7 +126,7 @@ bool CWaypointNavigator :: beliefLoad ()
 	
 	snprintf(mapname, sizeof(mapname), "%s%d", CBotGlobals::getMapName(), m_iBeliefTeam);
 
-	CBotGlobals::buildFileName(filename,mapname,BOT_WAYPOINT_FOLDER,"rcb",true);
+	CBotGlobals::buildFileName(filename,mapname,BOT_AUXILERY_FOLDER,"rcb",true);
 
 	std::fstream bfp = CBotGlobals::openFile(filename, std::fstream::in | std::fstream::binary);
 
@@ -181,7 +181,7 @@ bool CWaypointNavigator :: beliefSave (const bool bOverride)
    // so would need to change files if a different team
    // stick to the current team we've been using
    snprintf(mapname, sizeof(mapname), "%s%d", CBotGlobals::getMapName(), m_iBeliefTeam);
-   CBotGlobals::buildFileName(filename,mapname,BOT_WAYPOINT_FOLDER,"rcb",true);
+   CBotGlobals::buildFileName(filename,mapname,BOT_AUXILERY_FOLDER,"rcb",true);
 
    std::fstream bfp = CBotGlobals::openFile(filename, std::fstream::in | std::fstream::binary);
 

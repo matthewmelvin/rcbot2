@@ -136,6 +136,7 @@ constexpr char BOT_MOD_FILE[] = "bot_mods";
 constexpr char BOT_ACCESS_CLIENT_FILE[] = "accessclients";
 constexpr char BOT_PROFILE_FOLDER[] = "profiles";
 constexpr char BOT_WAYPOINT_FOLDER[] = "waypoints";
+constexpr char BOT_AUXILERY_FOLDER[] = "aux_data";
 constexpr char BOT_CONFIG_EXTENSION[] = "ini";
 
 constexpr char BOT_WAYPOINT_EXTENSION[] = "rcw"; // extension for waypoint files
