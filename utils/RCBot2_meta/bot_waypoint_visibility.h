@@ -119,7 +119,7 @@ public:
 	{
 		if ( m_VisTable != nullptr)
 		{
-			delete m_VisTable;
+			delete[] m_VisTable;
 			m_VisTable = nullptr;
 		}
 
