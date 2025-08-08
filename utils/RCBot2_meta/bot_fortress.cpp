@@ -7713,8 +7713,9 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 		if ( CBotGlobals::getTeam(pEdict) != getTeam() )
 		{
 			assert(pEdict != nullptr);
+			const int edictIndex = engine->IndexOfEdict(pEdict);
+
 			if (CBotGlobals::entityIsValid(pEdict)) {
-				const int edictIndex = engine->IndexOfEdict(pEdict);
 				if (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_UberchargedHidden))
 					return false; // Don't attack MvM bots who are inside spawn.
 				if (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_HalloweenGhostMode))
@@ -7779,13 +7780,12 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 						const int iConds = CClassInterface::getTF2Conditions(pEdict);
 						const bool bExposedCloaked = CClassInterface::getTF2SpyCloakMeter(pEdict) == 0.0f
 							|| ((CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) && (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Kritzkrieged) || CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Buffed))) /*Buff exposes invisibility - RussiaTails*/
-							|| CTeamFortress2Mod::TF2_IsPlayerOnFire(
-								pEdict)        // if he is on fire and cloaked I can see him
+							|| CTeamFortress2Mod::TF2_IsPlayerOnFire(pEdict)        // if he is on fire and cloaked I can see him
 							|| iConds & (1 << 9)  /* Flicker */
 							|| iConds & (1 << 24) /* Jarated */
 							|| iConds & (1 << 25) /* Bleeding */
 							|| iConds & (1 << 27); /* Milked */
-							//|| iConds & (1 << 123) /* Gassed */
+						//|| iConds & (1 << 123) /* Gassed */
 
 						constexpr float fSpyAttackAfterCloakTime = 0.5f;
 						const float fSpyLastUncloakedTime = engine->Time() - m_fSpyLastUncloakedList[entIndex];
