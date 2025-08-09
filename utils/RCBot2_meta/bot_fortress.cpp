@@ -7729,7 +7729,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 		if ( CBotGlobals::getTeam(pEdict) != getTeam() )
 		{
 			assert(pEdict != nullptr);
-			const int edictIndex = engine->IndexOfEdict(pEdict);
+			/*const int edictIndex = engine->IndexOfEdict(pEdict);
 
 			if (CBotGlobals::entityIsValid(pEdict)) {
 				if (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_UberchargedHidden))
@@ -7747,7 +7747,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 					secondaryAttack();
 					m_fAvoidTime = engine->Time() + 1.0f;
 				}
-			}
+			}*/
 			
 			if ( m_iClass == TF_CLASS_SPY )	
 			{
@@ -7795,7 +7795,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 					{
 						const int iConds = CClassInterface::getTF2Conditions(pEdict);
 						const bool bExposedCloaked = CClassInterface::getTF2SpyCloakMeter(pEdict) == 0.0f
-							|| ((CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) && (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Kritzkrieged) || CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Buffed))) /*Buff exposes invisibility - RussiaTails*/
+							|| ((CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) && (CTF2Conditions::TF2_IsPlayerInCondition(entIndex, TFCond_Kritzkrieged) || CTF2Conditions::TF2_IsPlayerInCondition(entIndex, TFCond_Buffed))) /*Buff exposes invisibility - RussiaTails*/
 							|| CTeamFortress2Mod::TF2_IsPlayerOnFire(pEdict)        // if he is on fire and cloaked I can see him
 							|| iConds & (1 << 9)  /* Flicker */
 							|| iConds & (1 << 24) /* Jarated */
@@ -7816,10 +7816,10 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 						// - Just cloaked within fSpyAttackAfterCloakTime seconds & is not using dead ringer
 						bValid = bExposedCloaked
 							|| (fSpyLastUncloakedTime < fSpyAttackAfterCloakTime && !(iConds & (1 << 13)));
-						if ((CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) && (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Kritzkrieged) || CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Buffed))) //Buff exposes invisibility - RussiaTails
+						/*if ((CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) && (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Kritzkrieged) || CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Buffed))) //Buff exposes invisibility - RussiaTails
 						{
 							bIsInvisible = false;
-						}
+						}*/
 						
 					}
 					else if ( dTeam == 0 ) // not disguised
