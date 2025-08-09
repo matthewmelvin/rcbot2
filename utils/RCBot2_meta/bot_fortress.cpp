@@ -944,7 +944,11 @@ void CBotFortress ::wantToDisguise(const bool bSet)
 
 	const char* szmapname = mapname.ToCStr();
 
-	if ((rcbot_tf2_debug_spies_cloakdisguise.GetBool()) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) || ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && !(CTeamFortress2Mod::isBossSummoned())))
+	if ((rcbot_tf2_debug_spies_cloakdisguise.GetBool() &&
+		!(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON))) ||
+		((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 ||
+			std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) &&
+			!CTeamFortress2Mod::isBossSummoned()))
 	{
 		if ( bSet )
 			m_fSpyDisguiseTime = 0.0f;
@@ -2292,10 +2296,22 @@ void CBotTF2 :: spyDisguise (const int iTeam, const byte iClass)
 
 	//char cmd[256];
 
-	if ((iTeam == 3) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) || ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && !(CTeamFortress2Mod::isBossSummoned())))
+	if (((iTeam == 3) &&
+		!(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON))) ||
+		((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 ||
+			std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) &&
+			!CTeamFortress2Mod::isBossSummoned()))
+	{
 		m_iImpulse = 230 + iClass;
-	else if ((iTeam == 2) && !(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) || ((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 || std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) && !(CTeamFortress2Mod::isBossSummoned())))
+	}
+	else if (((iTeam == 2) &&
+		!(CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON))) ||
+		((std::strncmp(szmapname, "koth_lakeside_event", 19) == 0 ||
+			std::strncmp(szmapname, "koth_viaduct_event", 18) == 0) &&
+			!CTeamFortress2Mod::isBossSummoned()))
+	{
 		m_iImpulse = 220 + iClass;
+	}
 
 	m_fDisguiseTime = engine->Time();
 	m_iDisguiseClass = iClass;

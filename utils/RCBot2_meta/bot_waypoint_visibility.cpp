@@ -52,9 +52,9 @@ void CWaypointVisibilityTable::workVisibility()
 	int iTicks = 0;
 	unsigned short int iSize = static_cast<unsigned short int>(CWaypoints::numWaypoints());
 
-	for (iCurFrom = iCurFrom; iCurFrom < iSize; iCurFrom++)
+	for (iCurFrom = 0; iCurFrom < iSize; iCurFrom++)
 	{
-		for (iCurTo = iCurTo; iCurTo < iSize; iCurTo++)
+		for (iCurTo = 0; iCurTo < iSize; iCurTo++)
 		{
 			CWaypoint* pWaypoint1 = CWaypoints::getWaypoint(iCurFrom);
 			CWaypoint* pWaypoint2 = CWaypoints::getWaypoint(iCurTo);
@@ -123,7 +123,7 @@ void CWaypointVisibilityTable::workVisibilityForWaypoint(int i, int iNumWaypoint
 	{
 		if (i == j)
 		{
-			SetVisibilityFromTo(i, j, 1);
+			SetVisibilityFromTo(i, j, true);
 			continue;
 		}
 
