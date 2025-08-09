@@ -7728,8 +7728,9 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 	{
 		if ( CBotGlobals::getTeam(pEdict) != getTeam() )
 		{
-			assert(pEdict != nullptr);
-			/*const int edictIndex = engine->IndexOfEdict(pEdict);
+			//TODO: Stable tests on TF2 conditions
+			/*assert(pEdict != nullptr);
+			const int edictIndex = engine->IndexOfEdict(pEdict);
 
 			if (CBotGlobals::entityIsValid(pEdict)) {
 				if (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_UberchargedHidden))
@@ -7816,6 +7817,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 						// - Just cloaked within fSpyAttackAfterCloakTime seconds & is not using dead ringer
 						bValid = bExposedCloaked
 							|| (fSpyLastUncloakedTime < fSpyAttackAfterCloakTime && !(iConds & (1 << 13)));
+						//TODO: Stable tests on TF2 conditions
 						/*if ((CTeamFortress2Mod::isMapType(TF_MAP_ZI) || CTeamFortress2Mod::isMapType(TF_MAP_SAXTON)) && (CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Kritzkrieged) || CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_Buffed))) //Buff exposes invisibility - RussiaTails
 						{
 							bIsInvisible = false;
@@ -7990,6 +7992,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 		bIsBoss = bValid = true;
 		if (std::strcmp(pEdict->GetClassName(), "merasmus") == 0)
 		{
+			//TODO: Stable tests on TF2 conditions
 			const int edictIndex = engine->IndexOfEdict(getEdict());
 			if ((CTF2Conditions::TF2_IsPlayerInCondition(edictIndex, TFCond_HalloweenBombHead)))
 			{
