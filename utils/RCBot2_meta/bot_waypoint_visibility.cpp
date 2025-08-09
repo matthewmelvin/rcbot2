@@ -50,18 +50,17 @@
 void CWaypointVisibilityTable::workVisibility()
 {
 	int iTicks = 0;
-	const unsigned short int iSize = static_cast<unsigned short int>(CWaypoints::numWaypoints());
+	unsigned short int iSize = static_cast<unsigned short int>(CWaypoints::numWaypoints());
 
-	//for ( unsigned short int iCurFrom = 0; iCurFrom < iSize; iCurFrom++ )
-	for (iCurFrom = 0; iCurFrom < iSize; iCurFrom++)
+	for (iCurFrom = iCurFrom; iCurFrom < iSize; iCurFrom++)
 	{
-		//for ( unsigned short int iCurTo = 0; iCurTo < iSize; iCurTo++ )
-		for (iCurTo = 0; iCurTo < iSize; iCurTo++)
+		for (iCurTo = iCurTo; iCurTo < iSize; iCurTo++)
 		{
 			CWaypoint* pWaypoint1 = CWaypoints::getWaypoint(iCurFrom);
 			CWaypoint* pWaypoint2 = CWaypoints::getWaypoint(iCurTo);
 
-			SetVisibilityFromTo(iCurFrom, iCurTo, CBotGlobals::isVisible(pWaypoint1->getOrigin(), pWaypoint2->getOrigin()));
+			SetVisibilityFromTo(iCurFrom, iCurTo,
+				CBotGlobals::isVisible(pWaypoint1->getOrigin(), pWaypoint2->getOrigin()));
 
 			iTicks++;
 
@@ -69,7 +68,7 @@ void CWaypointVisibilityTable::workVisibility()
 			{
 				if (m_fNextShowMessageTime < engine->Time())
 				{
-					const int percent = iCurFrom / iSize * 100;
+					int percent = static_cast<int>((static_cast<float>(iCurFrom) / iSize) * 100);
 
 					if (m_iPrevPercent != percent)
 					{
@@ -109,7 +108,7 @@ void CWaypointVisibilityTable::workVisibility()
 	}
 }
 
-void CWaypointVisibilityTable::workVisibilityForWaypoint(const int i, const int iNumWaypoints, const bool bTwoway) const
+void CWaypointVisibilityTable::workVisibilityForWaypoint(int i, int iNumWaypoints, bool bTwoway)
 {
 	static CWaypoint* Waypoint1;
 	static CWaypoint* Waypoint2;
@@ -120,11 +119,11 @@ void CWaypointVisibilityTable::workVisibilityForWaypoint(const int i, const int 
 	if (!Waypoint1->isUsed())
 		return;
 
-	for (int j = 0; j < iNumWaypoints; j++)
+	for (short int j = 0; j < iNumWaypoints; j++)
 	{
 		if (i == j)
 		{
-			SetVisibilityFromTo(i, j, true);
+			SetVisibilityFromTo(i, j, 1);
 			continue;
 		}
 
@@ -144,23 +143,23 @@ void CWaypointVisibilityTable::workVisibilityForWaypoint(const int i, const int 
 
 void CWaypointVisibilityTable::WorkOutVisibilityTable()
 {
-	const int iNumWaypoints = CWaypoints::numWaypoints();
+	int iNumWaypoints = CWaypoints::numWaypoints();
 
 	ClearVisibilityTable();
 
 	// loop through all waypoint possibilities.
-	for (int i = 0; i < iNumWaypoints; i++)
+	for (short int i = 0; i < iNumWaypoints; i++)
 	{
 		workVisibilityForWaypoint(i, iNumWaypoints, false);
 	}
 }
 
-bool CWaypointVisibilityTable::SaveToFile() const
+bool CWaypointVisibilityTable::SaveToFile()
 {
 	char filename[1024];
 	wpt_vis_header_t header;
 
-	CBotGlobals::buildFileName(filename, CBotGlobals::getMapName(), BOT_WAYPOINT_FOLDER, "rcv", true);
+	CBotGlobals::buildFileName(filename, CBotGlobals::getMapName(), BOT_AUXILERY_FOLDER, BOT_VISIBILITY_EXTENSION, true);
 
 	std::fstream bfp = CBotGlobals::openFile(filename, std::fstream::out | std::fstream::binary);
 
@@ -175,18 +174,18 @@ bool CWaypointVisibilityTable::SaveToFile() const
 	header.waypoint_version = CWaypoints::WAYPOINT_VERSION;
 
 	bfp.write(reinterpret_cast<char*>(&header), sizeof(wpt_vis_header_t));
-	bfp.write(reinterpret_cast<char*>(m_VisTable), static_cast<std::streamsize>(sizeof(byte)) * g_iMaxVisibilityByte);
+	bfp.write(reinterpret_cast<char*>(m_VisTable), sizeof(byte) * g_iMaxVisibilityByte);
 
 	return true;
 }
 
-bool CWaypointVisibilityTable::ReadFromFile(const int numwaypoints) const
+bool CWaypointVisibilityTable::ReadFromFile(int numwaypoints)
 {
 	char filename[1024];
 
 	wpt_vis_header_t header;
 
-	CBotGlobals::buildFileName(filename, CBotGlobals::getMapName(), BOT_WAYPOINT_FOLDER, "rcv", true);
+	CBotGlobals::buildFileName(filename, CBotGlobals::getMapName(), BOT_AUXILERY_FOLDER, BOT_VISIBILITY_EXTENSION, true);
 
 	std::fstream bfp = CBotGlobals::openFile(filename, std::fstream::in | std::fstream::binary);
 
@@ -205,7 +204,7 @@ bool CWaypointVisibilityTable::ReadFromFile(const int numwaypoints) const
 	if (std::strncmp(header.szMapName, CBotGlobals::getMapName(), 63) != 0)
 		return false;
 
-	bfp.read(reinterpret_cast<char*>(m_VisTable), static_cast<std::streamsize>(sizeof(byte)) * g_iMaxVisibilityByte);
+	bfp.read(reinterpret_cast<char*>(m_VisTable), sizeof(byte) * g_iMaxVisibilityByte);
 
 	return true;
 }

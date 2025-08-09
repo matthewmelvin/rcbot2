@@ -33,7 +33,8 @@
 
 #include "bot_waypoint.h"
 
-constexpr int g_iMaxVisibilityByte = CWaypoints::MAX_WAYPOINTS*CWaypoints::MAX_WAYPOINTS/8; // divide by 8 bits, need byte number
+const int g_iMaxVisibilityByte =
+(CWaypoints::MAX_WAYPOINTS * CWaypoints::MAX_WAYPOINTS) / 8; // divide by 8 bits, need byte number
 
 typedef struct
 {
@@ -55,14 +56,14 @@ public:
 		m_fNextShowMessageTime = 0;
 	}
 
-	void workVisibility ();
+	void workVisibility();
 
-	void init ()
+	void init()
 	{
-		constexpr int iSize = g_iMaxVisibilityByte;
+		int iSize = g_iMaxVisibilityByte;
 
 		/////////////////////////////
-		// for "concurrent" reading of 
+		// for "concurrent" reading of
 		// visibility throughout frames
 		bWorkVisibility = false;
 		m_fNextShowMessageTime = 0;
@@ -74,40 +75,40 @@ public:
 		m_VisTable = new unsigned char[iSize];
 
 		m_iPrevPercent = 0;
-		std::memset(m_VisTable,0,iSize);
+		memset(m_VisTable, 0, iSize);
 	}
 
-	bool SaveToFile () const;
+	bool SaveToFile();
 
-	bool ReadFromFile ( int numwaypoints ) const;
+	bool ReadFromFile(int numwaypoints);
 
-	void workVisibilityForWaypoint ( int i, int iNumWaypoints, bool bTwoway = false ) const;
+	void workVisibilityForWaypoint(int i, int iNumWaypoints, bool bTwoway = false);
 
-	bool GetVisibilityFromTo (const int iFrom, const int iTo) const
+	bool GetVisibilityFromTo(int iFrom, int iTo) const
 	{
-		// work out the position 
-		const int iPosition = iFrom*CWaypoints::MAX_WAYPOINTS+iTo;
+		// work out the position
+		int iPosition = (iFrom * CWaypoints::MAX_WAYPOINTS) + iTo;
 
-		const int iByte = iPosition/8;
-		const int iBit = iPosition%8;
+		int iByte = iPosition / 8;
+		int iBit = iPosition % 8;
 
-		if ( iByte < g_iMaxVisibilityByte )
+		if (iByte < g_iMaxVisibilityByte)
 		{
-			const unsigned char *ToReturn = m_VisTable+iByte;
-			
-			return (*ToReturn & 1<<iBit) > 0;
+			unsigned char* ToReturn = (m_VisTable + iByte);
+
+			return ((*ToReturn & (1 << iBit)) > 0);
 		}
 
 		return false;
 	}
 
-	void ClearVisibilityTable ()
+	void ClearVisibilityTable()
 	{
-		if ( m_VisTable )
-			std::memset(m_VisTable,0,g_iMaxVisibilityByte);
+		if (m_VisTable)
+			memset(m_VisTable, 0, g_iMaxVisibilityByte);
 
 		/////////////////////////////
-		// for "concurrent" reading of 
+		// for "concurrent" reading of
 		// visibility throughout frames
 		bWorkVisibility = false;
 		iCurFrom = 0;
@@ -115,16 +116,16 @@ public:
 		////////////////////////////
 	}
 
-	void FreeVisibilityTable ()
+	void FreeVisibilityTable()
 	{
-		if ( m_VisTable != nullptr)
+		if (m_VisTable != nullptr)
 		{
 			delete[] m_VisTable;
 			m_VisTable = nullptr;
 		}
 
 		/////////////////////////////
-		// for "concurrent" reading of 
+		// for "concurrent" reading of
 		// visibility throughout frames
 		bWorkVisibility = false;
 		iCurFrom = 0;
@@ -132,36 +133,43 @@ public:
 		////////////////////////////
 	}
 
-	void SetVisibilityFromTo (const int iFrom, const int iTo, const bool bVisible) const
+	void SetVisibilityFromTo(int iFrom, int iTo, bool bVisible)
 	{
-		const int iPosition = iFrom*CWaypoints::MAX_WAYPOINTS+iTo;
+		int iPosition = (iFrom * CWaypoints::MAX_WAYPOINTS) + iTo;
 
-		const int iByte = iPosition/8;
-		const int iBit = iPosition%8;
+		int iByte = iPosition / 8;
+		int iBit = iPosition % 8;
 
-		if ( iByte < g_iMaxVisibilityByte )
+		if (iByte < g_iMaxVisibilityByte)
 		{
-			unsigned char *ToChange = m_VisTable+iByte;
-			
-			if ( bVisible )
-				*ToChange |= 1<<iBit;
+			unsigned char* ToChange = (m_VisTable + iByte);
+
+			if (bVisible)
+				*ToChange |= (1 << iBit);
 			else
-				*ToChange &= ~(1<<iBit);
+				*ToChange &= ~(1 << iBit);
 		}
 	}
 
-	void WorkOutVisibilityTable ( );
+	void WorkOutVisibilityTable();
 
-	bool needToWorkVisibility() const { return bWorkVisibility; }
-	void setWorkVisiblity (const bool bSet) { bWorkVisibility = bSet; }
+	bool needToWorkVisibility()
+	{
+		return bWorkVisibility;
+	}
+
+	void setWorkVisiblity(bool bSet)
+	{
+		bWorkVisibility = bSet;
+	}
 
 private:
 
 	bool bWorkVisibility;
 	unsigned short int iCurFrom;
 	unsigned short int iCurTo;
-	static constexpr int WAYPOINT_VIS_TICKS = 64;
-	unsigned char *m_VisTable;
+	static const int WAYPOINT_VIS_TICKS = 64;
+	unsigned char* m_VisTable;
 	float m_fNextShowMessageTime;
 	int m_iPrevPercent;
 	// use a heap of 1 byte * size to keep things simple.

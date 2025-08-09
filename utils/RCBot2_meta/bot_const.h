@@ -142,6 +142,8 @@ constexpr char BOT_CONFIG_EXTENSION[] = "ini";
 constexpr char BOT_WAYPOINT_EXTENSION[] = "rcw"; // extension for waypoint files
 constexpr char BOT_WAYPOINT_FILE_TYPE[] = "RCBot2\0"; // for waypoint file header
 
+constexpr char BOT_VISIBILITY_EXTENSION[] = "rcv"; // extension for visibility files
+
 constexpr char BOT_TAG[] = "[RCBot] "; // for printing messages
 
 /*
