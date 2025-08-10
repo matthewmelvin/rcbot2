@@ -1107,22 +1107,26 @@ int CTeamFortress2Mod ::getHighestScore ()
 
 // check if there is another building near where I want to build
 // check quickly by using the storage of sentryguns etc in the mod class
-bool CTeamFortress2Mod::buildingNearby (const int iTeam, const Vector& vOrigin)
+bool CTeamFortress2Mod::buildingNearby(const int iTeam, const Vector& vOrigin)
 {
-	for ( int i = 1; i <= gpGlobals->maxClients; i ++ )
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
 	{
 		edict_t* pPlayer = INDEXENT(i);
 
 		// crash bug fix 
-		if ( !pPlayer || pPlayer->IsFree() )
+		if (!pPlayer || pPlayer->IsFree())
+			continue;
+
+		// check if the player is valid [APG]RoboCop[CL]
+		if (!playerinfomanager->GetPlayerInfo(pPlayer))
 			continue;
 
 		const short sentryIndex = static_cast<short>(i - 1);
 
-		if ( CClassInterface::getTF2Class(pPlayer) != TF_CLASS_ENGINEER )
+		if (CClassInterface::getTF2Class(pPlayer) != TF_CLASS_ENGINEER)
 			continue;
 
-		if ( CClassInterface::getTeam(pPlayer) != iTeam )
+		if (CClassInterface::getTeam(pPlayer) != iTeam)
 			continue;
 
 		if (m_SentryGuns[sentryIndex].sentry.get())
@@ -1139,13 +1143,13 @@ bool CTeamFortress2Mod::buildingNearby (const int iTeam, const Vector& vOrigin)
 
 		if (m_Teleporters[sentryIndex].entrance.get())
 		{
-			if ( (vOrigin-CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].entrance.get())).Length() < 100 )
+			if ((vOrigin - CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].entrance.get())).Length() < 100)
 				return true;
 		}
 
 		if (m_Teleporters[sentryIndex].exit.get())
 		{
-			if ( (vOrigin-CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].exit.get())).Length() < 100 )
+			if ((vOrigin - CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].exit.get())).Length() < 100)
 				return true;
 		}
 
