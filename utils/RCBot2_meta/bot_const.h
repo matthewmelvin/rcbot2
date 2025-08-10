@@ -210,7 +210,7 @@ constexpr char BOT_FOLDER[] = "rcbot2";
 typedef enum : std::uint8_t
 {
 	BOT_FUNC_FAIL = 0,
-    BOT_FUNC_CONTINUE,
+	BOT_FUNC_CONTINUE,
 	BOT_FUNC_COMPLETE,
 }eBotFuncState;
 

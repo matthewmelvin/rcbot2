@@ -50,11 +50,11 @@
 void CWaypointVisibilityTable::workVisibility()
 {
 	int iTicks = 0;
-	unsigned short int iSize = static_cast<unsigned short int>(CWaypoints::numWaypoints());
+	const unsigned short int iSize = static_cast<unsigned short int>(CWaypoints::numWaypoints());
 
-	for (iCurFrom = 0; iCurFrom < iSize; iCurFrom++)
+	for (/*iCurFrom = iCurFrom*/; iCurFrom < iSize; iCurFrom++)
 	{
-		for (iCurTo = 0; iCurTo < iSize; iCurTo++)
+		for (/*iCurTo = iCurTo*/; iCurTo < iSize; iCurTo++)
 		{
 			CWaypoint* pWaypoint1 = CWaypoints::getWaypoint(iCurFrom);
 			CWaypoint* pWaypoint2 = CWaypoints::getWaypoint(iCurTo);
@@ -68,7 +68,7 @@ void CWaypointVisibilityTable::workVisibility()
 			{
 				if (m_fNextShowMessageTime < engine->Time())
 				{
-					int percent = static_cast<int>((static_cast<float>(iCurFrom) / iSize) * 100);
+					const int percent = (iCurFrom / iSize) * 100;
 
 					if (m_iPrevPercent != percent)
 					{
@@ -108,7 +108,7 @@ void CWaypointVisibilityTable::workVisibility()
 	}
 }
 
-void CWaypointVisibilityTable::workVisibilityForWaypoint(int i, int iNumWaypoints, bool bTwoway)
+void CWaypointVisibilityTable::workVisibilityForWaypoint(const int i, const int iNumWaypoints, const bool bTwoway) const
 {
 	static CWaypoint* Waypoint1;
 	static CWaypoint* Waypoint2;
@@ -119,7 +119,7 @@ void CWaypointVisibilityTable::workVisibilityForWaypoint(int i, int iNumWaypoint
 	if (!Waypoint1->isUsed())
 		return;
 
-	for (short int j = 0; j < iNumWaypoints; j++)
+	for (int j = 0; j < iNumWaypoints; j++)
 	{
 		if (i == j)
 		{
@@ -143,18 +143,18 @@ void CWaypointVisibilityTable::workVisibilityForWaypoint(int i, int iNumWaypoint
 
 void CWaypointVisibilityTable::WorkOutVisibilityTable()
 {
-	int iNumWaypoints = CWaypoints::numWaypoints();
+	const int iNumWaypoints = CWaypoints::numWaypoints();
 
 	ClearVisibilityTable();
 
 	// loop through all waypoint possibilities.
-	for (short int i = 0; i < iNumWaypoints; i++)
+	for (int i = 0; i < iNumWaypoints; i++)
 	{
 		workVisibilityForWaypoint(i, iNumWaypoints, false);
 	}
 }
 
-bool CWaypointVisibilityTable::SaveToFile()
+bool CWaypointVisibilityTable::SaveToFile() const
 {
 	char filename[1024];
 	wpt_vis_header_t header;
@@ -179,7 +179,7 @@ bool CWaypointVisibilityTable::SaveToFile()
 	return true;
 }
 
-bool CWaypointVisibilityTable::ReadFromFile(int numwaypoints)
+bool CWaypointVisibilityTable::ReadFromFile(const int numwaypoints) const
 {
 	char filename[1024];
 

@@ -33,7 +33,7 @@
 
 #include "bot_waypoint.h"
 
-const int g_iMaxVisibilityByte =
+constexpr int g_iMaxVisibilityByte =
 (CWaypoints::MAX_WAYPOINTS * CWaypoints::MAX_WAYPOINTS) / 8; // divide by 8 bits, need byte number
 
 typedef struct
@@ -60,7 +60,7 @@ public:
 
 	void init()
 	{
-		int iSize = g_iMaxVisibilityByte;
+		constexpr int iSize = g_iMaxVisibilityByte;
 
 		/////////////////////////////
 		// for "concurrent" reading of
@@ -78,23 +78,23 @@ public:
 		memset(m_VisTable, 0, iSize);
 	}
 
-	bool SaveToFile();
+	bool SaveToFile() const;
 
-	bool ReadFromFile(int numwaypoints);
+	bool ReadFromFile(int numwaypoints) const;
 
-	void workVisibilityForWaypoint(int i, int iNumWaypoints, bool bTwoway = false);
+	void workVisibilityForWaypoint(int i, int iNumWaypoints, bool bTwoway = false) const;
 
-	bool GetVisibilityFromTo(int iFrom, int iTo) const
+	bool GetVisibilityFromTo(const int iFrom, const int iTo) const
 	{
 		// work out the position
-		int iPosition = (iFrom * CWaypoints::MAX_WAYPOINTS) + iTo;
+		const int iPosition = (iFrom * CWaypoints::MAX_WAYPOINTS) + iTo;
 
-		int iByte = iPosition / 8;
-		int iBit = iPosition % 8;
+		const int iByte = iPosition / 8;
+		const int iBit = iPosition % 8;
 
 		if (iByte < g_iMaxVisibilityByte)
 		{
-			unsigned char* ToReturn = (m_VisTable + iByte);
+			const unsigned char* ToReturn = (m_VisTable + iByte);
 
 			return ((*ToReturn & (1 << iBit)) > 0);
 		}
@@ -133,7 +133,7 @@ public:
 		////////////////////////////
 	}
 
-	void SetVisibilityFromTo(int iFrom, int iTo, bool bVisible)
+	void SetVisibilityFromTo(const int iFrom, const int iTo, const bool bVisible) const
 	{
 		int iPosition = (iFrom * CWaypoints::MAX_WAYPOINTS) + iTo;
 
@@ -153,12 +153,12 @@ public:
 
 	void WorkOutVisibilityTable();
 
-	bool needToWorkVisibility()
+	bool needToWorkVisibility() const
 	{
 		return bWorkVisibility;
 	}
 
-	void setWorkVisiblity(bool bSet)
+	void setWorkVisiblity(const bool bSet)
 	{
 		bWorkVisibility = bSet;
 	}
@@ -168,7 +168,7 @@ private:
 	bool bWorkVisibility;
 	unsigned short int iCurFrom;
 	unsigned short int iCurTo;
-	static const int WAYPOINT_VIS_TICKS = 64;
+	static constexpr int WAYPOINT_VIS_TICKS = 64;
 	unsigned char* m_VisTable;
 	float m_fNextShowMessageTime;
 	int m_iPrevPercent;

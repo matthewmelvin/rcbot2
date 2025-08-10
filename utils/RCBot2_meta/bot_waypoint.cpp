@@ -2841,7 +2841,7 @@ CWaypoint* CWaypoints::randomWaypointGoalBetweenArea(const int iFlags, const int
 }
 
 CWaypoint* CWaypoints::randomWaypointGoal(const int iFlags, const int iTeam, const int iArea, const bool bForceArea,
-                                          const CBot* pBot, const bool bHighDanger, const int iSearchFlags, const int iIgnore)
+										  const CBot* pBot, const bool bHighDanger, const int iSearchFlags, const int iIgnore)
 {
 	static int size; 
 	CWaypoint *pWpt;

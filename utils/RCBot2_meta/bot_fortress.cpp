@@ -258,7 +258,7 @@ void CBroadcastRoundStart :: execute ( CBot *pBot )
 
 CBotFortress :: CBotFortress()
 {
-	CBot();
+	//CBot();
 
 	m_iLastFailSentryWpt = -1;
 	m_iLastFailTeleExitWpt = -1;
@@ -8336,7 +8336,7 @@ void CBotTF2 :: sapperDestroyed ( edict_t *pSapper ) const
 
 CBotTF2::CBotTF2(): m_nextVoicecmd()
 {
-	CBotFortress();
+	//CBotFortress();
 	//m_nextVoicecmd();
 	m_iMvMUpdateTime = 0;
 	m_iDesiredResistType = 0;
@@ -8403,7 +8403,7 @@ void CBotTF2 ::init(const bool bVarInit)
 {
 	if( bVarInit )
 	{
-		CBotTF2();
+		//CBotTF2();
 	}
 
 	CBotFortress::init(bVarInit);
