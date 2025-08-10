@@ -85,30 +85,25 @@ extern IVDebugOverlay *debugoverlay;
 
 ///////////////////////////////////////////////////////////////
 // initialise
-void CWaypointNavigator :: init ()
+void CWaypointNavigator::init()
 {
 	m_pBot = nullptr;
 
-	m_vOffset = Vector(0,0,0);
+	m_vOffset = Vector(0, 0, 0);
 	m_bOffsetApplied = false;
 
 	m_iCurrentWaypoint = -1;
 	m_iNextWaypoint = -1;
 	m_iGoalWaypoint = -1;
 
-	while (!m_currentRoute.empty()) {
-		m_currentRoute.pop();
-	}
-
-	// TODO: queue doesn't implement .clear() -- maybe use deque instead?
-	while( !m_oldRoute.empty() )
-		m_oldRoute.pop();
+	std::stack<int>().swap(m_currentRoute);
+	std::queue<int>().swap(m_oldRoute);
 
 	m_iLastFailedWpt = -1;
 	m_iPrevWaypoint = -1;
 	m_bWorkingRoute = false;
 
-	Q_memset(m_fBelief,0,sizeof(float)*CWaypoints::MAX_WAYPOINTS);
+	std::memset(m_fBelief, 0, sizeof(float) * CWaypoints::MAX_WAYPOINTS);
 
 	m_iFailedGoals.clear();
 }
