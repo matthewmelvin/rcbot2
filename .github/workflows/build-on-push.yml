@@ -123,7 +123,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        python3 ../configure.py --sdks=present --sm-path="${{ github.workspace }}/sourcemod" --mms_path="${{ github.workspace }}/mmsource" --symbol-files
+        python3 ../configure.py --sdks=present --sm-path="${{ github.workspace }}/sourcemod" --mms-path="${{ github.workspace }}/mmsource" --symbol-files
         ambuild
 
     - name: Build Package (Windows)
