@@ -38,6 +38,15 @@ jobs:
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
 
+    - name: Update submodules
+      run: git submodule update --init --recursive
+
+    - name: Fetch hl2sdk-manifests
+      run: |
+        if [ ! -d "rcbot2/hl2sdk-manifests" ]; then
+          git clone https://github.com/alliedmodders/hl2sdk-manifests.git rcbot2/hl2sdk-manifests
+        fi
+
     - name: Add msbuild to PATH (Windows)
       if: runner.os == 'Windows'
       uses: microsoft/setup-msbuild@v1.0.2
