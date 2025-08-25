@@ -118,6 +118,11 @@ jobs:
       with:
         path: rcbot2
 
+    - name: Fetch hl2sdk-manifests
+      run: |
+        git clone https://github.com/alliedmodders/hl2sdk-manifests.git hl2sdk-manifests
+      working-directory: rcbot2
+
     - name: Build Files
       working-directory: rcbot2
       run: |
