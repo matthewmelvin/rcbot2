@@ -1,6 +1,6 @@
 name: Build Workflow
 
-on: push
+on: ["push", "workflow_dispatch"]
 
 jobs:
   create_release:
@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Get short SHA
         id: vars
-        run: echo "sha_short=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+        run: |
+          echo "sha_short=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -29,7 +30,6 @@ jobs:
     needs: create_release
     runs-on: ${{ matrix.os }}
 
-    # skip build on '[ci skip]'
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
 
     strategy:
@@ -74,8 +74,6 @@ jobs:
         for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
           call "%%i"\Common7\Tools\vsdevcmd.bat -arch=x86 -host_arch=x64
         )
-        
-        :: Loop over all environment variables and make them global.
         for /f "delims== tokens=1,2" %%a in ('set') do (
           echo>>"%GITHUB_ENV%" %%a=%%b
         )
@@ -107,7 +105,7 @@ jobs:
       shell: bash
       run: |
         git clone --mirror https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo
-        sdks=(tf2)
+        sdks=(tf2 css hl2dm dods bms sdk2013 orangebox episode1)
         for sdk in "${sdks[@]}"
         do
           git clone hl2sdk-proxy-repo -b $sdk hl2sdk-$sdk
@@ -118,17 +116,22 @@ jobs:
       with:
         path: rcbot2
 
-    - name: Fetch hl2sdk-manifests
-      run: |
-        git clone https://github.com/alliedmodders/hl2sdk-manifests.git hl2sdk-manifests
-      working-directory: rcbot2
-
-    - name: Build Files
+    - name: Build Files (Linux)
+      if: runner.os == 'Linux'
       working-directory: rcbot2
       run: |
         mkdir build
         cd build
         python3 ../configure.py --sdks=present --sm-path="${{ github.workspace }}/sourcemod" --mms-path="${{ github.workspace }}/mmsource" --symbol-files
+        ambuild
+
+    - name: Build Files (Windows)
+      if: runner.os == 'Windows'
+      working-directory: rcbot2
+      run: |
+        mkdir build
+        cd build
+        python ../configure.py --sdks=present --sm-path="${{ github.workspace }}\\sourcemod" --mms-path="${{ github.workspace }}\\mmsource" --symbol-files
         ambuild
 
     - name: Build Package (Windows)
