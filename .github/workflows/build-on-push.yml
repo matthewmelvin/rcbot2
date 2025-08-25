@@ -38,7 +38,13 @@ jobs:
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
 
+    - name: Fetch RCBot2
+      uses: actions/checkout@v2
+      with:
+        path: rcbot2
+
     - name: Update submodules
+      working-directory: rcbot2
       run: git submodule update --init --recursive
 
     - name: Fetch hl2sdk-manifests
@@ -95,11 +101,6 @@ jobs:
         do
           git clone hl2sdk-proxy-repo -b $sdk hl2sdk-$sdk
         done
-
-    - name: Fetch RCBot2
-      uses: actions/checkout@v2
-      with:
-        path: rcbot2
 
     - name: Build Files (Linux)
       if: runner.os == 'Linux'
