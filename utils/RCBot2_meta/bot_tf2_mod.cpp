@@ -269,13 +269,20 @@ void CTeamFortress2Mod :: mapInit ()
 			!(std::strncmp(szmapname, "ctf_chouhen", 11) == 0 || std::strncmp(szmapname, "ctf_haarp", 9) == 0)))
 		// Quake Turbine is CTF. - RussiaTails
 		m_MapType = TF_MAP_CTF; // capture the flag
-	else if (std::strncmp(szmapname, "cp_", 3) == 0 || std::strncmp(szmapname, "cqt_", 4) == 0 ||
-		std::strncmp(szmapname, "conquest_", 9) == 0 || std::strncmp(szmapname, "dom_", 4) == 0 ||
-		std::strncmp(szmapname, "2koth_", 6) == 0 || std::strncmp(szmapname, "ctf_chouhen", 11) == 0 ||
-		std::strncmp(szmapname, "ctf_haarp", 9) == 0 || std::strncmp(szmapname, "falling_cp", 10) == 0 ||
-		std::strncmp(szmapname, "stt_", 4) == 0 || std::strncmp(szmapname, "koth_lifesnatcher", 17) == 0 ||
-		(std::strncmp(szmapname, "vip_", 4) == 0 &&
-			std::strncmp(szmapname, "cp_helmsdeep_v2", 15) != 0))
+	else if ((std::strncmp(szmapname, "cp_", 3) == 0 || std::strncmp(szmapname, "cp_", 3) == 1) ||
+			 std::strncmp(szmapname, "cqt_", 4) == 0 ||
+			 std::strncmp(szmapname, "conquest_", 9) == 0 ||
+			 std::strncmp(szmapname, "dom_", 4) == 0 ||
+			 std::strncmp(szmapname, "2koth_", 6) == 0 ||
+			 std::strncmp(szmapname, "ctf_chouhen", 11) == 0 ||
+			 std::strncmp(szmapname, "ctf_haarp", 9) == 0 ||
+			 std::strncmp(szmapname, "falling_cp", 10) == 0 ||
+			 std::strncmp(szmapname, "stt_", 4) == 0 ||
+			 std::strncmp(szmapname, "koth_lifesnatcher", 17) == 0 ||
+			 std::strncmp(szmapname, "vip_", 4) == 0 ||
+			 std::strncmp(szmapname, "vipr_", 5) != 0 ||
+			 std::strncmp(szmapname, "szf_", 4) == 0 ||
+			 std::strncmp(szmapname, "zf_", 3) == 0)
 		// Conquest, 2koth and DOM works fine as CP_. Moved stt to cp to make bots attack a tank - RussiaTails
 		m_MapType = TF_MAP_CP; // control point
 	else if (std::strncmp(szmapname, "tc_", 3) == 0)
@@ -292,7 +299,10 @@ void CTeamFortress2Mod :: mapInit ()
 		m_MapType = TF_MAP_CARTRACE; // pipeline racing
 	else if (std::strncmp(szmapname, "arena_", 6) == 0 || std::strncmp(szmapname, "ft_", 3) == 0)  // pongo1321
 		m_MapType = TF_MAP_ARENA; // arena mode
-	else if (std::strncmp(szmapname, "vsh_", 4) == 0)
+	else if (std::strncmp(szmapname, "vsh_", 4) == 0 ||
+			 std::strncmp(szmapname, "ff2_", 4) == 0 ||
+			 std::strncmp(szmapname, "bvb_", 4) == 0 ||
+			 std::strncmp(szmapname, "dr_", 3) == 0)
 		m_MapType = TF_MAP_SAXTON; // arena mode
 	else if (std::strncmp(szmapname, "pipeball_", 9) == 0)
 		m_MapType = TF_MAP_PIPEBALL; // arena mode
@@ -308,16 +318,17 @@ void CTeamFortress2Mod :: mapInit ()
 		std::strncmp(szmapname, "pl_divulgence", 13) == 0 || std::strncmp(szmapname, "cp_helmsdeep_v2", 15) == 0 ||
 		std::strncmp(szmapname, "cw_", 3) == 0) // Hybrid - RussiaTails
 		m_MapType = TF_MAP_CPPL; // CP+PL maps
-	else if (std::strncmp(szmapname, "gg_", 3) == 0 || std::strncmp(szmapname, "dm_hydro_v20", 12) == 0 ||
-		std::strncmp(szmapname, "dm_powerdown_v20", 16) == 0 || std::strncmp(szmapname, "dm_forgecall_v20", 16) == 0 ||
-		std::strncmp(szmapname, "dm_poolparty_v20", 16) == 0 || std::strncmp(szmapname, "dm_badworks_v20", 15) == 0 ||
-		std::strncmp(szmapname, "dm_razorpoint_v20", 17) == 0 || std::strncmp(szmapname, "dm_deadlock_v20", 15) == 0)
+	else if (std::strncmp(szmapname, "gg_", 3) == 0 || std::strncmp(szmapname, "dm_hydro", 8) == 0 ||
+		std::strncmp(szmapname, "dm_powerdown", 12) == 0 || std::strncmp(szmapname, "dm_forgecall", 12) == 0 ||
+		std::strncmp(szmapname, "dm_poolparty", 12) == 0 || std::strncmp(szmapname, "dm_badworks", 11) == 0 ||
+		std::strncmp(szmapname, "dm_razorpoint", 13) == 0 || std::strncmp(szmapname, "dm_deadlock", 11) == 0)
 		// GunGame (and non-team deathmatch) - RussiaTails
 		m_MapType = TF_MAP_GG; // GunGame maps
 	else if (std::strncmp(szmapname, "mvm_", 4) == 0 || std::strncmp(szmapname, "gd_", 3) == 0)
 		// gd is MvM Guardian, for now there are only two maps exist with this prefix. - RussiaTails
 		m_MapType = TF_MAP_MVM; // mann vs machine
-	else if (std::strncmp(szmapname, "rd_", 3) == 0)
+	else if (std::strncmp(szmapname, "rd_", 3) == 0 ||
+			 std::strncmp(szmapname, "rda_", 4) == 0)
 		m_MapType = TF_MAP_RD; // robot destruction
 	else if (std::strncmp(szmapname, "zi_", 3) == 0)
 		m_MapType = TF_MAP_ZI; // Zombie Infection //TODO: add support for those gamemodes [APG]RoboCop[CL]
