@@ -42,9 +42,9 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y ${{ matrix.cc }} ${{ matrix.cxx }} g++-multilib
-        echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
-        echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
+        sudo apt-get install -y clang clang++ g++-multilib libc6:i386 libstdc++6:i386 libgcc-s1:i386
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CXX=clang++" >> $GITHUB_ENV
 
     - name: Add msbuild to PATH (Windows)
       if: runner.os == 'Windows'
