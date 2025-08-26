@@ -42,12 +42,22 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y clang clang++ g++-multilib libc6:i386 libstdc++6:i386 libgcc-s1:i386
+        sudo apt-get install -y clang g++-multilib
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
 
     - name: Add msbuild to PATH (Windows)
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows'      run: |
+
+        sudo dpkg --add-architecture i386
+
+        sudo apt-get update
+
+        sudo apt-get install -y clang g++-multilib
+
+        echo "CC=clang" >> $GITHUB_ENV
+
+        echo "CXX=clang++" >> $GITHUB_ENV
       uses: microsoft/setup-msbuild@v2
 
     - name: Install (Windows)
