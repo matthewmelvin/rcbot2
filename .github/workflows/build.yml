@@ -42,7 +42,7 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y clang g++-multilib
+        sudo apt-get install -y clang g++-multilib lib32stdc++-7-dev lib32z1-dev libc6-dev-i386 linux-libc-dev:i386
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
 
@@ -81,6 +81,7 @@ jobs:
         repository: alliedmodders/metamod-source
         ref: ${{ matrix.meta_branch }}
         path: mmsource
+        fetch-depth: 1
 
     - name: Fetch SourceMod ${{ matrix.sm_branch }}
       uses: actions/checkout@v4
@@ -89,21 +90,23 @@ jobs:
         ref: ${{ matrix.sm_branch }}
         path: sourcemod
         submodules: recursive
+        fetch-depth: 1
 
     - name: Fetch SDKs
       shell: bash
       run: |
-        git clone --mirror https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo
+        git clone --mirror --depth 1 https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo
         sdks=(tf2 css hl2dm dods bms sdk2013)
         for sdk in "${sdks[@]}"
         do
-          git clone hl2sdk-proxy-repo -b $sdk hl2sdk-$sdk
+          git clone --depth 1 hl2sdk-proxy-repo -b $sdk hl2sdk-$sdk
         done
 
     - name: Fetch RCBot2
       uses: actions/checkout@v4
       with:
         path: rcbot2
+        fetch-depth: 1
 
     - name: Build Files
       working-directory: rcbot2
