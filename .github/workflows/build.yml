@@ -14,15 +14,15 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - debian-12
+          - ubuntu-22.04
           - windows-latest
         include:
           - meta_branch: "1.11-dev"
             sm_branch: "1.11-dev"
 
-          - os: debian-12
+          - os: ubuntu-22.04
             os_short: linux
-            os_version: debian-12
+            os_version: ubuntu-22.04
             package_ext: tar.gz
             dbg_ext: dbg
             cc: clang
@@ -110,7 +110,7 @@ jobs:
       run: |
         mkdir post
         cd post
-        python3 ../configure.py --sdks=present --sm-path="${{ github.workspace }}/sourcemod" --mms_path="${{ github.workspace }}/mmsource" --symbol-files
+        python3 ../configure.py --sdks=present --sm-path="${{ github.workspace }}/sourcemod" --mms-path="${{ github.workspace }}/mmsource" --symbol-files
         ambuild
 
     - uses: benjlevesque/short-sha@v2.2
