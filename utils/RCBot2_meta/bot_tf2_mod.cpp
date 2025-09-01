@@ -575,19 +575,20 @@ bool CTeamFortress2Mod::isBoss(edict_t* pEntity, float* fFactor)
 		if (std::strcmp(pEntity->GetClassName(), "merasmus") == 0 ||
 			std::strcmp(pEntity->GetClassName(), "headless_hatman") == 0 ||
 			std::strcmp(pEntity->GetClassName(), "eyeball_boss") == 0 ||
+			std::strcmp(pEntity->GetClassName(), "tf_merasmus_trick_or_treat_prop") == 0 ||
 			std::strcmp(pEntity->GetClassName(), "base_boss") == 0) // For Krampus and any other NPCs which uses base_boss entity - RussiaTails
 		{
 			m_pBoss = pEntity;
 			return true;
 		}
+		if (std::strcmp(pEntity->GetClassName(), "tf_merasmus_trick_or_treat_prop") == 0 && CBotGlobals::entityIsAlive(m_pBoss.get()))
+			return (std::strcmp(pEntity->GetClassName(), "merasmus") != 0);
 	}
 	else if (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || isMapType(TF_MAP_CART) || isMapType(TF_MAP_CTF) || isMapType(TF_MAP_KOTH) ||
 		isMapType(TF_MAP_CP) || isMapType(TF_MAP_PD) || isMapType(TF_MAP_ARENA) || isMapType(TF_MAP_SAXTON) || isMapType(TF_MAP_SD) || isMapType(TF_MAP_DM))
 	{
 		if (m_pBoss.get() == pEntity)
 			return true;
-		// TODO: to allow RCBot to target Mafia Skeleton in pl_spineyard [APG]RoboCop[CL]
-		// for bots to target skeletons [APG]RoboCop[CL]
 		if (std::strcmp(pEntity->GetClassName(), "base_boss") == 0 || // For Krampus and any other NPCs which uses base_boss entity - RussiaTails
 			std::strcmp(pEntity->GetClassName(), "tf_robot_botler") == 0 || // Botler Robots from Embargo entity - RussiaTails
 			std::strcmp(pEntity->GetClassName(), "prop_soccer_ball") == 0)
@@ -595,9 +596,16 @@ bool CTeamFortress2Mod::isBoss(edict_t* pEntity, float* fFactor)
 			m_pBoss = pEntity;
 			return true;
 		}
+		if (isTankBoss(pEntity))
+		{
+			/*if (fFactor != nullptr)
+				*fFactor = -200.0f;*/
+			m_pBoss = pEntity;
+			return true;
+		}
 
 	}
-	/*else if (CTeamFortress2Mod::isMapType(TF_MAP_PIPEBALL))
+	else if (CTeamFortress2Mod::isMapType(TF_MAP_PIPEBALL))
 	{
 		if (m_pBoss.get() == pEntity)
 			return true;
@@ -616,15 +624,15 @@ bool CTeamFortress2Mod::isBoss(edict_t* pEntity, float* fFactor)
 			return true;
 		}
 
-	}*/
-	else if (CTeamFortress2Mod::isMapType(TF_MAP_MVM)/* || std::strncmp(szmapname, "stt_", 4) == 0 && (CBotGlobals::getTeam(pEntity) == TF2_TEAM_RED)*/)
+	}
+	else if (CTeamFortress2Mod::isMapType(TF_MAP_MVM))
 	{
 		if (m_pBoss.get() == pEntity)
 			return true;
-		if (isTankBoss(pEntity))
+		if (isTankBoss(pEntity)) /* && CClassInterface::getTeam(pEntity) != iTeam)*/
 		{
-			if (fFactor != nullptr)
-				*fFactor = 200.0f;
+			/*if (fFactor != nullptr)
+				*fFactor = -200.0f;*/
 
 			m_pBoss = pEntity;
 			return true;
@@ -1099,22 +1107,26 @@ int CTeamFortress2Mod ::getHighestScore ()
 
 // check if there is another building near where I want to build
 // check quickly by using the storage of sentryguns etc in the mod class
-bool CTeamFortress2Mod::buildingNearby (const int iTeam, const Vector& vOrigin)
+bool CTeamFortress2Mod::buildingNearby(const int iTeam, const Vector& vOrigin)
 {
-	for ( int i = 1; i <= gpGlobals->maxClients; i ++ )
+	for (int i = 1; i <= gpGlobals->maxClients; i++)
 	{
 		edict_t* pPlayer = INDEXENT(i);
 
 		// crash bug fix 
-		if ( !pPlayer || pPlayer->IsFree() )
+		if (!pPlayer || pPlayer->IsFree())
+			continue;
+
+		// check if the player is valid [APG]RoboCop[CL]
+		if (!playerinfomanager->GetPlayerInfo(pPlayer))
 			continue;
 
 		const short sentryIndex = static_cast<short>(i - 1);
 
-		if ( CClassInterface::getTF2Class(pPlayer) != TF_CLASS_ENGINEER )
+		if (CClassInterface::getTF2Class(pPlayer) != TF_CLASS_ENGINEER)
 			continue;
 
-		if ( CClassInterface::getTeam(pPlayer) != iTeam )
+		if (CClassInterface::getTeam(pPlayer) != iTeam)
 			continue;
 
 		if (m_SentryGuns[sentryIndex].sentry.get())
@@ -1131,13 +1143,13 @@ bool CTeamFortress2Mod::buildingNearby (const int iTeam, const Vector& vOrigin)
 
 		if (m_Teleporters[sentryIndex].entrance.get())
 		{
-			if ( (vOrigin-CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].entrance.get())).Length() < 100 )
+			if ((vOrigin - CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].entrance.get())).Length() < 100)
 				return true;
 		}
 
 		if (m_Teleporters[sentryIndex].exit.get())
 		{
-			if ( (vOrigin-CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].exit.get())).Length() < 100 )
+			if ((vOrigin - CBotGlobals::entityOrigin(m_Teleporters[sentryIndex].exit.get())).Length() < 100)
 				return true;
 		}
 
@@ -1313,7 +1325,7 @@ void CTeamFortress2Mod:: addWaypointFlags (edict_t *pPlayer, edict_t *pEdict, in
 	{
 		*iFlags |= CWaypointTypes::W_FL_CAPPOINT;
 		*iArea = m_ObjectiveResource.getControlPointArea(pEdict);
-		*fMaxDistance = 100;
+		*fMaxDistance = 200;
 	}
 }
 

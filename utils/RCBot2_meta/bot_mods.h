@@ -520,7 +520,7 @@ public:
 
 private:
 	edict_t *m_pFlags[MAX_DOD_FLAGS];
-	edict_t *m_pBombs[MAX_DOD_FLAGS][2]; // maximum of 2 bombs per capture point
+	edict_t* m_pBombs[MAX_DOD_FLAGS][8]; // maximum of 8 bombs per capture point increased for stability [APG]RoboCop[CL]
 	int m_iWaypoint[MAX_DOD_FLAGS];
 
 	int m_iNumControlPoints;

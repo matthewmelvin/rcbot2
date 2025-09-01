@@ -579,9 +579,9 @@ void CDODBot :: seeFriendlyDie ( edict_t *pDied, edict_t *pKiller, CWeapon *pWea
 						CWaypointTypes::W_FL_MACHINEGUN))) != nullptr)
 						{	
 							ADD_UTILITY_WEAPON_DATA_VECTOR(BOT_UTIL_MOVEUP_MG,
-							                               pMachineGun && !pMachineGun->outOfAmmo(this), 1.0f,
-							                               pMachineGun, CWaypoints::getWaypointIndex(pWaypoint),
-							                               m_vListenPosition)
+														   pMachineGun && !pMachineGun->outOfAmmo(this), 1.0f,
+														   pMachineGun, CWaypoints::getWaypointIndex(pWaypoint),
+														   m_vListenPosition)
 
 							//m_pSchedules->add(new CDeployMachineGunSched(pMachineGun,pWaypoint,m_vListenPosition));
 
@@ -1519,7 +1519,7 @@ void CDODBot::hearVoiceCommand(edict_t* pPlayer, byte voiceCmd)
 						Vector vGoal = pWaypointAtFlag->getOrigin();
 
 						snipetask = new CBotDODSnipe(pWeapon, pWaypoint->getOrigin(), pWaypoint->getAimYaw(),
-						                             iFlagID != -1, vGoal.z + 48, pWaypoint->getFlags());
+													 iFlagID != -1, vGoal.z + 48, pWaypoint->getFlags());
 
 						removeCondition(CONDITION_PUSH);
 						findpath->setCompleteInterrupt(CONDITION_PUSH);
@@ -2100,7 +2100,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 			Vector vEnemyOrigin = CBotGlobals::entityOrigin(pEnemy);
 
 			int iEnemyWpt = CWaypointLocations::NearestWaypoint(CBotGlobals::entityOrigin(pEnemy), 200.0f, -1, true,
-			                                                    true, false, nullptr, false, 0, false);
+																true, false, nullptr, false, 0, false);
 
 			WaypointList waypoints;
 
@@ -3111,7 +3111,7 @@ void CDODBot :: getTasks (unsigned iIgnore)
 			bAttackNearestFlag = !CDODMod::m_Flags.ownsFlag(iFlagID,m_iTeam) && ((CDODMod::m_Flags.numCappersRequired(iFlagID,m_iTeam)-CDODMod::m_Flags.numFriendliesAtCap(iFlagID,m_iTeam))>0);
 		}
 
-        if ( (m_pNearestFlag.get() == nullptr) || !bAttackNearestFlag )
+		if ( (m_pNearestFlag.get() == nullptr) || !bAttackNearestFlag )
 		{
 			if ( !hasSomeConditions(CONDITION_DEFENSIVE) && CDODMod::shouldAttack(m_iTeam) )
 			{
@@ -3294,8 +3294,8 @@ void CDODBot :: getTasks (unsigned iIgnore)
 
 		CBotWeapon *pBotWeapon = nullptr;
 		CBotWeapon* pBotSmokeGren = m_pWeapons->hasWeapon(DOD_WEAPON_SMOKE_US)
-			                            ? m_pWeapons->getWeapon(CWeapons::getWeapon(DOD_WEAPON_SMOKE_US))
-			                            : m_pWeapons->getWeapon(CWeapons::getWeapon(DOD_WEAPON_SMOKE_GER));
+										? m_pWeapons->getWeapon(CWeapons::getWeapon(DOD_WEAPON_SMOKE_US))
+										: m_pWeapons->getWeapon(CWeapons::getWeapon(DOD_WEAPON_SMOKE_GER));
 
 		if ( (hasSomeConditions(CONDITION_COVERT)||(m_fCurrentDanger >= 25.0f)) && pBotSmokeGren && pBotSmokeGren->hasWeapon() )
 			pBotWeapon = pBotSmokeGren;
@@ -3310,7 +3310,7 @@ void CDODBot :: getTasks (unsigned iIgnore)
 			assert(pBotWeapon != nullptr);
 
 			ADD_UTILITY_WEAPON(BOT_UTIL_THROW_GRENADE, pBotWeapon && (pBotWeapon->getAmmo(this) > 0),
-			                   hasSomeConditions(CONDITION_GREN) ? fGrenUtil*2 : fGrenUtil, pBotWeapon)
+							   hasSomeConditions(CONDITION_GREN) ? fGrenUtil*2 : fGrenUtil, pBotWeapon)
 		}
 	}
 

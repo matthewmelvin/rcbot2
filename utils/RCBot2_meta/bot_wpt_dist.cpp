@@ -24,7 +24,7 @@ void CWaypointDistances::load()
 	if (szMapName && *szMapName)
 	{
 		char filename[1024];
-		CBotGlobals::buildFileName(filename, szMapName, BOT_WAYPOINT_FOLDER, BOT_WAYPOINT_DST_EXTENSION, true);
+		CBotGlobals::buildFileName(filename, szMapName, BOT_AUXILERY_FOLDER, BOT_WAYPOINT_DST_EXTENSION, true);
 
 		std::fstream bfp = CBotGlobals::openFile(filename, std::fstream::in | std::fstream::binary);
 
@@ -53,7 +53,7 @@ void CWaypointDistances::save()
 		char filename[1024];
 		wpt_dist_hdr_t hdr;
 
-		CBotGlobals::buildFileName(filename, szMapName, BOT_WAYPOINT_FOLDER, BOT_WAYPOINT_DST_EXTENSION, true);
+		CBotGlobals::buildFileName(filename, szMapName, BOT_AUXILERY_FOLDER, BOT_WAYPOINT_DST_EXTENSION, true);
 
 		std::fstream bfp = CBotGlobals::openFile(filename, std::fstream::out | std::fstream::binary);
 
