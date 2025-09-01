@@ -193,3 +193,35 @@ CBotProfile* CBotProfiles::getRandomFreeProfile()
 
 	return freeProfiles[static_cast<std::size_t>(randomInt(0, static_cast<int>(freeProfiles.size()) - 1))];
 }
+
+// return first unused bot, concidering teams if they're unequal
+CBotProfile* CBotProfiles::getChosenFreeProfile()
+{
+	int team = 0;
+	int teamA = CBotGlobals::numPlayersOnTeam(2,false);
+	int teamB = CBotGlobals::numPlayersOnTeam(3,false);
+
+	if (teamA < teamB) {
+		logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : team A: %d, team B: %d, adding to team A", teamA, teamB);
+		team = 2;
+	} else if (teamA > teamB) {
+		logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : team A: %d, team B: %d, adding to team B", teamA, teamB);
+		team = 3;
+	} else {
+		logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : team A: %d, team B: %d, adding to either", teamA, teamB);
+		team = 0;
+	}
+
+	for (CBotProfile*& m_Profile : m_Profiles)
+	{
+		if ((!CBots::findBotByProfile(m_Profile)) && ((team < 2) || (m_Profile->m_iTeam < 2) || (m_Profile->m_iTeam == team))) {
+			if (m_Profile->m_iTeam >= 2)
+				logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : %s adding bot, team %s configured", m_Profile->m_szName, (m_Profile->m_iTeam == 2 ? "A" : "B"));
+			else
+				logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : %s adding bot, no team preference", m_Profile->m_szName);
+			return(m_Profile);
+		}
+	}
+
+	return nullptr;
+}

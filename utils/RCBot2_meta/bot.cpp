@@ -3178,7 +3178,12 @@ bool CBots :: createBot (const char *szClass, const char *szTeam, const char *sz
 
 	m_flAddKickBotTime = engine->Time() + rcbot_addbottime.GetFloat();
 
-	CBotProfile* pBotProfile = CBotProfiles::getRandomFreeProfile();
+	CBotProfile* pBotProfile;
+	if (rcbot_nonrandom_profile.GetBool()) {
+		pBotProfile = CBotProfiles::getChosenFreeProfile();
+	} else {
+		pBotProfile = CBotProfiles::getRandomFreeProfile();
+	}
 
 	if ( pBotProfile == nullptr)
 	{
@@ -3428,7 +3433,11 @@ void CBots :: botThink ()
 	}
 	else if ( needToKickBot () )
 	{
-		kickRandomBot();
+		if (rcbot_nonrandom_kicking.GetBool()) {
+			kickChosenBot();
+		} else {
+			kickRandomBot();
+		}
 	}
 }
 
@@ -3511,6 +3520,10 @@ void CBots :: mapInit ()
 
 bool CBots :: needToAddBot ()
 {
+	if (rcbot_bot_quota_interval.GetFloat() > 0.0) {
+		return false;
+	}
+
 	const int iClients = CBotGlobals::numPlayersPlaying();
 	const int iBots = CBots::numBots();
 
@@ -3523,6 +3536,10 @@ bool CBots :: needToAddBot ()
 
 bool CBots :: needToKickBot ()
 {
+	if (rcbot_bot_quota_interval.GetFloat() > 0.0) {
+		return false;
+	}
+
 	const int iClients = CBotGlobals::numPlayersPlaying();
 	const int iBots = CBots::numBots();
 
@@ -3537,6 +3554,79 @@ bool CBots :: needToKickBot ()
 	}
 
 	return false;
+}
+
+void CBots :: kickChosenBot (const unsigned count)
+{
+        std::vector<CBot*> botList;
+        //gather list of bots
+        for ( unsigned i = 0; i < RCBOT_MAXPLAYERS; i ++ )
+        {
+		if ( m_Bots[i]->inUse() )
+			botList.emplace_back(m_Bots[i]);
+        }
+
+        if ( botList.empty() )
+        {
+                logger->Log(LogLevel::DEBUG, "kickChosenBot() : No bots to kick");
+                return;
+        }
+
+	int team = 0;
+	int teamA = CBotGlobals::numPlayersOnTeam(2,false);
+	int teamB = CBotGlobals::numPlayersOnTeam(3,false);
+
+	if (count == 1)
+		logger->Log(LogLevel::DEBUG, "kickChosenBot() : want to kick 1 bot");
+	else
+		logger->Log(LogLevel::DEBUG, "kickChosenBot() : want to kick %d bots", count);
+
+	CBot* pBot;
+	unsigned numBotsKicked = 0;
+	while (numBotsKicked < count && !botList.empty()) {
+		// check numBotsOnTeam in case all the remaining bots are on the smaller team
+		if ((teamA > teamB) && (CBotGlobals::numBotsOnTeam(2,false) > 0)) {
+			logger->Log(LogLevel::DEBUG, "kickChosenBot() : team A: %d, team B: %d, kicking from team A", teamA, teamB);
+			team = 2;
+		} else if ((teamA < teamB) && (CBotGlobals::numBotsOnTeam(3,false) > 0)) {
+			logger->Log(LogLevel::DEBUG, "kickChosenBot() : team A: %d, team B: %d, kicking from team B", teamA, teamB);
+			team = 3;
+		} else {
+			logger->Log(LogLevel::DEBUG, "kickChosenBot() : team A: %d, team B: %d, kicking from either", teamA, teamB);
+			team = 0;
+		}
+
+		pBot = nullptr;
+		for (CBot* tBot : botList) {
+			if ((team < 2) || (tBot->getTeam() == team)) {
+				if ((pBot == nullptr) || ( pBot->getCreateTime() < tBot->getCreateTime() ))
+					pBot = tBot;
+			}
+		}
+
+		if (pBot == nullptr) {
+			logger->Log(LogLevel::DEBUG, "kickChosenBot() : No bot to kick");
+			return;
+		}
+		logger->Log(LogLevel::DEBUG, "kickChosenBot() : kicking %s, created at %0.2f", pBot->getBotName(), pBot->getCreateTime());
+
+		if (pBot->getTeam() == 2)
+			teamA--;
+		else if (pBot->getTeam() == 3)
+			teamB--;
+
+		char szCommand[512];
+
+		snprintf(szCommand, sizeof(szCommand), "kickid %d\n", pBot->getPlayerID());
+		engine->ServerCommand(szCommand);
+
+		botList.erase(std::remove(botList.begin(), botList.end(), pBot),
+			botList.end());
+
+		numBotsKicked++;
+	}
+
+	m_flAddKickBotTime = engine->Time() + 2.0f;
 }
 
 void CBots :: kickRandomBot (const unsigned count)

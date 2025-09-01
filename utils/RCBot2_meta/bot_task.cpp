@@ -56,7 +56,6 @@
 #include "bot_waypoint_visibility.h"
 #include "bot_synergy.h"
 #include "rcbot/utils.h"
-#include "logging.h"
 
 //caxanga334: SDK 2013 contains macros for std::min and std::max which causes errors when compiling
 //#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
@@ -1642,11 +1641,7 @@ void CBotInvestigateTask :: execute (CBot *pBot,CBotSchedule *pSchedule)
 	if ( m_fTime < engine->Time() )
 	{
 		complete();
-		if ( rcbot_debug_stop_invtask.GetBool() )
-		{
-			logger->Log(LogLevel::WARN, "%s: m_iState: %d, stopped processing completed task", pBot->getBotName(), m_iState);
-			return;
-		}
+		return;
 	}
 
 	if (!m_InvPoints.empty())
@@ -1666,17 +1661,7 @@ void CBotInvestigateTask :: execute (CBot *pBot,CBotSchedule *pSchedule)
 				m_iCurPath = randomInt(0, static_cast<int>(m_InvPoints.size()) - 1);
 		}
 		else
-		{
-			if (m_iState == 3)
-				logger->Log(LogLevel::ERROR, "%s: vPoint: %0.4f,%0.4f,%0.4f", pBot->getBotName(), vPoint.x,vPoint.y,vPoint.z);
-			if (std::isnan(vPoint.x) || std::isnan(vPoint.y) || std::isnan(vPoint.z))
-			{
-				const Vector vOrigin = pBot->getOrigin();
-				logger->Log(LogLevel::ERROR, "%s: m_iState: %d, from %0.0f %0.0f %0.0f to 0 0 %0.0f (distance %0.0f)",
-					pBot->getBotName(), m_iState, vOrigin.x,vOrigin.y,vOrigin.z, vOrigin.z, pBot->distanceFrom(Vector(0,0,vOrigin.z)));
-			}
 			pBot->setMoveTo(vPoint);
-		}
 	}
 	else
 		pBot->stopMoving();

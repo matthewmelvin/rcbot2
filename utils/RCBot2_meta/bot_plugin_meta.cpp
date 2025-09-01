@@ -834,7 +834,7 @@ void RCBotPluginMeta::Hook_GameFrame(const bool simulating)
 		currentmod->modFrame();
 
 		// Bot Quota
-		if (rcbot_bot_quota_interval.GetInt() > 0) {
+		if (rcbot_bot_quota_interval.GetFloat() > 0.0) {
 			BotQuotaCheck();
 		}
 	}
@@ -842,7 +842,7 @@ void RCBotPluginMeta::Hook_GameFrame(const bool simulating)
 
 void RCBotPluginMeta::BotQuotaCheck() {
 	// this is configured with config/bot_quota.ini
-	if (rcbot_bot_quota_interval.GetInt() <= 0) {
+	if (rcbot_bot_quota_interval.GetFloat() <= 0.0) {
 		return;
 	}
 
@@ -877,7 +877,11 @@ void RCBotPluginMeta::BotQuotaCheck() {
 				IPlayerInfo* p = playerinfomanager->GetPlayerInfo(client->getPlayer());
 
 				if (p->IsConnected() && !p->IsFakeClient() && !p->IsHLTV()) {
-					human_count++;
+					if (rcbot_ignore_spectators.GetBool()) {
+						if ( CClassInterface::getTeam(client->getPlayer()) >= 2 )
+							human_count++;
+					} else
+						human_count++;
 				}
 			}
 		}
@@ -887,20 +891,28 @@ void RCBotPluginMeta::BotQuotaCheck() {
 		}
 
 		// Get Bot Quota
-		const int bot_target = m_iTargetBots[human_count];
+		int bot_target = m_iTargetBots[human_count];
+		int max_bots = CBots::getMaxBots();
+		int min_bots = CBots::getMinBots();
+
+		// Use min and max as ceiling and floor
+		if ((max_bots > -1) && (bot_target > max_bots)) {
+			bot_target = max_bots;
+		} else if ((min_bots > -1) && (bot_target < min_bots)) {
+			bot_target = min_bots;
+		}
 
 		// Change Bot Quota
 		if (bot_count > bot_target) {
-			CBots::kickRandomBot(static_cast<unsigned>(bot_count - bot_target));
+			if (rcbot_nonrandom_kicking.GetBool()) {
+				CBots::kickChosenBot(static_cast<unsigned>(bot_count - bot_target));
+			} else {
+				CBots::kickRandomBot(static_cast<unsigned>(bot_count - bot_target));
+			}
 			notify = true;
 		}
-		else if (bot_target > bot_count) {
-			const int bot_diff = bot_target - bot_count;
-
-			for (int i = 0; i < bot_diff; ++i) {
-				CBots::createBot("", "", "");
-				//break; // Bug-Fix, only add one bot at a time
-			}
+		else if ((bot_target > bot_count) && ( CBots::getAddKickBotTime() < engine->Time() )) {
+			CBots::createBot("", "", "");
 
 			notify = true;
 		}

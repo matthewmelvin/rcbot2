@@ -195,6 +195,31 @@ int CBotGlobals ::numPlayersOnTeam(const int iTeam, const bool bAliveOnly)
 	return num;
 }
 
+int CBotGlobals ::numBotsOnTeam(const int iTeam, const bool bAliveOnly)
+{
+	int num = 0;
+
+	for ( int i = 1; i <= CBotGlobals::numClients(); i ++ )
+	{
+		edict_t* pEdict = INDEXENT(i);
+
+		if ( CBotGlobals::entityIsValid(pEdict) && CBots::getBotPointer(pEdict) != NULL )
+		{
+			if ( CClassInterface::getTeam(pEdict) == iTeam )
+			{
+				if ( bAliveOnly )
+				{
+					if ( CBotGlobals::entityIsAlive(pEdict) )
+						num++;
+				}
+				else
+					num++;
+			}
+		}
+	}
+	return num;
+}
+
 bool CBotGlobals::dirExists(const char *path)
 {
 #if defined(_WIN64) || defined(_WIN32)
