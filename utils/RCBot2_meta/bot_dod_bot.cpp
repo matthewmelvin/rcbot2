@@ -49,6 +49,7 @@
 #include "bot_navigator.h"
 #include "bot_perceptron.h"
 #include "bot_waypoint_visibility.h"
+#include "logging.h"
 
 #include <algorithm>
 #include <cmath>
@@ -325,6 +326,9 @@ bool CDODBot :: startGame ()
 
 	if ( (m_iDesiredClass < 0) || (m_iDesiredClass > 5) )
 		chooseClass(false);
+
+	if (CClassInterface::getPlayerClassDOD(m_pEdict) < 0)
+		return false;
 
 	// not the correct class? and desired class is valid?
 	if ( (m_iDesiredClass >= 0) && (m_iDesiredClass <= 5) && (m_iDesiredClass != CClassInterface::getPlayerClassDOD(m_pEdict)) )
