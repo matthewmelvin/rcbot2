@@ -389,12 +389,12 @@ bool CBotFortress::startGame()
 	// Removed "(m_iDesiredClass > 0 && (m_iClass != m_iDesiredClass))" to avoid bots trying to change class when it was forced by something like in VSH and VIP maps
 	{
 		// can't change class in MVM during round!
-		if (CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted())
+		if (CTeamFortress2Mod::isMapType(TF_MAP_MVM) && CTeamFortress2Mod::hasRoundStarted() && !sig_mvm_changeclass_anytime.GetBool())
 		{
 			return true;
 		}
 		if (CTeamFortress2Mod::isMapType(TF_MAP_SAXTON) || CTeamFortress2Mod::isMapType(TF_MAP_GG) ||
-			std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "cw_", 3) == 0 ||
+			std::strncmp(szmapname, "vip_", 4) == 0 || std::strncmp(szmapname, "vipr_", 5) == 0 || std::strncmp(szmapname, "cw_", 3) == 0 ||
 			std::strncmp(szmapname, "ctf_2fort_sniperwars", 20) == 0 || std::strncmp(szmapname, "dm_", 3) == 0)
 		{
 			return true;
@@ -2818,6 +2818,9 @@ void CBotFortress::chooseClass()
 			break;
 		case 9:
 			m_iDesiredClass = TF_CLASS_SPY;
+			break;
+		case 10:
+			m_iDesiredClass = 10; // TF_CLASS_CIVILIAN
 			break;
 		}
 	}
