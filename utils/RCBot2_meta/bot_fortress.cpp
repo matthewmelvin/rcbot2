@@ -7729,7 +7729,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 		if ( CBotGlobals::getTeam(pEdict) != getTeam() )
 		{
 			//TODO: Stable tests on TF2 conditions
-			/*assert(pEdict != nullptr);
+			assert(pEdict != nullptr);
 
 			if (!pEdict || pEdict->IsFree() || !CBotGlobals::isPlayer(pEdict))
 				return false;
@@ -7752,7 +7752,7 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 					secondaryAttack();
 					m_fAvoidTime = engine->Time() + 1.0f;
 				}
-			}*/
+			}
 			
 			if ( m_iClass == TF_CLASS_SPY )	
 			{
