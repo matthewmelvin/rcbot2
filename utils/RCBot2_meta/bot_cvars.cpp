@@ -129,7 +129,7 @@ ConVarRef mp_roundtime("mp_roundtime");
 ConVarRef mp_c4timer("mp_c4timer");
 
 // Rafmod
-//ConVarRef sig_mvm_changeclass_anytime("sig_mvm_changeclass_anytime");
+ConVarRef sig_mvm_changeclass_anytime("sig_mvm_changeclass_anytime");
 
 void RCBOT2_Cvar_setup(ICvar* cvar) //'cvar' hides global declaration from /public/icvar.h [APG]RoboCop[CL]
 {
