@@ -108,7 +108,7 @@ ConVar rcbot_bot_quota_interval("rcbot_bot_quota_interval", "10", 0, "Interval b
 ConVar rcbot_show_welcome_msg("rcbot_show_welcome_msg", "1", 0, "Show welcome message on player connect");//Not referenced properly? [APG]RoboCop[CL]
 ConVar rcbot_force_class("rcbot_force_class", "0", 0, "Force bots to choose specified class, kills alive bots on change (1 - 9, set to 0 for none)");
 
-ConVar rcbot_waypoint_ignore_map_mismatch("rcbot_wpt_ignore_map_mismatch", "1", 0, "If 1, waypoints will be loaded even if there's a mismatch.");
+ConVar rcbot_waypoint_ignore_map_mismatch("rcbot_waypoint_ignore_map_mismatch", "1", 0, "If 1, waypoints will be loaded even if there's a mismatch.");
 
 // Synergy CVars
 ConVar rcbot_runplayercmd_syn("rcbot_runplayer_cmd_syn", "424", 0, "offset of the Synergy PlayerRunCommand function");

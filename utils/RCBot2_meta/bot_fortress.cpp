@@ -7929,16 +7929,10 @@ bool CBotTF2::isEnemy(edict_t* pEdict, const bool bCheckWeapons)
 				}
 			}*/
 		}
-		/*if (mp_friendlyfire.GetInt() == 1)
+		if (CBotGlobals::getTeam(pEdict) == getTeam())
 		{
-			if (CBotGlobals::getTeam(pEdict) == getTeam())
-				return true;
+				return mp_friendlyfire.GetBool();
 		}
-		if (mp_friendlyfire.GetInt() == 0)
-		{
-			if (CBotGlobals::getTeam(pEdict) == getTeam())
-				return false;
-		}*/ //Doesn't work
 	}
 	// TODO: to allow bots to properly attack RD Robots [APG]RoboCop[CL]
 	else if ( (CTeamFortress2Mod::isMapType(TF_MAP_RD) || CTeamFortress2Mod::isMapType(TF_MAP_CTF)) && !std::strcmp(pEdict->GetClassName(),"tf_robot_destruction_robot") && (CClassInterface::getTeam(pEdict) != m_iTeam))
