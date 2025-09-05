@@ -79,14 +79,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         path: rcbot2
-        submodules: true
+        submodules: recursive
 
     - name: Build Files
       working-directory: rcbot2
       run: |
         mkdir post
         cd post
-        python3 ../configure.py --sdks=present --mms-path $(pwd)/../alliedmodders/metamod-source --sm-path $(pwd)/../alliedmodders/sourcemod --hl2sdk-root $(pwd)/../alliedmodders --symbol-files
+        python3 ../configure.py --sdks=present --mms-path="${{ github.workspace }}/rcbot2/alliedmodders/metamod-source" --sm-path="${{ github.workspace }}/rcbot2/alliedmodders/sourcemod" --hl2sdk-root="${{ github.workspace }}/rcbot2/alliedmodders" --symbol-files
         ambuild
 
     - uses: benjlevesque/short-sha@v2.2
