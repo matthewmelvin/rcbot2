@@ -70,7 +70,7 @@ jobs:
       run: |
         :: See https://github.com/microsoft/vswhere/wiki/Find-VC
         for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
-          call "%%i"\Common7\Tools\vsdevcmd.bat -arch=${{ maxtrix.vs_arch }} -host_arch=x64
+          call "%%i"\Common7\Tools\vsdevcmd.bat -arch=${{ matrix.vs_arch }} -host_arch=x64
         )
         
         :: Loop over all environment variables and make them global.
