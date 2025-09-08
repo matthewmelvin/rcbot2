@@ -284,7 +284,6 @@ typedef enum : std::uint8_t
 	TF_CLASS_PYRO,
 	TF_CLASS_SPY,
 	TF_CLASS_ENGINEER,
-	//TF_CLASS_CIVILIAN,
 	TF_CLASS_MAX
 }TF_Class;
 
