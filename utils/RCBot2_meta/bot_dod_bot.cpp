@@ -49,7 +49,6 @@
 #include "bot_navigator.h"
 #include "bot_perceptron.h"
 #include "bot_waypoint_visibility.h"
-#include "logging.h"
 
 #include <algorithm>
 #include <cmath>
