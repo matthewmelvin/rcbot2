@@ -16,6 +16,9 @@ jobs:
         os:
           - ubuntu-22.04
           - windows-latest
+        arch:
+          - x86
+          - x64
         include:
           - meta_branch: "1.11-dev"
             sm_branch: "1.11-dev"
@@ -27,6 +30,7 @@ jobs:
             dbg_ext: dbg
             cc: clang
             cxx: clang++
+            vs_arch: unused
 
           - os: windows-latest
             os_short: win
@@ -35,6 +39,16 @@ jobs:
             dbg_ext: pdb
             cc: not-used
             cxx: not-used
+            vs_arch: x64
+
+          - os: windows-latest
+            os_short: win
+            os_version: windows-latest
+            package_ext: zip
+            dbg_ext: pdb
+            cc: not-used
+            cxx: not-used
+            vs_arch: x32
 
     steps:
     - name: Install (Linux)
@@ -56,7 +70,7 @@ jobs:
       run: |
         :: See https://github.com/microsoft/vswhere/wiki/Find-VC
         for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
-          call "%%i"\Common7\Tools\vsdevcmd.bat -arch=x86 -host_arch=x64
+          call "%%i"\Common7\Tools\vsdevcmd.bat -arch=${{ maxtrix.vs_arch }} -host_arch=x64
         )
         
         :: Loop over all environment variables and make them global.
@@ -92,16 +106,34 @@ jobs:
     - uses: benjlevesque/short-sha@v2.2
       id: short-sha
 
-    - name: Upload Binary
+    - name: Upload Linux Binary
+      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: rcbot2-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
         path: |
             rcbot2/post/package/*
 
-    - name: Upload Debug Symbols
+    - name: Upload Linux Symbols
+      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: rcbot2-dbgsym-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
+        path: |
+            rcbot2/post/**/*.${{ matrix.dbg_ext }}
+
+    - name: Upload Windows Binary
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: rcbot2-${{ matrix.os_short }}-${{ matrix.vs_arch }}-${{ steps.short-sha.outputs.sha }}
+        path: |
+            rcbot2/post/package/*
+
+    - name: Upload Windows Symbols
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: rcbot2-dbgsym-${{ matrix.os_short }}-${{ matrix.vs_arch }}-${{ steps.short-sha.outputs.sha }}
         path: |
             rcbot2/post/**/*.${{ matrix.dbg_ext }}
