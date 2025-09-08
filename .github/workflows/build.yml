@@ -15,10 +15,8 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - windows-latest
-        arch:
-          - x86
-          - x64
+          - windows-x32
+          - windows-x64
         include:
           - meta_branch: "1.11-dev"
             sm_branch: "1.11-dev"
@@ -32,23 +30,23 @@ jobs:
             cxx: clang++
             vs_arch: unused
 
-          - os: windows-latest
-            os_short: win
-            os_version: windows-latest
-            package_ext: zip
-            dbg_ext: pdb
-            cc: not-used
-            cxx: not-used
-            vs_arch: x64
-
-          - os: windows-latest
-            os_short: win
+          - os: windows-x32
+            os_short: win32
             os_version: windows-latest
             package_ext: zip
             dbg_ext: pdb
             cc: not-used
             cxx: not-used
             vs_arch: x32
+
+          - os: windows-x64
+            os_short: win64
+            os_version: windows-latest
+            package_ext: zip
+            dbg_ext: pdb
+            cc: not-used
+            cxx: not-used
+            vs_arch: x64
 
     steps:
     - name: Install (Linux)
@@ -106,34 +104,16 @@ jobs:
     - uses: benjlevesque/short-sha@v2.2
       id: short-sha
 
-    - name: Upload Linux Binary
-      if: runner.os == 'Linux'
+    - name: Upload Binary
       uses: actions/upload-artifact@v4
       with:
         name: rcbot2-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
         path: |
             rcbot2/post/package/*
 
-    - name: Upload Linux Symbols
-      if: runner.os == 'Linux'
+    - name: Upload Debug Symbols
       uses: actions/upload-artifact@v4
       with:
         name: rcbot2-dbgsym-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
-        path: |
-            rcbot2/post/**/*.${{ matrix.dbg_ext }}
-
-    - name: Upload Windows Binary
-      if: runner.os == 'Windows'
-      uses: actions/upload-artifact@v4
-      with:
-        name: rcbot2-${{ matrix.os_short }}-${{ matrix.vs_arch }}-${{ steps.short-sha.outputs.sha }}
-        path: |
-            rcbot2/post/package/*
-
-    - name: Upload Windows Symbols
-      if: runner.os == 'Windows'
-      uses: actions/upload-artifact@v4
-      with:
-        name: rcbot2-dbgsym-${{ matrix.os_short }}-${{ matrix.vs_arch }}-${{ steps.short-sha.outputs.sha }}
         path: |
             rcbot2/post/**/*.${{ matrix.dbg_ext }}
