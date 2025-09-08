@@ -269,7 +269,7 @@ void CTeamFortress2Mod :: mapInit ()
 			!(std::strncmp(szmapname, "ctf_chouhen", 11) == 0 || std::strncmp(szmapname, "ctf_haarp", 9) == 0)))
 		// Quake Turbine is CTF. - RussiaTails
 		m_MapType = TF_MAP_CTF; // capture the flag
-	else if ((std::strncmp(szmapname, "cp_", 3) == 0 || std::strncmp(szmapname, "cp_", 3) == 1) ||
+	else if ((std::strncmp(szmapname, "cp_", 3) == 0 ||
 			 std::strncmp(szmapname, "cqt_", 4) == 0 ||
 			 std::strncmp(szmapname, "conquest_", 9) == 0 ||
 			 std::strncmp(szmapname, "dom_", 4) == 0 ||
