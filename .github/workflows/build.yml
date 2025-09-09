@@ -140,9 +140,7 @@ jobs:
       with:
         path: ./artifacts
         run-id: 17571853502
-        repository: matthewmelvin/rcbot2
         github-token: ${{ secrets.GITHUB_TOKEN }}
-
 
     - name: Rename artifacts for release
       run: |
