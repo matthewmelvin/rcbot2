@@ -1849,23 +1849,20 @@ bool CWaypoints :: load (const char *szMapName)
 		return false;
 	}
 
-	if (!rcbot_waypoint_ignore_map_mismatch.GetBool())
+	if ( szMapName )
 	{
-		if ( szMapName )
-		{
-			if ( !FStrEq(header.szMapName,szMapName) )
-			{
-				logger->Log(LogLevel::ERROR, "Error loading waypoints: Map name mismatch");
-				return false;
-			}
-		}
-		else if ( !FStrEq(header.szMapName,CBotGlobals::getMapName()) )
+		if ( !FStrEq(header.szMapName,szMapName) )
 		{
 			logger->Log(LogLevel::ERROR, "Error loading waypoints: Map name mismatch");
 			return false;
 		}
 	}
-	
+	else if ( !FStrEq(header.szMapName,CBotGlobals::getMapName()) )
+	{
+		logger->Log(LogLevel::ERROR, "Error loading waypoints: Map name mismatch");
+		return false;
+	}
+
 	if ( header.iVersion > 3 )
 	{
 		// load author information

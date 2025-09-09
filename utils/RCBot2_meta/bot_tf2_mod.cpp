@@ -265,33 +265,27 @@ void CTeamFortress2Mod :: mapInit ()
 	if (std::strncmp(szmapname, "ctf_", 4) == 0 || std::strncmp(szmapname, "quake_turbine", 13) == 0 ||
 		std::strncmp(szmapname, "pass_", 5) == 0 || std::strncmp(szmapname, "pd_", 3) == 0 ||
 		std::strncmp(szmapname, "od_", 3) == 0 ||
-		(std::strncmp(szmapname, "slendytubbies", 13) == 0 &&
-			!(std::strncmp(szmapname, "ctf_chouhen", 11) == 0 || std::strncmp(szmapname, "ctf_haarp", 9) == 0)))
+		std::strncmp(szmapname, "slendytubbies", 13) == 0)
 		// Quake Turbine is CTF. - RussiaTails
-		m_MapType = TF_MAP_CTF; // capture the flag
-	else if ((std::strncmp(szmapname, "cp_", 3) == 0 || std::strncmp(szmapname, "cp_", 3) == 1) ||
+		m_MapType = TF_MAP_CTF; // capture the flag + pass time + player destruction
+	else if (std::strncmp(szmapname, "cp_", 3) == 0 ||
 			 std::strncmp(szmapname, "cqt_", 4) == 0 ||
 			 std::strncmp(szmapname, "conquest_", 9) == 0 ||
 			 std::strncmp(szmapname, "dom_", 4) == 0 ||
 			 std::strncmp(szmapname, "2koth_", 6) == 0 ||
-			 std::strncmp(szmapname, "ctf_chouhen", 11) == 0 ||
-			 std::strncmp(szmapname, "ctf_haarp", 9) == 0 ||
 			 std::strncmp(szmapname, "falling_cp", 10) == 0 ||
 			 std::strncmp(szmapname, "stt_", 4) == 0 ||
 			 std::strncmp(szmapname, "koth_lifesnatcher", 17) == 0 ||
 			 std::strncmp(szmapname, "vip_", 4) == 0 ||
 			 std::strncmp(szmapname, "vipr_", 5) == 0 ||
 			 std::strncmp(szmapname, "szf_", 4) == 0 ||
-			 std::strncmp(szmapname, "zf_", 3) == 0 ||
-			 std::strncmp(szmapname, "ze_", 3) == 0)
+			 std::strncmp(szmapname, "zf_", 3) == 0)
 		// Conquest, 2koth and DOM works fine as CP_. Moved stt to cp to make bots attack a tank - RussiaTails
 		m_MapType = TF_MAP_CP; // control point
 	else if (std::strncmp(szmapname, "tc_", 3) == 0)
 		m_MapType = TF_MAP_TC; // territory control
 	else if (std::strncmp(szmapname, "pl_", 3) == 0 ||
-		(std::strncmp(szmapname, "kotc_", 5) == 0 &&
-			(!(std::strncmp(szmapname, "pl_fountain", 11) == 0 ||
-				std::strncmp(szmapname, "pl_divulgence", 13) == 0))))
+		std::strncmp(szmapname, "kotc_", 5) == 0)
 		// Tug of War works fine as Payload - RussiaTails
 		m_MapType = TF_MAP_CART; // pipeline
 	else if (std::strncmp(szmapname, "plr_", 4) == 0 || std::strncmp(szmapname, "tow_", 4) == 0 ||
@@ -315,8 +309,7 @@ void CTeamFortress2Mod :: mapInit ()
 		m_MapType = TF_MAP_SD; // special delivery
 	else if (std::strncmp(szmapname, "tr_", 3) == 0)
 		m_MapType = TF_MAP_TR; // training mode
-	else if (std::strncmp(szmapname, "cppl_", 5) == 0 || std::strncmp(szmapname, "pl_fountain", 11) == 0 ||
-		std::strncmp(szmapname, "pl_divulgence", 13) == 0 || std::strncmp(szmapname, "cp_helmsdeep_v2", 15) == 0 ||
+	else if (std::strncmp(szmapname, "cppl_", 5) == 0 ||
 		std::strncmp(szmapname, "cw_", 3) == 0) // Hybrid - RussiaTails
 		m_MapType = TF_MAP_CPPL; // CP+PL maps
 	else if (std::strncmp(szmapname, "gg_", 3) == 0 || std::strncmp(szmapname, "dm_hydro", 8) == 0 ||
