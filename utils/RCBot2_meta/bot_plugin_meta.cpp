@@ -892,8 +892,8 @@ void RCBotPluginMeta::BotQuotaCheck() {
 
 		// Get Bot Quota
 		int bot_target = m_iTargetBots[human_count];
-		int max_bots = CBots::getMaxBots();
-		int min_bots = CBots::getMinBots();
+		const int max_bots = CBots::getMaxBots();
+		const int min_bots = CBots::getMinBots();
 
 		// Use min and max as ceiling and floor
 		if ((max_bots > -1) && (bot_target > max_bots)) {
@@ -912,7 +912,13 @@ void RCBotPluginMeta::BotQuotaCheck() {
 			notify = true;
 		}
 		else if ((bot_target > bot_count) && ( CBots::getAddKickBotTime() < engine->Time() )) {
-			CBots::createBot("", "", "");
+			const int bot_diff = bot_target - bot_count;
+
+			for (int i = 0; i < bot_diff; ++i) {
+				CBots::createBot("", "", "");
+				if (rcbot_addbottime.GetFloat() > 0.0)
+					break;
+			}
 
 			notify = true;
 		}
