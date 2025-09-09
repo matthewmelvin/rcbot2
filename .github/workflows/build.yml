@@ -135,10 +135,11 @@ jobs:
       startsWith(github.ref_name, 'v') ||
       startsWith(github.ref_name, 'release')
 
+    steps:
     - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
 
     - name: Rename artifacts for release
       run: |
