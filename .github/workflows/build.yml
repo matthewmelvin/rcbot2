@@ -3,160 +3,160 @@ name: Build
 on: ["push", "workflow_dispatch"]
 
 jobs:
-  build_main:
-    name: Build for ${{ matrix.os_short }}
-    runs-on: ${{ matrix.os_version }}
-
-    # only build on '[ci run]' or tags
-    if: |
-      startsWith(github.ref_name, 'v') ||
-      startsWith(github.ref_name, 'release') ||
-      startsWith(github.ref_name, 'build') ||
-      contains(github.event.head_commit.message, '[ci run]')
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-22.04
-          - windows-x32
-          - windows-x64
-        include:
-          - meta_branch: "1.11-dev"
-            sm_branch: "1.11-dev"
-
-          - os: ubuntu-22.04
-            os_short: linux
-            os_version: ubuntu-22.04
-            package_ext: tar.gz
-            dbg_ext: dbg
-            cc: clang
-            cxx: clang++
-            vs_arch: unused
-            am_arch: x86,x86_64
-
-          - os: windows-x32
-            os_short: win32
-            os_version: windows-latest
-            package_ext: zip
-            dbg_ext: pdb
-            cc: not-used
-            cxx: not-used
-            vs_arch: x32
-            am_arch: x86
-
-          - os: windows-x64
-            os_short: win64
-            os_version: windows-latest
-            package_ext: zip
-            dbg_ext: pdb
-            cc: not-used
-            cxx: not-used
-            vs_arch: x64
-            am_arch: x86_64
-
-    steps:
-    - name: Install (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo dpkg --add-architecture i386
-        sudo apt-get update
-        sudo apt-get install -y clang g++-multilib
-        echo "CC=clang" >> $GITHUB_ENV
-        echo "CXX=clang++" >> $GITHUB_ENV
-
-    - name: Add msbuild to PATH (Windows)
-      if: runner.os == 'Windows'
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Install (Windows)
-      if: runner.os == 'Windows'
-      shell: cmd
-      run: |
-        :: See https://github.com/microsoft/vswhere/wiki/Find-VC
-        for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
-          call "%%i"\Common7\Tools\vsdevcmd.bat -arch=${{ matrix.vs_arch }} -host_arch=x64
-        )
-        
-        :: Loop over all environment variables and make them global.
-        for /f "delims== tokens=1,2" %%a in ('set') do (
-          echo>>"%GITHUB_ENV%" %%a=%%b
-        )
-
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-
-    - name: Setup ambuild
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install wheel
-        pip install git+https://github.com/alliedmodders/ambuild
-
-    - name: Fetch RCBot2
-      uses: actions/checkout@v4
-      with:
-        path: rcbot2
-        submodules: recursive
-
-    - name: Build Files
-      working-directory: rcbot2
-      run: |
-        mkdir post
-        cd post
-        python3 ../configure.py --sdks=present --mms-path="${{ github.workspace }}/rcbot2/alliedmodders/metamod-source" --sm-path="${{ github.workspace }}/rcbot2/alliedmodders/sourcemod" --hl2sdk-root="${{ github.workspace }}/rcbot2/alliedmodders" --symbol-files --target ${{ matrix.am_arch }}
-        ambuild
-
-    - uses: benjlevesque/short-sha@v2.2
-      id: short-sha
-
-    - name: Upload Binary
-      uses: actions/upload-artifact@v4
-      with:
-        name: rcbot2-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
-        path: |
-            rcbot2/post/package/*
-
-    - name: Upload Debug Symbols
-      uses: actions/upload-artifact@v4
-      with:
-        name: rcbot2-dbgsym-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
-        path: |
-            rcbot2/post/**/*.${{ matrix.dbg_ext }}
-
+#  build_main:
+#    name: Build for ${{ matrix.os_short }}
+#    runs-on: ${{ matrix.os_version }}
+#
+#    # only build on '[ci run]' or tags
+#    if: |
+#      startsWith(github.ref_name, 'v') ||
+#      startsWith(github.ref_name, 'test') ||
+#      startsWith(github.ref_name, 'build') ||
+#      contains(github.event.head_commit.message, '[ci run]')
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        os:
+#          - ubuntu-22.04
+#          - windows-x32
+#          - windows-x64
+#        include:
+#          - meta_branch: "1.11-dev"
+#            sm_branch: "1.11-dev"
+#
+#          - os: ubuntu-22.04
+#            os_short: linux
+#            os_version: ubuntu-22.04
+#            package_ext: tar.gz
+#            dbg_ext: dbg
+#            cc: clang
+#            cxx: clang++
+#            vs_arch: unused
+#            am_arch: x86,x86_64
+#
+#          - os: windows-x32
+#            os_short: win32
+#            os_version: windows-latest
+#            package_ext: zip
+#            dbg_ext: pdb
+#            cc: not-used
+#            cxx: not-used
+#            vs_arch: x32
+#            am_arch: x86
+#
+#          - os: windows-x64
+#            os_short: win64
+#            os_version: windows-latest
+#            package_ext: zip
+#            dbg_ext: pdb
+#            cc: not-used
+#            cxx: not-used
+#            vs_arch: x64
+#            am_arch: x86_64
+#
+#    steps:
+#    - name: Install (Linux)
+#      if: runner.os == 'Linux'
+#      run: |
+#        sudo dpkg --add-architecture i386
+#        sudo apt-get update
+#        sudo apt-get install -y clang g++-multilib
+#        echo "CC=clang" >> $GITHUB_ENV
+#        echo "CXX=clang++" >> $GITHUB_ENV
+#
+#    - name: Add msbuild to PATH (Windows)
+#      if: runner.os == 'Windows'
+#      uses: microsoft/setup-msbuild@v2
+#
+#    - name: Install (Windows)
+#      if: runner.os == 'Windows'
+#      shell: cmd
+#      run: |
+#        :: See https://github.com/microsoft/vswhere/wiki/Find-VC
+#        for /f "usebackq delims=*" %%i in (`vswhere -latest -property installationPath`) do (
+#          call "%%i"\Common7\Tools\vsdevcmd.bat -arch=${{ matrix.vs_arch }} -host_arch=x64
+#        )
+#        
+#        :: Loop over all environment variables and make them global.
+#        for /f "delims== tokens=1,2" %%a in ('set') do (
+#          echo>>"%GITHUB_ENV%" %%a=%%b
+#        )
+#
+#    - name: Setup Python
+#      uses: actions/setup-python@v5
+#      with:
+#        python-version: '3.12'
+#
+#    - name: Setup ambuild
+#      run: |
+#        python -m pip install --upgrade pip
+#        python -m pip install wheel
+#        pip install git+https://github.com/alliedmodders/ambuild
+#
+#    - name: Fetch RCBot2
+#      uses: actions/checkout@v4
+#      with:
+#        path: rcbot2
+#        submodules: recursive
+#
+#    - name: Build Files
+#      working-directory: rcbot2
+#      run: |
+#        mkdir post
+#        cd post
+#        python3 ../configure.py --sdks=present --mms-path="${{ github.workspace }}/rcbot2/alliedmodders/metamod-source" --sm-path="${{ github.workspace }}/rcbot2/alliedmodders/sourcemod" --hl2sdk-root="${{ github.workspace }}/rcbot2/alliedmodders" --symbol-files --target ${{ matrix.am_arch }}
+#        ambuild
+#
+#    - uses: benjlevesque/short-sha@v2.2
+#      id: short-sha
+#
+#    - name: Upload Binary
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: rcbot2-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
+#        path: |
+#            rcbot2/post/package/*
+#
+#    - name: Upload Debug Symbols
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: rcbot2-dbgsym-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
+#        path: |
+#            rcbot2/post/**/*.${{ matrix.dbg_ext }}
+#
   release:
-    needs: build_main
     name: Combined Release
     runs-on: ubuntu-22.04
 
     # only build on '[ci run]' or tags
     if: |
       startsWith(github.ref_name, 'v') ||
-      startsWith(github.ref_name, 'release')
+      startsWith(github.ref_name, 'test')
 
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v4
       with:
         path: ./artifacts
+        run-id: 17572565971
 
     - name: Rename artifacts for release
       run: |
-        for f in ./artifacts/*/rcbot2-{win,linux}.*zip; do
-          mv "$f" "${f%-*}-${GITHUB_REF_NAME}.zip"
-        done
-        ls -lR ./artifacts
+        find ./artifacts
+#        for f in ./artifacts/*/rcbot2-{win,linux}.*zip; do
+#          mv "$f" "${f%-*}-${GITHUB_REF_NAME}.zip"
+#        done
 
-    - name: Upload Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ github.ref_name }}
-        name: rcbot2-${{ github.ref_name }}
-        draft: false
-        prerelease: false
-        files: |
-          ./artifacts/*/rcbot2-win*
-          ./artifacts/*/rcbot2-linux*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#    - name: Upload Release
+#      uses: softprops/action-gh-release@v2
+#      with:
+#        tag_name: ${{ github.ref_name }}
+#        name: rcbot2-${{ github.ref_name }}
+#        draft: false
+#        prerelease: false
+#        files: |
+#          ./artifacts/*/rcbot2-win*
+#          ./artifacts/*/rcbot2-linux*
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
