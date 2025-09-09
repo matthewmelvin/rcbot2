@@ -129,7 +129,7 @@ jobs:
       if: |
         startsWith(github.ref_name, 'v') ||
         startsWith(github.ref_name, 'release') ||
-      uses:
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref_name }}
         name: rcbot2-${{ matrix.os_short }}-${{ github.ref_name }}
