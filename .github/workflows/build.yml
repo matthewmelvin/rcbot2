@@ -125,16 +125,37 @@ jobs:
         path: |
             rcbot2/post/**/*.${{ matrix.dbg_ext }}
 
-    - name: Create Release
-      if: |
-        startsWith(github.ref_name, 'v') ||
-        startsWith(github.ref_name, 'release')
+  release:
+    needs: build_main
+    name: Combined Release
+    runs-on: ubuntu-22.04
+
+    # only build on '[ci run]' or tags
+    if: |
+      startsWith(github.ref_name, 'v') ||
+      startsWith(github.ref_name, 'release')
+
+    - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+    - name: Rename artifacts for release
+      run: |
+        for f in ./artifacts/*/rcbot2-{win,linux}.*zip; do
+          mv "$f" "${f%-*}-${GITHUB_REF_NAME}.zip"
+        done
+        ls -lR ./artifacts
+
+    - name: Upload Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref_name }}
-        name: rcbot2-${{ matrix.os_short }}-${{ github.ref_name }}
+        name: rcbot2-${{ github.ref_name }}
         draft: false
         prerelease: false
-        files: rcbot2/post/package/*
+        files: |
+          ./artifacts/*/rcbot2-win*
+          ./artifacts/*/rcbot2-linux*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
