@@ -136,10 +136,13 @@ jobs:
 
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: ./artifacts
         run-id: 17571853502
+        repository: matthewmelvin/rcbot2
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
 
     - name: Rename artifacts for release
       run: |
