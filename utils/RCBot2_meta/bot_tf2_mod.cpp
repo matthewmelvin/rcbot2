@@ -309,7 +309,7 @@ void CTeamFortress2Mod :: mapInit ()
 		m_MapType = TF_MAP_SD; // special delivery
 	else if (std::strncmp(szmapname, "tr_", 3) == 0)
 		m_MapType = TF_MAP_TR; // training mode
-	else if (std::strncmp(szmapname, "cppl_", 5) == ||
+	else if (std::strncmp(szmapname, "cppl_", 5) == 0 ||
 		std::strncmp(szmapname, "cw_", 3) == 0) // Hybrid - RussiaTails
 		m_MapType = TF_MAP_CPPL; // CP+PL maps
 	else if (std::strncmp(szmapname, "gg_", 3) == 0 || std::strncmp(szmapname, "dm_hydro", 8) == 0 ||
