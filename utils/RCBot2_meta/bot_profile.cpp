@@ -223,5 +223,6 @@ CBotProfile* CBotProfiles::getChosenFreeProfile()
 		}
 	}
 
-	return nullptr;
+	// fall back to random if matching fails
+	return CBotProfiles::getRandomFreeProfile();
 }
