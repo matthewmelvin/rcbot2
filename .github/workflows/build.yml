@@ -7,8 +7,12 @@ jobs:
     name: Build for ${{ matrix.os_short }}
     runs-on: ${{ matrix.os_version }}
 
-    # skip build on '[ci skip]'
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    # only build on '[ci run]' or tags
+    if: |
+      startsWith(github.ref_name, 'v') ||
+      startsWith(github.ref_name, 'release') ||
+      startsWith(github.ref_name, 'build') ||
+      contains(github.event.head_commit.message, '[ci run]'
 
     strategy:
       fail-fast: false
@@ -120,3 +124,17 @@ jobs:
         name: rcbot2-dbgsym-${{ matrix.os_short }}-${{ steps.short-sha.outputs.sha }}
         path: |
             rcbot2/post/**/*.${{ matrix.dbg_ext }}
+
+    - name: Create Release
+      if: |
+        startsWith(github.ref_name, 'v') ||
+        startsWith(github.ref_name, 'release') ||
+      uses:
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: rcbot2-${{ matrix.os_short }}-${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        files: rcbot2/post/package/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
