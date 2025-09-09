@@ -142,22 +142,20 @@ jobs:
         run-id: 17571853502
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Rename artifacts for release
+    - name: Repackage for release
       run: |
-        find ./artifacts
-#        for f in ./artifacts/*/rcbot2-{win,linux}.*zip; do
-#          mv "$f" "${f%-*}-${GITHUB_REF_NAME}.zip"
-#        done
+        for i in artifacts/rcbot2-{linux,win}*; do
+           (cd $i && zip -r ../../${i%-*}-${{ github.ref_name }}.zip *)
+        done
 
-#    - name: Upload Release
-#      uses: softprops/action-gh-release@v2
-#      with:
-#        tag_name: ${{ github.ref_name }}
-#        name: rcbot2-${{ github.ref_name }}
-#        draft: false
-#        prerelease: false
-#        files: |
-#          ./artifacts/*/rcbot2-win*
-#          ./artifacts/*/rcbot2-linux*
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload release files
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: rcbot2-${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        files: |
+          ./artifacts/*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
