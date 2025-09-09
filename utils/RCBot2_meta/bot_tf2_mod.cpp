@@ -277,7 +277,7 @@ void CTeamFortress2Mod :: mapInit ()
 			 std::strncmp(szmapname, "stt_", 4) == 0 ||
 			 std::strncmp(szmapname, "koth_lifesnatcher", 17) == 0 ||
 			 std::strncmp(szmapname, "vip_", 4) == 0 ||
-			 std::strncmp(szmapname, "vipr_", 5) != 0 ||
+			 std::strncmp(szmapname, "vipr_", 5) == 0 ||
 			 std::strncmp(szmapname, "szf_", 4) == 0 ||
 			 std::strncmp(szmapname, "zf_", 3) == 0)
 		// Conquest, 2koth and DOM works fine as CP_. Moved stt to cp to make bots attack a tank - RussiaTails
