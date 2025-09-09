@@ -7,10 +7,10 @@ jobs:
     name: Build for ${{ matrix.os_short }}
     runs-on: ${{ matrix.os_version }}
 
-    # only build on '[ci run]' or tags
+    # only build on '[ci run]' or select tags
     if: |
       startsWith(github.ref_name, 'v') ||
-      startsWith(github.ref_name, 'release') ||
+      startsWith(github.ref_name, 'test') ||
       startsWith(github.ref_name, 'build') ||
       contains(github.event.head_commit.message, '[ci run]')
 
@@ -130,25 +130,25 @@ jobs:
     name: Combined Release
     runs-on: ubuntu-22.04
 
-    # only build on '[ci run]' or tags
+    # only release on select tags
     if: |
       startsWith(github.ref_name, 'v') ||
-      startsWith(github.ref_name, 'release')
+      startsWith(github.ref_name, 'test')
 
     steps:
     - name: Download artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         path: ./artifacts
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Rename artifacts for release
+    - name: Repackage for release
       run: |
-        for f in ./artifacts/*/rcbot2-{win,linux}.*zip; do
-          mv "$f" "${f%-*}-${GITHUB_REF_NAME}.zip"
+        for i in artifacts/rcbot2-{linux,win}*; do
+           (cd $i && zip -r ../../${i%-*}-${{ github.ref_name }}.zip *)
         done
-        ls -lR ./artifacts
 
-    - name: Upload Release
+    - name: Upload release files
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref_name }}
@@ -156,7 +156,6 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ./artifacts/*/rcbot2-win*
-          ./artifacts/*/rcbot2-linux*
+          ./artifacts/*.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
