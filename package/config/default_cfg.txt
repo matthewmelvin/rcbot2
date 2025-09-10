@@ -154,6 +154,9 @@ rcbot_spyknifefov 80
 # Fraction of how much the heavy aims at a diagonal offset
 rcbot_heavyaimoffset 0.1
 #
+# Minimum distance to move objects to
+rcbot_move_dist 800
+#
 # Seconds for bots to start thinking about moving sentries
 rcbot_move_sentry_time 120
 #
@@ -168,9 +171,6 @@ rcbot_move_disp_healamount 100
 #
 # Distance that bots will go back to use a dispenser
 rcbot_disp_dist 800.0
-#
-# Minimum distance to move objects to
-rcbot_move_dist 800
 #
 # Seconds for bots to start thinking about moving teleporters
 rcbot_move_tele_time 120
@@ -238,10 +238,9 @@ sm plugins unload smac_cvars.smx
 sm plugins unload superlogs-tf2.smx
 #sm plugins unload bossspawner.smx
 sm plugins unload sm_dod_dropweapon.smx
-#sm plugins unload addon_dodtms_classrest.smx
 #
 # This is a TF2 lag bot prevention fix that prevents causing rcbots to crash
-#sv_quota_stringcmdspersecond 99999
+sv_quota_stringcmdspersecond 99999
 #
 # Nosoop's new RCBot2 Logging cvar for monitoring warnings and errors
 # Display logging messages with increasing verbosity (higher number = more messages)
