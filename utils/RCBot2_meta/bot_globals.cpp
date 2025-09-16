@@ -145,6 +145,31 @@ bool CBotGlobals :: isCurrentMod (const eModId modid)
 	return m_pCurrentMod->getModId() == modid;
 }
 
+int CBotGlobals ::numPlayersPlaying()
+{
+
+	int num = CBotGlobals::numClients();
+
+	if (rcbot_ignore_spectators.GetBool())
+	{
+		for ( int i = 1; i <= CBotGlobals::numClients(); i ++ )
+		{
+			edict_t* pEdict = INDEXENT(i);
+
+			if ( CBotGlobals::entityIsValid(pEdict) )
+			{
+				if ( CClassInterface::getTeam(pEdict) >= 2 )
+					continue;
+				if ( CBots::getBotPointer(pEdict) != NULL )
+					continue;
+				num--;
+			}
+		}
+	}
+
+	return num;
+}
+
 int CBotGlobals ::numPlayersOnTeam(const int iTeam, const bool bAliveOnly)
 {
 	int num = 0;
@@ -163,6 +188,31 @@ int CBotGlobals ::numPlayersOnTeam(const int iTeam, const bool bAliveOnly)
 						num++;
 				}
 				else 
+					num++;
+			}
+		}
+	}
+	return num;
+}
+
+int CBotGlobals ::numBotsOnTeam(const int iTeam, const bool bAliveOnly)
+{
+	int num = 0;
+
+	for ( int i = 1; i <= CBotGlobals::numClients(); i ++ )
+	{
+		edict_t* pEdict = INDEXENT(i);
+
+		if ( CBotGlobals::entityIsValid(pEdict) && CBots::getBotPointer(pEdict) != NULL )
+		{
+			if ( CClassInterface::getTeam(pEdict) == iTeam )
+			{
+				if ( bAliveOnly )
+				{
+					if ( CBotGlobals::entityIsAlive(pEdict) )
+						num++;
+				}
+				else
 					num++;
 			}
 		}
