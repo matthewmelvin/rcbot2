@@ -3659,6 +3659,38 @@ void CBots :: kickRandomBot (const unsigned count)
 	m_flAddKickBotTime = engine->Time() + 2.0f;
 }
 
+void CBots::kickChosenBotOnTeam(const int team)
+{
+	std::vector<CBot*> botList;
+	//gather list of bots
+	for ( unsigned i = 0; i < RCBOT_MAXPLAYERS; i ++ )
+	{
+		if ( m_Bots[i]->inUse() && m_Bots[i]->getTeam() == team)
+			botList.emplace_back(m_Bots[i]);
+	}
+
+	if ( botList.empty() )
+	{
+		logger->Log(LogLevel::DEBUG, "kickChosenBotOnTeam() : No bots to kick");
+		return;
+	}
+
+	CBot* pBot = nullptr;
+	for (CBot* tBot : botList) {
+		if ((pBot == nullptr) || ( pBot->getCreateTime() < tBot->getCreateTime() ))
+			pBot = tBot;
+	}
+
+	logger->Log(LogLevel::DEBUG, "kickChosenBotOnTeam() : kicking %s, created at %0.2f", pBot->getBotName(), pBot->getCreateTime());
+
+	char szCommand[512];
+
+	snprintf(szCommand, sizeof(szCommand), "kickid %d\n", pBot->getPlayerID());
+	engine->ServerCommand(szCommand);
+
+	m_flAddKickBotTime = engine->Time() + 2.0f;
+}
+
 void CBots::kickRandomBotOnTeam(const int team)
 {
 	std::vector<int> botList;

@@ -1087,6 +1087,7 @@ public:
 
 	static void kickChosenBot (unsigned count = 1);
 	static void kickRandomBot (unsigned count = 1);
+	static void kickChosenBotOnTeam ( int team );
 	static void kickRandomBotOnTeam ( int team );
 
 	static void mapInit ();
