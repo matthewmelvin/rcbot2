@@ -197,7 +197,6 @@ int CBotGlobals ::numPlayersOnTeam(const int iTeam, const bool bAliveOnly)
 			}
 		}
 	}
-	logger->Log(LogLevel::DEBUG, "numPlayersOnTeam(%d): %d players on team%s", iTeam, num, (iTeam == 2 ? "A" : "B"));
 	return num;
 }
 
@@ -661,7 +660,6 @@ int CBotGlobals :: numClients ()
 		}
 	}
 
-	logger->Log(LogLevel::DEBUG, "numClients(): %d clients, last index: %d", iCount, iIndex);
 	return iCount;
 }
 
