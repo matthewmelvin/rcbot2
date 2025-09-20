@@ -3681,8 +3681,6 @@ void CBots::kickChosenBotOnTeam(const int team)
 			pBot = tBot;
 	}
 
-	logger->Log(LogLevel::DEBUG, "kickChosenBotOnTeam() : kicking %s, created at %0.2f", pBot->getBotName(), pBot->getCreateTime());
-
 	char szCommand[512];
 
 	snprintf(szCommand, sizeof(szCommand), "kickid %d\n", pBot->getPlayerID());
