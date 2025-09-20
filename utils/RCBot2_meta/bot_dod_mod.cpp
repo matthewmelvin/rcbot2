@@ -891,9 +891,12 @@ int CDODMod ::numClassOnTeam(const int iTeam, const int iClass)
 {
 	int num = 0;
 
-	for ( int i = 1; i <= CBotGlobals::numClients(); i ++ )
+	for ( int i = 1; i <= CBotGlobals::maxClients(); i ++ )
 	{
 		edict_t* pEdict = INDEXENT(i);
+
+		if ( !pEdict )
+			continue;
 
 		if ( CBotGlobals::entityIsValid(pEdict) )
 		{
