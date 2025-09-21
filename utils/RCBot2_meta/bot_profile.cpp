@@ -202,23 +202,16 @@ CBotProfile* CBotProfiles::getChosenFreeProfile()
 	int teamB = CBotGlobals::numPlayersOnTeam(3,false);
 
 	if (teamA < teamB) {
-		logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : team A: %d, team B: %d, adding to team A", teamA, teamB);
 		team = 2;
 	} else if (teamA > teamB) {
-		logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : team A: %d, team B: %d, adding to team B", teamA, teamB);
 		team = 3;
 	} else {
-		logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : team A: %d, team B: %d, adding to either", teamA, teamB);
 		team = 0;
 	}
 
 	for (CBotProfile*& m_Profile : m_Profiles)
 	{
 		if ((!CBots::findBotByProfile(m_Profile)) && ((team < 2) || (m_Profile->m_iTeam < 2) || (m_Profile->m_iTeam == team))) {
-			if (m_Profile->m_iTeam >= 2)
-				logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : %s adding bot, team %s configured", m_Profile->m_szName, (m_Profile->m_iTeam == 2 ? "A" : "B"));
-			else
-				logger->Log(LogLevel::DEBUG, "getChosenFreeProfile() : %s adding bot, no team preference", m_Profile->m_szName);
 			return(m_Profile);
 		}
 	}

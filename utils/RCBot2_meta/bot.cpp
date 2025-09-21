@@ -3576,23 +3576,15 @@ void CBots :: kickChosenBot (const unsigned count)
 	int teamA = CBotGlobals::numPlayersOnTeam(2,false);
 	int teamB = CBotGlobals::numPlayersOnTeam(3,false);
 
-	if (count == 1)
-		logger->Log(LogLevel::DEBUG, "kickChosenBot() : want to kick 1 bot");
-	else
-		logger->Log(LogLevel::DEBUG, "kickChosenBot() : want to kick %d bots", count);
-
 	CBot* pBot;
 	unsigned numBotsKicked = 0;
 	while (numBotsKicked < count && !botList.empty()) {
 		// check numBotsOnTeam in case all the remaining bots are on the smaller team
 		if ((teamA > teamB) && (CBotGlobals::numBotsOnTeam(2,false) > 0)) {
-			logger->Log(LogLevel::DEBUG, "kickChosenBot() : team A: %d, team B: %d, kicking from team A", teamA, teamB);
 			team = 2;
 		} else if ((teamA < teamB) && (CBotGlobals::numBotsOnTeam(3,false) > 0)) {
-			logger->Log(LogLevel::DEBUG, "kickChosenBot() : team A: %d, team B: %d, kicking from team B", teamA, teamB);
 			team = 3;
 		} else {
-			logger->Log(LogLevel::DEBUG, "kickChosenBot() : team A: %d, team B: %d, kicking from either", teamA, teamB);
 			team = 0;
 		}
 
@@ -3608,7 +3600,6 @@ void CBots :: kickChosenBot (const unsigned count)
 			logger->Log(LogLevel::DEBUG, "kickChosenBot() : No bot to kick");
 			return;
 		}
-		logger->Log(LogLevel::DEBUG, "kickChosenBot() : kicking %s, created at %0.2f", pBot->getBotName(), pBot->getCreateTime());
 
 		if (pBot->getTeam() == 2)
 			teamA--;
@@ -3664,6 +3655,36 @@ void CBots :: kickRandomBot (const unsigned count)
 		
 		botList.pop_back();
 	}
+
+	m_flAddKickBotTime = engine->Time() + 2.0f;
+}
+
+void CBots::kickChosenBotOnTeam(const int team)
+{
+	std::vector<CBot*> botList;
+	//gather list of bots
+	for ( unsigned i = 0; i < RCBOT_MAXPLAYERS; i ++ )
+	{
+		if ( m_Bots[i]->inUse() && m_Bots[i]->getTeam() == team)
+			botList.emplace_back(m_Bots[i]);
+	}
+
+	if ( botList.empty() )
+	{
+		logger->Log(LogLevel::DEBUG, "kickChosenBotOnTeam() : No bots to kick");
+		return;
+	}
+
+	CBot* pBot = nullptr;
+	for (CBot* tBot : botList) {
+		if ((pBot == nullptr) || ( pBot->getCreateTime() < tBot->getCreateTime() ))
+			pBot = tBot;
+	}
+
+	char szCommand[512];
+
+	snprintf(szCommand, sizeof(szCommand), "kickid %d\n", pBot->getPlayerID());
+	engine->ServerCommand(szCommand);
 
 	m_flAddKickBotTime = engine->Time() + 2.0f;
 }
