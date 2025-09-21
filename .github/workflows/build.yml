@@ -10,6 +10,7 @@ jobs:
     # only build on '[ci run]' or select tags
     if: |
       startsWith(github.ref_name, 'v') ||
+      startsWith(github.ref_name, 'rel') ||
       startsWith(github.ref_name, 'test') ||
       startsWith(github.ref_name, 'build') ||
       contains(github.event.head_commit.message, '[ci run]')
@@ -133,6 +134,7 @@ jobs:
     # only release on select tags
     if: |
       startsWith(github.ref_name, 'v') ||
+      startsWith(github.ref_name, 'rel')
       startsWith(github.ref_name, 'test')
 
     steps:
