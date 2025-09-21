@@ -134,7 +134,7 @@ jobs:
     # only release on select tags
     if: |
       startsWith(github.ref_name, 'v') ||
-      startsWith(github.ref_name, 'rel')
+      startsWith(github.ref_name, 'rel') ||
       startsWith(github.ref_name, 'test')
 
     steps:
