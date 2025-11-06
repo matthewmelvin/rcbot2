@@ -27,11 +27,9 @@ jobs:
             cxx: clang++
             vs_arch: unused
             am_arch: x86,x86_64
-            meta_branch: "1.12-dev"
-            sm_branch: "1.12-dev"
             
           - os: ubuntu-latest
-            os_short: linux
+            os_short: linux-latest
             os_version: ubuntu-latest
             package_ext: tar.gz
             dbg_ext: dbg
@@ -39,8 +37,6 @@ jobs:
             cxx: clang++
             vs_arch: unused
             am_arch: x86,x86_64
-            meta_branch: "master"
-            sm_branch: "1.12-dev"
 
           - os: windows-x32
             os_short: win32
@@ -51,8 +47,6 @@ jobs:
             cxx: not-used
             vs_arch: x32
             am_arch: x86
-            meta_branch: "1.12-dev"
-            sm_branch: "1.12-dev"
 
           - os: windows-x64
             os_short: win64
@@ -63,8 +57,6 @@ jobs:
             cxx: not-used
             vs_arch: x64
             am_arch: x86_64
-            meta_branch: "master"
-            sm_branch: "1.12-dev"
 
     steps:
     - name: Install (Linux)
