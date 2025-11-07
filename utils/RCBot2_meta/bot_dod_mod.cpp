@@ -469,7 +469,7 @@ bool CDODFlags:: getRandomBombToDefend ( CBot *pBot, Vector *position, const int
 }
 
 // return rnaomd flag with lowest danger
-bool CDODFlags:: getRandomBombToPlant (const CBot *pBot, Vector *position, const int iTeam, edict_t **pBombTarget, int *id) const
+bool CDODFlags:: getRandomBombToPlant (CBot *pBot, Vector *position, const int iTeam, edict_t **pBombTarget, int *id) const
 {
 	if ( id )
 		*id = -1;
@@ -486,7 +486,7 @@ bool CDODFlags:: getRandomBombToPlant (const CBot *pBot, Vector *position, const
 			if ( m_pBombs[i][0] == nullptr || m_iOwner[i] == iTeam || isBombPlanted(i) || m_iBombsRemaining[i] == 0 )
 				continue;
 
-			fTotal += (MAX_BELIEF + 1.0f - pNav->getBelief(m_iWaypoint[i])) / MAX_BELIEF * getNumBombsRemaining(i);
+			fTotal += (MAX_BELIEF + 1.0f - pNav->getBelief(m_iWaypoint[i])) / MAX_BELIEF * static_cast<float>(getNumBombsRemaining(i));
 		}
 	}
 
@@ -504,7 +504,7 @@ bool CDODFlags:: getRandomBombToPlant (const CBot *pBot, Vector *position, const
 			if (m_pBombs[i][0] == nullptr || m_iOwner[i] == iTeam || isBombPlanted(i))
 				continue;
 
-			fTotal += (MAX_BELIEF + 1.0f - pNav->getBelief(m_iWaypoint[i])) / MAX_BELIEF * getNumBombsRemaining(i);
+			fTotal += (MAX_BELIEF + 1.0f - pNav->getBelief(m_iWaypoint[i])) / MAX_BELIEF * static_cast<float>(getNumBombsRemaining(i));
 		}
 		else
 			fTotal += 0.1f;

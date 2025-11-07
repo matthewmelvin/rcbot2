@@ -259,7 +259,7 @@ public:
 	bool getRandomTeamControlledFlag (const CBot *pBot, Vector *position, int iTeam, int *id = nullptr) const;
 
 	bool getRandomBombToDefuse (Vector *position, int iTeam, edict_t **pBombTarget, int *id = nullptr) const;
-	bool getRandomBombToPlant (const CBot *pBot, Vector *position, int iTeam, edict_t **pBombTarget, int *id = nullptr) const;
+	bool getRandomBombToPlant (CBot *pBot, Vector *position, int iTeam, edict_t **pBombTarget, int *id = nullptr) const;
 	bool getRandomBombToDefend (CBot *pBot, Vector *position, int iTeam, edict_t **pBombTarget, int *id = nullptr) const;
 
 	int findNearestObjective (const Vector& vOrigin) const;
