@@ -1611,8 +1611,8 @@ void CBot :: killed ( edict_t *pVictim, char *weapon )
 // called when bot shoots a wall or similar object -i.e. not the enemy
 void CBot :: shotmiss ()
 {
-	
 }
+
 // shot an enemy (or teammate?) //TODO: Experimental [APG]RoboCop[CL]
 void CBot :: shot ( edict_t *pEnemy )
 {
@@ -1623,6 +1623,7 @@ void CBot :: shot ( edict_t *pEnemy )
 		friendlyFire(pEnemy);
 
 }
+
 // got shot by someone
 bool CBot :: hurt ( edict_t *pAttacker, const int iHealthNow, const bool bDontHide )
 {
@@ -3038,6 +3039,7 @@ bool CBot::wantToFollowEnemy ()
 {
 	return getHealthPercent() > 1.0f - m_pProfile->m_fBraveness;
 }
+
 ////////////////////////////
 void CBot :: getTasks (unsigned iIgnore)
 {
@@ -3227,7 +3229,7 @@ int CBots::createDefaultBot(const char* szName) {
 		return -1;
 	}
 
-	std::size_t slot = static_cast<std::size_t>(slotInt); // Convert to std::size_t explicitly
+	const std::size_t slot = static_cast<std::size_t>(slotInt); // Convert to std::size_t explicitly
 
 	m_Bots[slot]->createBotFromEdict(pEdict, pBotProfile);
 
@@ -3520,7 +3522,7 @@ void CBots :: mapInit ()
 
 bool CBots :: needToAddBot ()
 {
-	if (rcbot_bot_quota_interval.GetFloat() > 0.0) {
+	if (rcbot_bot_quota_interval.GetFloat() > 0.0f) {
 		return false;
 	}
 
@@ -3536,7 +3538,7 @@ bool CBots :: needToAddBot ()
 
 bool CBots :: needToKickBot ()
 {
-	if (rcbot_bot_quota_interval.GetFloat() > 0.0) {
+	if (rcbot_bot_quota_interval.GetFloat() > 0.0f) {
 		return false;
 	}
 
@@ -3572,12 +3574,12 @@ void CBots :: kickChosenBot (const unsigned count)
                 return;
         }
 
-	int team = 0;
+	int team;
 	int teamA = CBotGlobals::numPlayersOnTeam(2,false);
 	int teamB = CBotGlobals::numPlayersOnTeam(3,false);
 
-	CBot* pBot;
 	unsigned numBotsKicked = 0;
+	
 	while (numBotsKicked < count && !botList.empty()) {
 		// check numBotsOnTeam in case all the remaining bots are on the smaller team
 		if ((teamA > teamB) && (CBotGlobals::numBotsOnTeam(2,false) > 0)) {
@@ -3588,7 +3590,7 @@ void CBots :: kickChosenBot (const unsigned count)
 			team = 0;
 		}
 
-		pBot = nullptr;
+		CBot* pBot = nullptr;
 		for (CBot* tBot : botList) {
 			if ((team < 2) || (tBot->getTeam() == team)) {
 				if ((pBot == nullptr) || ( pBot->getCreateTime() < tBot->getCreateTime() ))

@@ -67,7 +67,7 @@
 #include <build_info.h>
 #include <sourcehook.h>
 
-#if defined SM_EXT
+#ifdef SM_EXT
 #include "rcbot/entprops.h"
 #endif
 SH_DECL_HOOK6(IServerGameDLL, LevelInit, SH_NOATTRIB, 0, bool, char const *, char const *, char const *, char const *, bool, bool);
@@ -571,7 +571,7 @@ bool RCBotPluginMeta::FireGameEvent(IGameEvent * pevent, bool bDontBroadcast)
 
 bool RCBotPluginMeta::Unload(char *error, std::size_t maxlen)
 {
-#if defined SM_EXT
+#ifdef SM_EXT
 	SM_UnloadExtension();
 #endif
 	
@@ -637,12 +637,12 @@ void RCBotPluginMeta::AllPluginsLoaded()
 	/* This is where we'd do stuff that relies on the mod or other plugins 
 	 * being initialized (for example, cvars added and events registered).
 	 */
-#if defined SM_EXT
+#ifdef SM_EXT
 	BindToSourcemod();
 #endif
 }
 
-#if defined SM_EXT
+#ifdef SM_EXT
 void* RCBotPluginMeta::OnMetamodQuery(const char* iface, int *ret) {
 	if (std::strcmp(iface, SOURCEMOD_NOTICE_EXTENSIONS) == 0) {
 		BindToSourcemod();
@@ -1054,7 +1054,7 @@ const char *RCBotPluginMeta::GetURL()
 	return build_info::url;
 }
 
-#if defined SM_EXT
+#ifdef SM_EXT
 void RCBotPluginMeta::BindToSourcemod()
 {
 	char error[256];
