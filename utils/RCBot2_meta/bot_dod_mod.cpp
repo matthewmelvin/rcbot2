@@ -393,41 +393,52 @@ bool CDODFlags::getRandomEnemyControlledFlag (const CBot *pBot, Vector *position
 	return false;
 }
 
-bool CDODFlags::getRandomBombToDefuse  ( Vector *position, const int iTeam, edict_t **pBombTarget, int *id ) const
+bool CDODFlags::getRandomBombToDefuse(Vector& position, int iTeam, edict_t*& pBombTarget, int* id) const
 {
-	std::vector<int> iPossible; // int is control point entry
-
-	if ( id )
+	if (id)
 		*id = -1;
 
-	// more possibility to return bomb targets with no bomb already
-	for (int i = 0; i < m_iNumControlPoints; i++)
-	{
-		if ( m_iOwner[i] == iTeam && isBombPlanted(i) && !isBombBeingDefused(i) && m_pBombs[i][0] != nullptr)
-			for ( int j = 0; j < getNumBombsRequired(i); j ++ ) { iPossible.emplace_back(i); }
-	}
+	std::vector<int> possibleTargets;
 
-	if (!iPossible.empty())
+	// Collect possible bomb targets
+	for (int i = 0; i < m_iNumControlPoints; ++i)
 	{
-		const int selection = iPossible[randomInt(0, static_cast<int>(iPossible.size()) - 1)];
-
-		if ( m_pBombs[selection][1] != nullptr)
+		if (m_iOwner[i] == iTeam && isBombPlanted(i) && !isBombBeingDefused(i) && m_pBombs[i][0] != nullptr)
 		{
-			if ( CClassInterface::getDODBombState(m_pBombs[selection][1]) == DOD_BOMB_STATE_ACTIVE )
-				*pBombTarget = m_pBombs[selection][1];
-			else
-				*pBombTarget = m_pBombs[selection][0];
+			for (int j = 0; j < getNumBombsRequired(i); ++j)
+			{
+				possibleTargets.emplace_back(i);
+			}
 		}
-		else
-			*pBombTarget = m_pBombs[selection][0];
-
-		*position = CBotGlobals::entityOrigin(*pBombTarget);
-
-		if ( id ) // area of the capture point
-			*id = selection;
+	}
+	if (possibleTargets.empty())
+	{
+		return false;
 	}
 
-	return !iPossible.empty();
+	// Select a random target
+	const int selection = possibleTargets[randomInt(0, static_cast<int>(possibleTargets.size()) - 1)];
+
+	// Determine the bomb target
+	if (m_pBombs[selection][1] != nullptr &&
+		CClassInterface::getDODBombState(m_pBombs[selection][1]) == DOD_BOMB_STATE_ACTIVE)
+	{
+		pBombTarget = m_pBombs[selection][1];
+	}
+	else
+	{
+		pBombTarget = m_pBombs[selection][0];
+	}
+
+	// Set position and ID
+	position = CBotGlobals::entityOrigin(pBombTarget);
+
+	if (id)
+	{
+		*id = selection;
+	}
+
+	return true;
 }
 
 //return random bomb with highest danger
@@ -472,6 +483,7 @@ bool CDODFlags:: getRandomBombToDefend ( CBot *pBot, Vector *position, const int
 bool CDODFlags::getRandomBombToPlant(CBot* pBot, Vector& position, const int iTeam, edict_t*& pBombTarget, int* id) const
 {
 	assert(pBot != nullptr);
+
 	if (id)
 		*id = -1;
 
@@ -499,6 +511,7 @@ bool CDODFlags::getRandomBombToPlant(CBot* pBot, Vector& position, const int iTe
 
 		const float belief = pNav->getBelief(m_iWaypoint[i]);
 		const float weight = (MAX_BELIEF + 1.0f - belief) / MAX_BELIEF * static_cast<float>(getNumBombsRemaining(i));
+
 		totalWeight += weight;
 		edict_t* target = m_pBombs[i][0];
 
@@ -526,15 +539,16 @@ bool CDODFlags::getRandomBombToPlant(CBot* pBot, Vector& position, const int iTe
 		{
 			pBombTarget = target;
 			position = CBotGlobals::entityOrigin(pBombTarget);
+
 			if (id)
 				*id = index;
+
 			return true;
 		}
 	}
 
 	return false;
 }
-
 
 bool CDODFlags::getRandomTeamControlledFlag (const CBot *pBot, Vector *position, const int iTeam, int *id) const
 {

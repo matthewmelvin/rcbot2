@@ -2499,7 +2499,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 	case BOT_UTIL_DEFUSE_BOMB:
 		if ( util->getId() == BOT_UTIL_DEFUSE_BOMB )
 		{
-			if ( !CDODMod::m_Flags.getRandomBombToDefuse(&vGoal,m_iTeam,&pBombTarget,&id) )
+			if ( !CDODMod::m_Flags.getRandomBombToDefuse(vGoal,m_iTeam,pBombTarget,&id) )
 				return false;
 
 			if ( CDODMod::m_Flags.isTeamMateDefusing(m_pEdict,m_iTeam,id) )
