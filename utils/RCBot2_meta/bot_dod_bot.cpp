@@ -2513,7 +2513,7 @@ bool CDODBot :: executeAction ( CBotUtility *util )
 		{
 			if ( util->getId() == BOT_UTIL_PLANT_BOMB )
 			{
-				if ( !CDODMod::m_Flags.getRandomBombToPlant(this,&vGoal,m_iTeam,&pBombTarget,&id) )
+				if ( !CDODMod::m_Flags.getRandomBombToPlant(this,vGoal,m_iTeam,pBombTarget,&id) )
 					return false;
 
 				if ( CDODMod::m_Flags.isTeamMatePlanting(m_pEdict,m_iTeam,id) )

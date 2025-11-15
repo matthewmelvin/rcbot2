@@ -468,66 +468,66 @@ bool CDODFlags:: getRandomBombToDefend ( CBot *pBot, Vector *position, const int
 	return !iPossible.empty();
 }
 
-// return rnaomd flag with lowest danger
-bool CDODFlags:: getRandomBombToPlant (CBot *pBot, Vector *position, const int iTeam, edict_t **pBombTarget, int *id) const
+// return random flag with lowest danger
+bool CDODFlags::getRandomBombToPlant(CBot* pBot, Vector& position, const int iTeam, edict_t*& pBombTarget, int* id) const
 {
-	if ( id )
+	assert(pBot != nullptr);
+	if (id)
 		*id = -1;
 
 	IBotNavigator* pNav = pBot->getNavigator();
 
-	float fTotal = 0.0f;
+	assert(pNav != nullptr);
 
-	for (int i = 0; i < m_iNumControlPoints; i++)
+	struct BombTargetCandidate
 	{
-		// if no waypoint -- can't go there
-		if ( m_iWaypoint[i] != -1 )
-		{
-			if ( m_pBombs[i][0] == nullptr || m_iOwner[i] == iTeam || isBombPlanted(i) || m_iBombsRemaining[i] == 0 )
-				continue;
+		int index;
+		edict_t* target;
+		float weight;
+	};
 
-			fTotal += (MAX_BELIEF + 1.0f - pNav->getBelief(m_iWaypoint[i])) / MAX_BELIEF * static_cast<float>(getNumBombsRemaining(i));
+	std::vector<BombTargetCandidate> candidates;
+	float totalWeight = 0.0f;
+
+	for (int i = 0; i < m_iNumControlPoints; ++i)
+	{
+		if (m_iWaypoint[i] == -1 || m_pBombs[i][0] == nullptr || m_iOwner[i] == iTeam ||
+			isBombPlanted(i) || m_iBombsRemaining[i] == 0)
+		{
+			continue;
 		}
+
+		const float belief = pNav->getBelief(m_iWaypoint[i]);
+		const float weight = (MAX_BELIEF + 1.0f - belief) / MAX_BELIEF * static_cast<float>(getNumBombsRemaining(i));
+		totalWeight += weight;
+		edict_t* target = m_pBombs[i][0];
+
+		if (m_pBombs[i][1] != nullptr && CClassInterface::getDODBombState(m_pBombs[i][1]) == DOD_BOMB_STATE_AVAILABLE)
+		{
+			target = m_pBombs[i][1];
+		}
+
+		candidates.push_back({ i, target, weight }); //TODO: maybe use emplace_back? [APG]RoboCop[CL]
 	}
 
-	if ( fTotal == 0.0f )
-		return false;
-
-	const float fRand = randomFloat(0.0f, fTotal);
-
-	fTotal = 0.0f;
-
-	for (int i = 0; i < m_iNumControlPoints; i++)
+	if (candidates.empty())
 	{
-		if (m_iWaypoint[i] != -1)
+		return false;
+	}
+
+	const float randomValue = randomFloat(0.0f, totalWeight);
+	float cumulativeWeight = 0.0f;
+
+	for (const auto& [index, target, weight] : candidates)
+	{
+		cumulativeWeight += weight;
+
+		if (randomValue <= cumulativeWeight)
 		{
-			if (m_pBombs[i][0] == nullptr || m_iOwner[i] == iTeam || isBombPlanted(i))
-				continue;
-
-			fTotal += (MAX_BELIEF + 1.0f - pNav->getBelief(m_iWaypoint[i])) / MAX_BELIEF * static_cast<float>(getNumBombsRemaining(i));
-		}
-		else
-			fTotal += 0.1f;
-
-		if ( fRand <= fTotal )
-		{
-			const int selection = i;
-
-			if ( m_pBombs[selection][1] != nullptr)
-			{
-				if ( CClassInterface::getDODBombState(m_pBombs[selection][1]) == DOD_BOMB_STATE_AVAILABLE )
-					*pBombTarget = m_pBombs[selection][1];
-				else
-					*pBombTarget = m_pBombs[selection][0];
-			}
-			else
-				*pBombTarget = m_pBombs[selection][0];
-
-			*position = CBotGlobals::entityOrigin(*pBombTarget);
-
-			if ( id ) // area of the capture point
-				*id = selection;
-
+			pBombTarget = target;
+			position = CBotGlobals::entityOrigin(pBombTarget);
+			if (id)
+				*id = index;
 			return true;
 		}
 	}
@@ -592,6 +592,8 @@ bool CDODFlags::getRandomTeamControlledFlag (const CBot *pBot, Vector *position,
 
 void CDODMod::freeMemory()
 {
+	m_BombWaypoints.clear();
+	m_BreakableWaypoints.clear();
 }
 
 // returns map type
