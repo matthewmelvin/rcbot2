@@ -5311,13 +5311,13 @@ void CBotFollowSquadLeader :: execute (CBot *pBot, CBotSchedule *pSchedule)
 ////////////////////////////////////////////////////
 
 CBotDODSnipe::CBotDODSnipe(CBotWeapon* pWeaponToUse, const Vector& vOrigin, const float fYaw, const bool bUseZ, const float z,
-						   const int iWaypointType) : m_vOrigin(vOrigin)
+						   const int iWaypointType) : m_vOrigin(vOrigin), m_vLastEnemy()
 {
 	m_fEnemyTime = 0.0f;
 	m_fTime = 0.0f;
 	const QAngle angle = QAngle(0, fYaw, 0);
-	AngleVectors(angle,&m_vAim);
-	m_vAim = vOrigin + m_vAim*1024;
+	AngleVectors(angle, &m_vAim);
+	m_vAim = vOrigin + m_vAim * 1024;
 	m_pWeaponToUse = pWeaponToUse;
 	m_fScopeTime = 0.0f;
 	m_bUseZ = bUseZ;

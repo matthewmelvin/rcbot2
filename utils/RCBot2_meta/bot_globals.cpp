@@ -162,7 +162,7 @@ int CBotGlobals ::numPlayersPlaying()
 			{
 				if ( CClassInterface::getTeam(pEdict) >= 2 )
 					continue;
-				if ( CBots::getBotPointer(pEdict) != NULL )
+				if ( CBots::getBotPointer(pEdict) != nullptr )
 					continue;
 				num--;
 			}
@@ -211,7 +211,7 @@ int CBotGlobals ::numBotsOnTeam(const int iTeam, const bool bAliveOnly)
 		if ( !pEdict )
 			continue;
 
-		if ( CBotGlobals::entityIsValid(pEdict) && CBots::getBotPointer(pEdict) != NULL )
+		if ( CBotGlobals::entityIsValid(pEdict) && CBots::getBotPointer(pEdict) != nullptr )
 		{
 			if ( CClassInterface::getTeam(pEdict) == iTeam )
 			{
