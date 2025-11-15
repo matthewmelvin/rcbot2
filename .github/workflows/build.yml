@@ -15,6 +15,7 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
+          - ubuntu-latest
           - windows-x32
           - windows-x64
         include:
