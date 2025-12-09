@@ -76,8 +76,9 @@ class CBasePlayer; // forward declaration required by imovehelper.h (included by
 #endif
 
 #define MAX_AMMO_TYPES 32
-#define MAX_VOICE_CMDS 32
-#define MIN_WPT_TOUCH_DIST 16.0f
+
+constexpr int MAX_VOICE_CMDS = 32;
+constexpr float MIN_WPT_TOUCH_DIST = 16.0f;
 
 // Interfaces from the engine
 extern IVEngineServer *engine;  // helper functions (messaging clients, loading content, making entities, running commands, etc)

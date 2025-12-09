@@ -4464,8 +4464,8 @@ void CBotTF2 :: getTasks ( unsigned iIgnore )
 
 	// if in setup time this will tell bot not to shoot yet
 
-	wantToShoot(CTeamFortress2Mod::hasRoundStarted() || (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || std::strncmp(szmapname, "htf_", 4)));
-	wantToListen(CTeamFortress2Mod::hasRoundStarted() || (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || std::strncmp(szmapname, "htf_", 4)));
+	wantToShoot(CTeamFortress2Mod::hasRoundStarted() || (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || std::strncmp(szmapname, "htf_", 4) != 0));
+	wantToListen(CTeamFortress2Mod::hasRoundStarted() || (CTeamFortress2Mod::isMapType(TF_MAP_CARTRACE) || std::strncmp(szmapname, "htf_", 4)	!= 0));
 
 	if ( !hasSomeConditions(CONDITION_CHANGED) && !m_pSchedules->isEmpty() )
 		return;
