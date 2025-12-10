@@ -952,11 +952,19 @@ void CBotGlobals :: botMessage ( edict_t *pEntity, const int iErr, const char *f
 	const char *bot_tag = BOT_TAG;
 	const std::size_t len = std::strlen(string);
 	const std::size_t taglen = std::strlen(BOT_TAG);
+
+	// Ensure the total length does not exceed the buffer size - [APG]RoboCop[CL]
+	if (len + taglen + 1 >= sizeof(string))
+	{
+		Warning("Message too long, truncating.\n");
+		return;
+	}
+
 	// add tag -- push tag into string
 	for ( std::size_t i = len + taglen; i >= taglen; i -- )
 		string[i] = string[i-taglen];
 
-	string[len+taglen+1] = 0;
+	string[len + taglen] = '\0';
 
 	for ( std::size_t i = 0; i < taglen; i ++ )
 		string[i] = bot_tag[i];
@@ -1274,10 +1282,13 @@ float CBotGlobals :: yawAngleFromEdict (edict_t *pEntity, const Vector& vOrigin)
 
 }
 
-void CBotGlobals::teleportPlayer (const edict_t *pPlayer, const Vector& v_dest)
+void CBotGlobals::teleportPlayer(const edict_t* pPlayer, const Vector& v_dest)
 {
-	if ( CClient *pClient = CClients::get(pPlayer) )
-		pClient->teleportTo(v_dest);
+	CClient* pClient = CClients::get(pPlayer);
+
+	assert(pClient && "CClients::get returned nullptr!");
+
+	pClient->teleportTo(v_dest);
 }
 /*
 
