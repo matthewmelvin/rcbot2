@@ -56,6 +56,7 @@
 #include <cmath>
 #include <cstring>
 #include <memory>
+#include <math_pfns.h>
 
 //caxanga334: SDK 2013 contains macros for std::min and std::max which causes errors when compiling
 //#if SOURCE_ENGINE == SE_SDK2013 || SOURCE_ENGINE == SE_BMS
@@ -281,17 +282,17 @@ void CBotGlobals::readRCBotFolder()
 	}
 }
 
-float CBotGlobals :: grenadeWillLand (const Vector& vOrigin, const Vector& vEnemy, const float fProjSpeed, const float fGrenadePrimeTime, const float *fAngle)
+float CBotGlobals::grenadeWillLand(const Vector& vOrigin, const Vector& vEnemy, const float fProjSpeed, const float fGrenadePrimeTime, const float* fAngle)
 {
 	static float g;
-	Vector v_comp = vEnemy-vOrigin;
+	Vector v_comp = vEnemy - vOrigin;
 	const float fDistance = v_comp.Length();
+	
+	v_comp = v_comp / fDistance;
+	
+	g = sv_gravity.IsValid() ? sv_gravity.GetFloat() : 800.0f;
 
-	v_comp = v_comp/fDistance;
-
-	g = sv_gravity.IsValid()? sv_gravity.GetFloat() : 800.0f;
-
-	if ( fAngle == nullptr)
+	if (fAngle == nullptr)
 	{
 		return 0.0f;
 	}
@@ -300,19 +301,17 @@ float CBotGlobals :: grenadeWillLand (const Vector& vOrigin, const Vector& vEnem
 	float vhorz;
 	float vvert;
 
-	SinCos(DEG2RAD(*fAngle),&vvert,&vhorz);
+	SinCos(DEG2RAD(*fAngle), &vvert, &vhorz);
 
 	vhorz *= fProjSpeed;
 	vvert *= fProjSpeed;
 
-	const float t = fDistance/vhorz;
-
 	// within one second of going off
-	if ( std::fabs(t-fGrenadePrimeTime) < 1.0f )
+	if (const float t = fDistance / vhorz; std::fabs(t - fGrenadePrimeTime) < 1.0f)
 	{
-		const float ffinaly =  vOrigin.z + vvert*t - g*0.5f*(t*t);
+		const float ffinaly = vOrigin.z + vvert * t - g * 0.5f * (t * t);
 
-		return std::fabs(ffinaly - vEnemy.z) < BLAST_RADIUS; // ok why not
+		return (std::fabs(ffinaly - vEnemy.z) < BLAST_RADIUS) ? 1.0f : 0.0f;
 	}
 
 	return 0.0f;

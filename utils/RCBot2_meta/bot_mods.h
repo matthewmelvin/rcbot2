@@ -1203,10 +1203,14 @@ public:
 
 	static bool isCapping ( edict_t *pPlayer );//, int iCapIndex = -1 );
 	
-	static void addCapper (const int cp, const int capper)
+	static void addCapper(const int cp, const int capper)
 	{
+		assert(cp >= 0 && cp < MAX_CAP_POINTS); // Debug assertion [APG]RoboCop[CL]
+
 		if (capper > 0 && cp >= 0 && cp < MAX_CAP_POINTS)
+		{
 			m_Cappers[cp] |= 1 << (capper - 1);
+		}
 	}
 
 	static void removeCappers (const int cp)

@@ -2802,7 +2802,7 @@ void CDODBot :: reachedCoverSpot (const int flags)
 
 				if ( pWpt && (pWpt->getFlags() == flags) )
 				{
-					m_pSchedules->addFront(new CBotSchedule(new CBotDODSnipe(pWeapon,getOrigin(),pWpt->getAimYaw(),false,false,flags)));
+					m_pSchedules->addFront(new CBotSchedule(new CBotDODSnipe(pWeapon, getOrigin(), pWpt->getAimYaw(), false, 0.0f, flags)));
 					removeCondition(CONDITION_PRONE);
 					bDontCrouchAndHide = true;
 				}
