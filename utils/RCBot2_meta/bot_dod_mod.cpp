@@ -493,9 +493,9 @@ bool CDODFlags::getRandomBombToPlant(CBot* pBot, Vector& position, const int iTe
 
 	struct BombTargetCandidate
 	{
-		int index;
 		edict_t* target;
 		float weight;
+		int index;
 	};
 
 	std::vector<BombTargetCandidate> candidates;
