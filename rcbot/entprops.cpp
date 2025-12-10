@@ -34,6 +34,8 @@
 #include <algorithm>
 #pragma pop_macro("clamp")
 
+#include <cstddef>
+#include <cassert>
 #include "entprops.h"
 
 #include <am-string.h>
@@ -617,11 +619,16 @@ int *CBotEntProp::GetEntPropPointer(const int entity, const PropType proptype, c
 
 	if (bit_count >= 9)
 	{
+		uint8_t* base = reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset);
+
 		if (is_unsigned)
 		{
-			return reinterpret_cast<int*>(reinterpret_cast<uint16_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset)));
+			assert(reinterpret_cast<std::uintptr_t>(base) % alignof(uint16_t) == 0 && "Pointer is not properly aligned for uint16_t");
+			return reinterpret_cast<int*>(reinterpret_cast<uint16_t*>(base));
 		}
-		return reinterpret_cast<int*>(reinterpret_cast<int16_t*>(reinterpret_cast<uint8_t*>(pEntity) + static_cast<std::size_t>(offset)));
+
+		assert(reinterpret_cast<std::uintptr_t>(base) % alignof(int16_t) == 0 && "Pointer is not properly aligned for int16_t");
+		return reinterpret_cast<int*>(reinterpret_cast<int16_t*>(base));
 	}
 
 	if (bit_count >= 2)
