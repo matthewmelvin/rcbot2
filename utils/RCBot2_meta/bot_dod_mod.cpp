@@ -520,7 +520,7 @@ bool CDODFlags::getRandomBombToPlant(CBot* pBot, Vector& position, const int iTe
 			target = m_pBombs[i][1];
 		}
 
-		candidates.push_back({ i, target, weight }); //TODO: maybe use emplace_back? [APG]RoboCop[CL]
+		candidates.push_back({ target, weight, i }); //TODO: maybe use emplace_back? [APG]RoboCop[CL]
 	}
 
 	if (candidates.empty())
@@ -531,7 +531,7 @@ bool CDODFlags::getRandomBombToPlant(CBot* pBot, Vector& position, const int iTe
 	const float randomValue = randomFloat(0.0f, totalWeight);
 	float cumulativeWeight = 0.0f;
 
-	for (const auto& [index, target, weight] : candidates)
+	for (const auto& [target, weight, index] : candidates)
 	{
 		cumulativeWeight += weight;
 
