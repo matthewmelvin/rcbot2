@@ -925,7 +925,7 @@ bool CTeamFortress2Mod::isPayloadBomb(edict_t* pEdict, int iTeam)
 	}
 	if (std::strncmp(szmapname, "plr_matterhorn", 14) == 0)
 	{
-		if (engine->IndexOfEdict(pEdict) >= 730)
+		if (engine->IndexOfEdict(pEdict) >= 310)
 		{
 			return std::strncmp(pEdict->GetClassName(), "mapobj_cart_dispenser", 21) == 0 && CClassInterface::getTeam(pEdict) == iTeam;
 		}
